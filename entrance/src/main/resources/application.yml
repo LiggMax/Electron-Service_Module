@@ -1,0 +1,7 @@
+server:
+  port: 8899
+  servlet:
+    context-path: /api
+spring:
+  profiles:
+    active: common,mapper,service,user-web,admin-web # 指定配置文件
