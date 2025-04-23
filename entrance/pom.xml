@@ -33,6 +33,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--指定启动类-->
+                <configuration>
+                    <mainClass>com.ligg.entrance.EntranceApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

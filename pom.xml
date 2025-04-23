@@ -22,6 +22,7 @@
         <module>admin-web</module>
         <module>user-web</module>
         <module>entrance</module>
+        <module>domain</module>
     </modules>
 
 
@@ -41,11 +42,19 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!--lombok依赖-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
     </dependencies>
 
     <build>
