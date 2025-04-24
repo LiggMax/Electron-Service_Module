@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -90,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUserInfo(UserDataVo userDataVo) {
 
-        if (userDataVo.getNewPassword() != null) {
+        if (!Objects.equals(userDataVo.getNewPassword(), "")) {
             UserEntity byUserInfo = userMapper.findByUserInfo(userDataVo.getUserId());
             if (userDataVo.getOldPassword().equals(byUserInfo.getPassword())) {
                 userMapper.updateUserPassword(userDataVo.getUserId(), userDataVo.getNewPassword());

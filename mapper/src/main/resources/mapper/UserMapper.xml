@@ -11,18 +11,19 @@
     </update>
 
     <!--修改用户信息-->
-    <update id="updateUserInfo">
-        update users
-            <set>
-                <if test="nickName != '' ">
-                    nick_name = #{nickName},
-                </if>
-                <if test="userAvatar != '' ">
-                    user_avatar = #{userAvatar},
-                </if>
-            </set>
-        where user_id = #{userId}
-    </update>
+       <update id="updateUserInfo">
+           update users
+           <set>
+               <if test="nickName != null and nickName != ''">
+                   nick_name = #{nickName},
+               </if>
+               <if test="userAvatar != null and userAvatar != ''">
+                   user_avatar = #{userAvatar},
+               </if>
+           </set>
+           where user_id = #{userId}
+       </update>
+
     <!-- 根据账号密码查询用户信息-->
     <select id="findByAdminUser" resultType="com.ligg.common.entity.AdminUserEntity">
         select user_id,account,password,email,nick_name
