@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class PhoneDetailDTO {
+public class PhoneDetailDto {
     private Integer phoneId;
     private Long phoneNumber;
     private String countryCode;

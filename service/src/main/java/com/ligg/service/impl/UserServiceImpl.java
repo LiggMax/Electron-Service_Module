@@ -1,6 +1,7 @@
 package com.ligg.service.impl;
 
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.ThreadLocalUtil;
 import com.ligg.mapper.UserMapper;
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     /**
-     * 根据账号和密码查询用户信息
+     * 根据账号和密码查询管理员用户信息
      */
     @Override
     public AdminUserEntity findByAdminUser(String account, String password) {
@@ -35,14 +36,14 @@ public class UserServiceImpl implements UserService {
      * 生成token
      */
     @Override
-    public String createToken(AdminUserEntity user) {
+    public String createToken(Long  userId, String account) {
 
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("userId",user.getUserId());
-        claims.put("account",user.getAccount());
+        claims.put("userId",userId);
+        claims.put("account",account);
         String token = jwtUtil.createToken(claims);
         redisTemplate.opsForValue()
-                .set("Token:" + user.getUserId(),token,
+                .set("Token:" + userId,token,
                         6, TimeUnit.HOURS);
         return token;
     }
@@ -59,8 +60,28 @@ public class UserServiceImpl implements UserService {
      * 根据id获取用户信息
      */
     @Override
-    public AdminUserEntity findByAdminUserInfo(String userId) {
+    public AdminUserEntity findByAdminUserInfo(Long userId) {
 
         return userMapper.findByAdminUserInfo(userId);
+    }
+
+    /**
+     * 根据账号和密码查询用户信息
+     */
+    @Override
+    public UserEntity findByUser(String account, String password) {
+        UserEntity user = userMapper.findByUser(account);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+        return null;
+    }
+
+    /**
+     * 根据id查询用户信息
+     */
+    @Override
+    public UserEntity findByUserInfo(Long userId) {
+        return userMapper.findByUserInfo(userId);
     }
 }

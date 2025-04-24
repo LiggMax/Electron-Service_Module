@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Phone {
+public class PhoneEntity {
     private Integer phoneId;//id
     private Long phoneNumber;//手机号
     private Integer lineStatus;//线路状态 1.在线、2.离线

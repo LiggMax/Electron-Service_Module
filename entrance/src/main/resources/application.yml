@@ -3,6 +3,11 @@ server:
 spring:
   profiles:
     active: common,mapper,service,user-web,admin-web # 指定配置文件
+  data:
+    redis:
+      port: 6379
+      host: 127.0.0.1
+      password:
 ##跨域地址
 ignore:
-  urls: http://localhost:7000,http://localhost:5173
+  urls: http://localhost:7000,http://localhost:5173,http://127.0.0.1:7000,http://127.0.0.1:5173

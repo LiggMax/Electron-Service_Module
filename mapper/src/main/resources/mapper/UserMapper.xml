@@ -16,4 +16,17 @@
         from admin_users
         where user_id = #{userId}
     </select>
+    <!-- 根据账号查询用户信息-->
+    <select id="findByUser" resultType="com.ligg.common.entity.UserEntity">
+        select user_id,account,password,email,nick_name,created_at,updated_at,user_avatar
+        from users
+        where account = #{account}
+    </select>
+
+    <!--根据id查询用户信息-->
+    <select id="findByUserInfo" resultType="com.ligg.common.entity.UserEntity">
+        select user_id,account,password,email,nick_name,created_at,updated_at,user_avatar
+        from users
+        where user_id = #{userId}
+    </select>
 </mapper>

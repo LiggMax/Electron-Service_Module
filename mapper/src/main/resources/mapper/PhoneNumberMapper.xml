@@ -20,12 +20,12 @@
 
     <!-- 插入手机号和项目关联信息 -->
     <insert id="insertPhoneProject">
-        insert into phone_project(phone_number, project_name,time_of_use)
+        insert into phone_info(phone_number, project_name,time_of_use)
         values (#{phoneNumber}, #{projectName},NOW())
     </insert>
 
 
-    <select id="phoneList" resultType="com.ligg.common.entity.Phone">
+    <select id="phoneList" resultType="com.ligg.common.entity.PhoneEntity">
         select *
         from phone
         <where>
@@ -44,7 +44,7 @@
     </select>
 
     <!-- 根据手机号ID查询手机详情 -->
-    <select id="queryByIdPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDTO">
+    <select id="queryByIdPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDto">
         SELECT
             p.phone_id,
             p.phone_number,
@@ -55,7 +55,9 @@
             pp.project_name,
             pp.time_of_use
         FROM phone p
-                 LEFT JOIN phone_project pp ON p.phone_number = pp.phone_number
+                 LEFT JOIN phone_info pp ON p.phone_number = pp.phone_number
         WHERE p.phone_id = #{phoneId}
     </select>
+
+
 </mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ligg.mapper.ProjectMapper">
+
+    <select id="projectCount" resultType="java.lang.Integer">
+        select count(*) from phone_project where project_name = #{projectName}
+    </select>
+
+    <!-- 查询项目列表 -->
+    <select id="projectList" resultType="com.ligg.common.entity.PhoneEntity">
+        select *
+        from phone
+        <where>
+            <if test="projectName != '' ">
+                project_name like concat('%', #{projectName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取指定项目的手机号数量 -->
+    <select id="getPhoneCountByProject" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM phone
+        WHERE project_name = #{projectName}
+        AND usage_status = 1
+        AND line_status = 1
+    </select>
+
+    <!-- 获取所有项目列表及数量 -->
+    <select id="getAllProjects" resultType="com.ligg.common.dto.ProjectListDto">
+        SELECT 
+            pp.project_id AS projectId,
+            pp.project_name AS projectName,
+            pp.project_price AS projectPrice,
+            pp.project_flag AS projectFlag,
+            COUNT(p.phone_id) AS phoneCount
+        FROM 
+            phone_project pp
+        LEFT JOIN 
+            phone p ON pp.project_name = p.project_name AND p.usage_status = 1 AND p.line_status = 1
+        WHERE 
+            pp.is_enabled = 1
+        GROUP BY 
+            pp.project_id, pp.project_name, pp.project_price, pp.project_flag
+        ORDER BY 
+            phoneCount DESC
+    </select>
+
+    <!-- 根据项目名称查询手机号列表 -->
+    <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
+        SELECT *
+        FROM phone
+        WHERE usage_status = 1 
+        AND line_status = 1
+        <if test="projectNames != null and projectNames.length > 0">
+            AND project_name IN
+            <foreach collection="projectNames" item="name" open="(" separator="," close=")">
+                #{name}
+            </foreach>
+        </if>
+    </select>
+</mapper>

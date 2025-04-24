@@ -1,6 +1,6 @@
 package com.ligg.adminweb.controller;
 
-import com.ligg.common.entity.Phone;
+import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.PhoneNumberService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class PhoneNumberController {
      * 条件查询卡号数据
      */
     @GetMapping("/list")
-    public Result<List<Phone>> phoneList(
+    public Result<List<PhoneEntity>> phoneList(
             @RequestParam(required = false) String keyword ,//关键字
             @RequestParam(required = false) String countryCode,//号码归属地
             @RequestParam(required = false) Integer usageStatus //号码状态
             ){
-        List<Phone> phoneList = phoneNumberService.phoneList(countryCode, usageStatus, keyword);
+        List<PhoneEntity> phoneList = phoneNumberService.phoneList(countryCode, usageStatus, keyword);
         return  Result.success(200,phoneList);
     }
 
@@ -50,9 +50,12 @@ public class PhoneNumberController {
         try {
             // 从请求体中获取国家和项目信息
             String country = (String) uploadData.get("country");
+
+            @SuppressWarnings("unchecked")
             List<String> projects = (List<String>) uploadData.get("projects");
 
             // 获取文件列表
+            @SuppressWarnings("unchecked")
             List<Map<String, Object>> files = (List<Map<String, Object>>) uploadData.get("files");
 
             // 用于记录处理结果
@@ -64,6 +67,7 @@ public class PhoneNumberController {
             // 处理每个文件中的手机号
             for (Map<String, Object> fileData : files) {
                 // 获取手机号列表
+                @SuppressWarnings("unchecked")
                 List<String> phoneNumbers = (List<String>) fileData.get("phoneNumbers");
 
                 if (phoneNumbers != null) {

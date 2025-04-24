@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/admin/account")
-public class AccountController {
+public class AdminAccountController {
 
     @Autowired
     private UserService userService;
@@ -27,7 +27,7 @@ public class AccountController {
             return Result.error(400,"账号或密码错误");
         }
 
-        String token = userService.createToken(userInfo);
+        String token = userService.createToken(userInfo.getUserId(),userInfo.getAccount());
         return Result.success(200,token);
     }
 

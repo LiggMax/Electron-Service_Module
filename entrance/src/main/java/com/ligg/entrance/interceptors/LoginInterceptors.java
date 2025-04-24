@@ -33,7 +33,7 @@ public class LoginInterceptors implements HandlerInterceptor {
         try {
             //解析请求头token获取用户信息
             Map<String, Object> stringObjectMap = jwtUtil.parseToken(Token);
-            String userId = (String) stringObjectMap.get("userId");
+            Long userId = (Long) stringObjectMap.get("userId");
             //从Redis中获取用户token
             String redisUserToken = redisTemplate.opsForValue().get("Token:" + userId);
             if (redisUserToken == null){

@@ -1,19 +1,23 @@
 package com.ligg.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-public class AdminUserEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserEntity {
     private Long userId;
-    private String account;//账号
-    private String nickName;
+    private String account;
     @JsonIgnore
     private String password;
+    private String nickName;
     private String email;
     private String userAvatar;
-    private LocalDateTime createdAt;//创建时间
-    private LocalDateTime updatedAt;//更新时间
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

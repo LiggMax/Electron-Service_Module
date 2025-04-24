@@ -3,7 +3,6 @@ package com.ligg.adminweb.controller;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
-import com.ligg.common.utils.ThreadLocalUtil;
 import com.ligg.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/user")
-public class UserController {
+public class AdminUserController {
 
     @Autowired
     private HttpServletRequest request;
@@ -45,7 +44,7 @@ public class UserController {
         if (map == null){
             return Result.error(401, "请重新登录");
         }
-        String userId = (String) map.get("userId");
+        Long userId = (Long) map.get("userId");
         AdminUserEntity AdminUserInfo = userService.findByAdminUserInfo(userId);
         return Result.success(200, AdminUserInfo);
     }

@@ -1,6 +1,7 @@
 package com.ligg.service;
 
-import com.ligg.common.entity.Phone;
+import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public interface PhoneNumberService {
      * @param usageStatus 号码状态
      * @param keyword     搜索关键词
      */
-    List<Phone> phoneList(String countryCode, Integer usageStatus, String keyword);
+    List<PhoneEntity> phoneList(String countryCode, Integer usageStatus, String keyword);
 
     /**
      * 根据手机号ID查询手机号详情
@@ -31,4 +32,6 @@ public interface PhoneNumberService {
      * @return 成功添加的数量
      */
     int batchAddPhoneNumbers(List<String> phoneNumbers, String country, List<String> projects);
+
+   ;
 }

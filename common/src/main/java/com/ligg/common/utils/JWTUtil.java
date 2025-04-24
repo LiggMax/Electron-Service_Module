@@ -12,7 +12,6 @@ import java.util.Map;
 @Component
 public class JWTUtil {
 
-//    private static final String KEY = "ligg"; // 密钥
     @Value("${jwt.key}")
     private String KEY;
     /**

@@ -1,7 +1,7 @@
 package com.ligg.service.impl;
 
-import com.ligg.common.dto.PhoneDetailDTO;
-import com.ligg.common.entity.Phone;
+import com.ligg.common.dto.PhoneDetailDto;
+import com.ligg.common.entity.PhoneEntity;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
     private PhoneNumberMapper phoneNumberMapper;
 
     @Override
-    public List<Phone> phoneList(String countryCode, Integer usageStatus, String keyword) {
+    public List<PhoneEntity> phoneList(String countryCode, Integer usageStatus, String keyword) {
         return phoneNumberMapper.phoneList(countryCode, usageStatus, keyword);
     }
 
@@ -33,14 +33,14 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
     @Override
     public Map<String, Object> phoneDetail(Integer phoneId) {
         // 获取手机号的详细信息
-        List<PhoneDetailDTO> phoneDetails = phoneNumberMapper.queryByIdPhoneDetail(phoneId);
+        List<PhoneDetailDto> phoneDetails = phoneNumberMapper.queryByIdPhoneDetail(phoneId);
 
         // 构建结果
         Map<String, Object> resultMap = new HashMap<>();
 
         if (phoneDetails != null && !phoneDetails.isEmpty()) {
             // 获取第一条记录的基本信息
-            PhoneDetailDTO baseInfo = phoneDetails.get(0);
+            PhoneDetailDto baseInfo = phoneDetails.get(0);
 
             // 构建基本信息
             Map<String, Object> phoneInfo = new HashMap<>();
@@ -56,7 +56,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
 
             // 构建项目列表
             List<Map<String, Object>> projectList = new ArrayList<>();
-            for (PhoneDetailDTO detail : phoneDetails) {
+            for (PhoneDetailDto detail : phoneDetails) {
                 if (detail.getProjectName() != null) {
                     Map<String, Object> projectMap = new HashMap<>();
                     projectMap.put("projectName", detail.getProjectName());
@@ -86,7 +86,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
             return 0;
         }
         // 创建Phone对象列表
-        List<Phone> phones = new ArrayList<>();
+        List<PhoneEntity> phones = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
 
         // 转换手机号并创建Phone对象
@@ -96,7 +96,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
                 Long phoneNumber = Long.parseLong(phoneStr);
 
                 // 创建新的Phone对象
-                Phone phone = new Phone();
+                PhoneEntity phone = new PhoneEntity();
                 phone.setPhoneNumber(phoneNumber);
                 phone.setCountryCode(country);      // 设置国家
                 phone.setLineStatus(1);             // 默认在线状态
@@ -118,7 +118,7 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         int result = phoneNumberMapper.batchInsertPhones(phones);
 
         // 插入项目关联信息
-        for (Phone phone : phones) {
+        for (PhoneEntity phone : phones) {
             for (String project : projects) {
                 phoneNumberMapper.insertPhoneProject(phone.getPhoneNumber(), project);
             }
