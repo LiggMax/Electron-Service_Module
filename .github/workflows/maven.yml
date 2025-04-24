@@ -85,7 +85,7 @@ jobs:
     # 上传构建产物
     - name: Upload Build Artifacts
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: application-jar
         path: entrance/target/entrance-*.jar
