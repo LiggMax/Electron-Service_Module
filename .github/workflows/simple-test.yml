@@ -1,0 +1,19 @@
+name: Simple Test Workflow
+
+on:
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create test file
+        run: echo "Test content" > test.txt
+      
+      - name: Upload test file
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-file
+          path: test.txt 
