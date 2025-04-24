@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>mapper</artifactId>
+            <artifactId>common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

@@ -1,4 +1,4 @@
-package com.ligg.domain.Entity;
+package com.ligg.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
