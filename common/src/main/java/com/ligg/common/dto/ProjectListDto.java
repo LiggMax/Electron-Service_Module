@@ -23,11 +23,6 @@ public class ProjectListDto {
     private Double projectPrice;
     
     /**
-     * 项目国旗图片
-     */
-    private String projectFlag;
-    
-    /**
      * 项目手机号数量
      */
     private Integer phoneCount;

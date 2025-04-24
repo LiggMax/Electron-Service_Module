@@ -2,6 +2,7 @@ package com.ligg.mapper;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.vo.UserDataVo;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -18,4 +19,9 @@ public interface UserMapper {
 
     //根据id查询用户信息
     UserEntity findByUserInfo(Long userId);
+
+    //修改用户密码
+    void updateUserPassword(Long userId, String newPassword);
+
+    void updateUserInfo(UserDataVo userDataVo);
 }

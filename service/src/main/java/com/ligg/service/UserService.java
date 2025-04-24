@@ -3,6 +3,7 @@ package com.ligg.service;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.vo.UserDataVo;
 
 public interface UserService {
 
@@ -23,4 +24,7 @@ public interface UserService {
 
     //根据用户id查询用户信息
     UserEntity findByUserInfo(Long userId);
+
+    //更新用户信息
+    String updateUserInfo(UserDataVo userDataVo);
 }

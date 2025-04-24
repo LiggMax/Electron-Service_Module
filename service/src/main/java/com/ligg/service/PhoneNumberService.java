@@ -1,6 +1,5 @@
 package com.ligg.service;
 
-import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
@@ -32,6 +31,4 @@ public interface PhoneNumberService {
      * @return 成功添加的数量
      */
     int batchAddPhoneNumbers(List<String> phoneNumbers, String country, List<String> projects);
-
-   ;
 }

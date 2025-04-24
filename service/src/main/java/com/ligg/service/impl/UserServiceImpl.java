@@ -3,7 +3,7 @@ package com.ligg.service.impl;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.JWTUtil;
-import com.ligg.common.utils.ThreadLocalUtil;
+import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.UserMapper;
 import com.ligg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -29,21 +28,21 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public AdminUserEntity findByAdminUser(String account, String password) {
-        return userMapper.findByAdminUser(account,password);
+        return userMapper.findByAdminUser(account, password);
     }
 
     /**
      * 生成token
      */
     @Override
-    public String createToken(Long  userId, String account) {
+    public String createToken(Long userId, String account) {
 
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("userId",userId);
-        claims.put("account",account);
+        claims.put("userId", userId);
+        claims.put("account", account);
         String token = jwtUtil.createToken(claims);
         redisTemplate.opsForValue()
-                .set("Token:" + userId,token,
+                .set("Token:" + userId, token,
                         6, TimeUnit.HOURS);
         return token;
     }
@@ -83,5 +82,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByUserInfo(Long userId) {
         return userMapper.findByUserInfo(userId);
+    }
+
+    /**
+     * 更新用户信息
+     */
+    @Override
+    public String updateUserInfo(UserDataVo userDataVo) {
+
+        if (userDataVo.getNewPassword() != null) {
+            UserEntity byUserInfo = userMapper.findByUserInfo(userDataVo.getUserId());
+            if (userDataVo.getOldPassword().equals(byUserInfo.getPassword())) {
+                userMapper.updateUserPassword(userDataVo.getUserId(), userDataVo.getNewPassword());
+            }
+            return "您输入的原始密码不正确";
+        }
+
+        userMapper.updateUserInfo(userDataVo);
+        return null;
     }
 }

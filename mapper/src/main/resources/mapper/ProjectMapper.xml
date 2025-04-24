@@ -33,14 +33,12 @@
             pp.project_name AS projectName,
             pp.project_price AS projectPrice,
             pp.project_flag AS projectFlag,
-            COUNT(p.phone_id) AS phoneCount
+            COUNT(*) AS phoneCount
         FROM 
             phone_project pp
         LEFT JOIN 
-            phone p ON pp.project_name = p.project_name AND p.usage_status = 1 AND p.line_status = 1
-        WHERE 
-            pp.is_enabled = 1
-        GROUP BY 
+            phone p ON pp.project_name = p.project_name
+        GROUP BY
             pp.project_id, pp.project_name, pp.project_price, pp.project_flag
         ORDER BY 
             phoneCount DESC
@@ -58,5 +56,13 @@
                 #{name}
             </foreach>
         </if>
+    </select>
+
+    <!--根据项目名称查询项目数量-->
+    <select id="getProjectCountByName" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM phone_project pp
+        left join phone p on pp.project_name = p.project_name
+        WHERE p.project_name = #{projectName}
     </select>
 </mapper>

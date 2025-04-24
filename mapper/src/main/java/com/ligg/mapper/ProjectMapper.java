@@ -4,6 +4,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.entity.PhoneEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -22,7 +23,12 @@ public interface ProjectMapper {
      * @return 项目列表
      */
     List<ProjectListDto> getAllProjects();
-    
+
+    /**
+     * 根据项目名称查询项目数量
+     */
+    Integer getProjectCountByName(String projectName);
+
     /**
      * 根据项目名称查询手机号列表
      * @param projectNames 项目名称数组
