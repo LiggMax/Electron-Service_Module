@@ -39,8 +39,8 @@ public class LoginInterceptors implements HandlerInterceptor {
             if (redisUserToken == null){
                 throw new RuntimeException();
             }
-            Map<String, Object> claims = jwtUtil.parseToken(Token);
-            ThreadLocalUtil.set(claims);
+//            Map<String, Object> claims = jwtUtil.parseToken(Token);
+//            ThreadLocalUtil.set(claims);
             return true;
         } catch (Exception e) {
             response.setStatus(401);

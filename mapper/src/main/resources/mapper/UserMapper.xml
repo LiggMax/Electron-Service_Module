@@ -9,4 +9,11 @@
         from admin_users
         where account = #{account} and password = #{password}
     </select>
+
+    <!-- 根据用户id查询用户信息-->
+    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.AdminUserEntity">
+        select user_id,account,nick_name,password,email,created_at,updated_at,user_avatar
+        from admin_users
+        where user_id = #{userId}
+    </select>
 </mapper>

@@ -51,12 +51,16 @@ public class UserServiceImpl implements UserService {
      * 清除token
      */
     @Override
-    public void clearToken() {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        if (map == null) {
-            return;
-        }
-        String userId = (String) map.get("userId");
+    public void clearToken(String userId) {
         redisTemplate.delete("Token:" + userId);
+    }
+
+    /**
+     * 根据id获取用户信息
+     */
+    @Override
+    public AdminUserEntity findByAdminUserInfo(String userId) {
+
+        return userMapper.findByAdminUserInfo(userId);
     }
 }

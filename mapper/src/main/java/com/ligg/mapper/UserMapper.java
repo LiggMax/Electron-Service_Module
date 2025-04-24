@@ -8,4 +8,7 @@ public interface UserMapper {
 
     //根据账号密码查询用户信息
     AdminUserEntity findByAdminUser(String account, String password);
+
+    //根据id查询用户信息
+    AdminUserEntity findByAdminUserInfo(String userId);
 }

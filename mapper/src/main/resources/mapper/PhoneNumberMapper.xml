@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ligg.mapper.PhoneNumberMapper">
+
+
+    <select id="phoneList" resultType="com.ligg.common.entity.Phone">
+        select *
+        from phone
+        <where>
+            <if test="countryCode != '' ">
+                country_code like concat('%', #{countryCode}, '%')
+            </if>
+            <if test="usageStatus != null">
+                and usage_status = #{usageStatus}
+            </if>
+            <if test="keyword != ''">
+                and phone_number  like concat('%', #{keyword}, '%')
+                or country_code like concat('%', #{keyword}, '%')
+                or usage_status like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据手机号ID查询手机详情 -->
+    <select id="queryByIdPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDTO">
+        SELECT
+            p.phone_id,
+            p.phone_number,
+            p.country_code,
+            p.line_status,
+            p.usage_status,
+            p.registration_time,
+            pp.project_name,
+            pp.time_of_use
+        FROM phone p
+                 LEFT JOIN phone_project pp ON p.phone_number = pp.phone_number
+        WHERE p.phone_id = #{phoneId}
+    </select>
+</mapper>

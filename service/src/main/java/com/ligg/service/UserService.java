@@ -12,5 +12,8 @@ public interface UserService {
     String createToken(AdminUserEntity user);
 
     //清理token
-    void clearToken();
+    void clearToken(String userId);
+
+    //根据用户id查询用户信息
+    AdminUserEntity findByAdminUserInfo(String userId);
 }
