@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ligg.mapper.PhoneNumberMapper">
 
+    <!-- 批量插入手机号，使用INSERT IGNORE忽略唯一键冲突 -->
+    <insert id="batchInsertPhones">
+        INSERT IGNORE INTO phone
+        (phone_number, country_code, line_status, registration_time, usage_status)
+        values
+        <foreach collection="phones" item="phone" separator=",">
+            (
+            #{phone.phoneNumber},
+            #{phone.countryCode},
+            #{phone.lineStatus},
+            #{phone.registrationTime},
+            #{phone.usageStatus}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 插入手机号和项目关联信息 -->
+    <insert id="insertPhoneProject">
+        insert into phone_project(phone_number, project_name,time_of_use)
+        values (#{phoneNumber}, #{projectName},NOW())
+    </insert>
+
 
     <select id="phoneList" resultType="com.ligg.common.entity.Phone">
         select *

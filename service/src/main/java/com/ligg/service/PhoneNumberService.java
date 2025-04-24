@@ -22,4 +22,13 @@ public interface PhoneNumberService {
      * @return 手机号详情（包含基本信息和项目列表）
      */
     Map<String, Object> phoneDetail(Integer phoneId);
+
+    /**
+     * 批量添加手机号
+     * @param phoneNumbers 手机号列表
+     * @param country 国家
+     * @param projects 项目列表
+     * @return 成功添加的数量
+     */
+    int batchAddPhoneNumbers(List<String> phoneNumbers, String country, List<String> projects);
 }

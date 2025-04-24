@@ -7,6 +7,7 @@ import com.ligg.service.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,5 +70,59 @@ public class PhoneNumberServiceImpl implements PhoneNumberService {
         }
 
         return resultMap;
+    }
+
+    /**
+     * 批量添加手机号
+     *
+     * @param phoneNumbers 手机号列表
+     * @param country 国家
+     * @param projects 项目列表
+     * @return 成功添加的数量
+     */
+    @Override
+    public int batchAddPhoneNumbers(List<String> phoneNumbers, String country, List<String> projects) {
+        if (phoneNumbers == null || phoneNumbers.isEmpty() || projects == null || projects.isEmpty()) {
+            return 0;
+        }
+        // 创建Phone对象列表
+        List<Phone> phones = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        // 转换手机号并创建Phone对象
+        for (String phoneStr : phoneNumbers) {
+            try {
+                // 将字符串转换为Long类型的手机号
+                Long phoneNumber = Long.parseLong(phoneStr);
+
+                // 创建新的Phone对象
+                Phone phone = new Phone();
+                phone.setPhoneNumber(phoneNumber);
+                phone.setCountryCode(country);      // 设置国家
+                phone.setLineStatus(1);             // 默认在线状态
+                phone.setUsageStatus("已使用");            // 默认使用状态为正常
+                phone.setRegistrationTime(now);     // 设置注册时间
+
+                phones.add(phone);
+            } catch (NumberFormatException e) {
+                // 忽略无法转换为数字的手机号
+                continue;
+            }
+        }
+
+        // 如果没有有效的手机号需要添加，则直接返回0
+        if (phones.isEmpty()) {
+            return 0;
+        }
+        // 批量插入手机号，使用INSERT IGNORE语法处理唯一键冲突
+        int result = phoneNumberMapper.batchInsertPhones(phones);
+
+        // 插入项目关联信息
+        for (Phone phone : phones) {
+            for (String project : projects) {
+                phoneNumberMapper.insertPhoneProject(phone.getPhoneNumber(), project);
+            }
+        }
+        return result;
     }
 }
