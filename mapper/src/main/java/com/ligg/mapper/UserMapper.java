@@ -2,6 +2,7 @@ package com.ligg.mapper;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,10 @@ public interface UserMapper {
     void updateUserPassword(Long userId, String newPassword);
 
     void updateUserInfo(UserDataVo userDataVo);
+
+    //根据用户id和项目id查询收藏数据
+    UserFavoriteEntity getUserFavorite(Long userId, Long projectId);
+
+    //添加用户收藏
+    void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 }

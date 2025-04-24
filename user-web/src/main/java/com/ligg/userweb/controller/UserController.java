@@ -1,6 +1,7 @@
 package com.ligg.userweb.controller;
 
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;
@@ -27,14 +28,14 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         UserEntity userInfo = userService.findByUserInfo(userId);
-        return Result.success(200,userInfo);
+        return Result.success(200, userInfo);
     }
 
     /**
      * 更新用户信息
      */
     @PutMapping("/update")
-    public Result<?> updateUserInfo(@RequestBody Map<String, Object> userData){
+    public Result<?> updateUserInfo(@RequestBody Map<String, Object> userData) {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
 
@@ -45,9 +46,24 @@ public class UserController {
         userDataVo.setNewPassword((String) userData.get("newPassword"));
         userDataVo.setUserAvatar((String) userData.get("userAvatar"));
         String user = userService.updateUserInfo(userDataVo);
-        if (user == null){
+        if (user == null) {
             return Result.success();
         }
         return Result.error(400, user);
+    }
+
+    /**
+     * 项目收藏
+     */
+    @PostMapping("/favorite")
+    public Result<?> addUserFavorite(@RequestBody UserFavoriteEntity userFavoriteEntity) {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        userFavoriteEntity.setUserId((Long) map.get("userId"));
+
+        String result = userService.addUserFavorite(userFavoriteEntity);
+        if (result != null) {
+            return Result.error(400, result);
+        }
+        return Result.success();
     }
 }

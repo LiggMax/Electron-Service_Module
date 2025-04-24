@@ -2,6 +2,7 @@ package com.ligg.service.impl;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.UserMapper;
@@ -100,6 +101,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         userMapper.updateUserInfo(userDataVo);
+        return null;
+    }
+
+    @Override
+    public String addUserFavorite(UserFavoriteEntity userFavoriteEntity) {
+
+        if (userMapper.getUserFavorite(userFavoriteEntity.getUserId(), userFavoriteEntity.getProjectId()) != null) {
+            return "该项目已收藏";
+        }
+        userMapper.addUserFavorite(userFavoriteEntity);
         return null;
     }
 }

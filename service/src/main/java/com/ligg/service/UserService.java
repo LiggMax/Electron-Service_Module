@@ -3,6 +3,7 @@ package com.ligg.service;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
 
 public interface UserService {
@@ -27,4 +28,7 @@ public interface UserService {
 
     //更新用户信息
     String updateUserInfo(UserDataVo userDataVo);
+
+    //添加用户项目收藏
+    String addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 }
