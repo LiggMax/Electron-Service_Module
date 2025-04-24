@@ -94,10 +94,10 @@ public class UserServiceImpl implements UserService {
             UserEntity byUserInfo = userMapper.findByUserInfo(userDataVo.getUserId());
             if (userDataVo.getOldPassword().equals(byUserInfo.getPassword())) {
                 userMapper.updateUserPassword(userDataVo.getUserId(), userDataVo.getNewPassword());
+            } else {
+                return "您输入的原始密码不正确";
             }
-            return "您输入的原始密码不正确";
         }
-
         userMapper.updateUserInfo(userDataVo);
         return null;
     }

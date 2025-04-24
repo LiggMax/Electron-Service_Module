@@ -1,4 +1,3 @@
-import com.ligg.common.dto.ProjectListDto;
 import com.ligg.entrance.EntranceApplication;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.service.ProjectService;
@@ -7,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 
 @Slf4j
 @SpringBootTest(classes = EntranceApplication.class)

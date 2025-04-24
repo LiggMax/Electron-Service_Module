@@ -46,8 +46,8 @@ public class UserController {
         userDataVo.setUserAvatar((String) userData.get("userAvatar"));
         String user = userService.updateUserInfo(userDataVo);
         if (user == null){
-            return Result.success(200, "用户信息更新成功");
+            return Result.success();
         }
-        return Result.success(400, user);
+        return Result.error(400, user);
     }
 }
