@@ -1,4 +1,5 @@
 import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.entrance.EntranceApplication;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.service.ProjectService;
@@ -33,6 +34,15 @@ public class TestProject {
 
         List<ProjectListDto> allProjectsList = projectMapper.getAllProjectsList();
         System.out.println(allProjectsList);
+
+    }
+
+    //获取项目购买列表
+    @Test
+    public void getProjectCommodityListTest(){
+        Integer projectId = 2;
+        List<RegionCommodityDto> projectCommodityList = projectMapper.getProjectCommodityList(projectId);
+        System.out.println(projectCommodityList);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.ligg.mapper;
 
 import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,12 +11,6 @@ import java.util.List;
 @Mapper
 public interface ProjectMapper {
 
-    /**
-     * 获取项目数量
-     * @param projectName 项目名称
-     * @return 数量
-     */
-    Integer getPhoneCountByProject(String projectName);
 
     /**
      * 获取所有项目列表及数量
@@ -39,4 +34,9 @@ public interface ProjectMapper {
      * 获取所有项目列表
      */
     List<ProjectListDto> getAllProjectsList();
+
+    /**
+     * 获取指定项目商品列表
+     */
+    List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
 }

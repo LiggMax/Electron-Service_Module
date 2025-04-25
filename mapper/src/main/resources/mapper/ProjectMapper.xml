@@ -23,14 +23,6 @@
             phoneCount DESC
     </select>
 
-    <!-- 获取指定项目的手机号数量 -->
-    <select id="getPhoneCountByProject" resultType="java.lang.Integer">
-        SELECT COUNT(*)
-        FROM phone
-        WHERE project_name = #{projectName}
-        AND usage_status = 1
-        AND line_status = 1
-    </select>
 
     <!-- 获取所有项目列表及数量 -->
     <select id="getAllProjects" resultType="com.ligg.common.dto.ProjectListDto">
@@ -70,5 +62,34 @@
         FROM phone_project pp
         left join phone p on pp.project_name = p.project_name
         WHERE p.project_name = #{projectName}
+    </select>
+
+    <!--获取项目所有地区和每个地区的手机号数量-->
+    <select id="getProjectCommodityList" resultType="com.ligg.common.dto.RegionCommodityDto">
+        SELECT 
+            r.region_id as regionId,
+            r.region_name as regionName,
+            r.region_mark as regionMark,
+            p.project_price as projectPrice,
+            IFNULL(phone_counts.count, 0) as phoneCount
+        FROM 
+            region r
+        CROSS JOIN
+            project p
+        LEFT JOIN (
+            SELECT 
+                phone_region_id, 
+                COUNT(*) as count
+            FROM 
+                phone
+            WHERE 
+                phone_project_id = #{projectId}
+            GROUP BY 
+                phone_region_id
+        ) as phone_counts ON r.region_id = phone_counts.phone_region_id
+        WHERE
+            p.project_id = #{projectId}
+        ORDER BY 
+            phoneCount DESC
     </select>
 </mapper>
