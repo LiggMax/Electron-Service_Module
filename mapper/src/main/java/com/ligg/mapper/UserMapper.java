@@ -31,4 +31,7 @@ public interface UserMapper {
 
     //添加用户收藏
     void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
+
+    //添加号码
+    void addPhoneNumber(Long userId,Long phoneNumber);
 }

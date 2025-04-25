@@ -24,6 +24,12 @@
         values (#{phoneNumber}, #{projectName},NOW())
     </insert>
 
+    <!-- 删除手机号 -->
+    <delete id="deletePhone">
+        delete from phone
+        where phone_id = #{phoneId}
+    </delete>
+
 
     <select id="phoneList" resultType="com.ligg.common.entity.PhoneEntity">
         select *
@@ -57,6 +63,11 @@
         FROM phone p
                  LEFT JOIN phone_info pp ON p.phone_number = pp.phone_number
         WHERE p.phone_id = #{phoneId}
+    </select>
+    <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
+        select phone_id, phone_number
+        from phone
+        where phone_region_id = #{regionId}
     </select>
 
 

@@ -66,4 +66,20 @@ public class UserController {
         }
         return Result.success();
     }
+
+    /**
+     * 购买项目
+     */
+    @PostMapping("/buy")
+    public Result<?> buyProject(@RequestBody Map<String, Object> userData) {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        Long userId = (Long) map.get("userId");
+
+        Integer projectId = (Integer) userData.get("projectId");
+        String result = userService.buyProject(userId, projectId);
+        if (result != null) {
+            return Result.error(400, result);
+        }
+        return Result.success();
+   }
 }

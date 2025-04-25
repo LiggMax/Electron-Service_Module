@@ -8,6 +8,11 @@
         insert into user_favorite(user_id, project_id, created_at)
         values (#{userId}, #{projectId}, NOW())
     </insert>
+    <!--添加手机号码-->
+    <insert id="addPhoneNumber">
+        insert into user_phone(user_id,phone_number,created_at)
+        values (#{userId},#{projectNumber},NOW())
+    </insert>
     <!--修改密码-->
     <update id="updateUserPassword">
         update users

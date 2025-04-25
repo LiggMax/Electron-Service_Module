@@ -39,4 +39,5 @@ public interface ProjectMapper {
      * 获取指定项目商品列表
      */
     List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
+
 }

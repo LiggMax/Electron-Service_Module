@@ -32,5 +32,14 @@ public interface PhoneNumberMapper {
      */
     int insertPhoneProject(@Param("phoneNumber") Long phoneNumber, @Param("projectName") String projectName);
 
+    /**
+     * 根据项目id获取号码列表
+     */
+    List<PhoneEntity> getPhonesByProject(@Param("projectId") Integer projectId);
 
+    /**
+     * 根据手机号id删除手机号
+     */
+    void deletePhone(Integer phoneId);
 }
+

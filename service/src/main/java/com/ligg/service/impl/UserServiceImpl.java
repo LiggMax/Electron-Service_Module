@@ -1,17 +1,21 @@
 package com.ligg.service.impl;
 
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
+import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.UserMapper;
 import com.ligg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +28,8 @@ public class UserServiceImpl implements UserService {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PhoneNumberMapper phoneNumberMapper;
 
     /**
      * 根据账号和密码查询管理员用户信息
@@ -113,4 +119,29 @@ public class UserServiceImpl implements UserService {
         userMapper.addUserFavorite(userFavoriteEntity);
         return null;
     }
+
+    /**
+     * 购买项目
+     */
+    @Override
+    @Transactional
+    public String buyProject(Long userId, Integer projectId) {
+        List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(projectId);
+        // 从phoneEntities列表中随机获取一个号码
+        if (!phoneEntities.isEmpty()) {
+            int randomIndex = (int) (Math.random() * phoneEntities.size());
+            PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
+
+            // 使用事务来确保操作的原子性
+            try {
+                phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
+                userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber());
+                return null;
+            } catch (Exception e) {
+                return "购买失败，请重试";
+            }
+        }
+        return "号码可能已经被购买";
+    }
+
 }

@@ -31,4 +31,7 @@ public interface UserService {
 
     //添加用户项目收藏
     String addUserFavorite(UserFavoriteEntity userFavoriteEntity);
+
+    //购买项目
+    String buyProject(Long userId, Integer projectId);
 }
