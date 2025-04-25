@@ -27,4 +27,10 @@ public class ProjectServiceImpl implements ProjectService {
     public List<PhoneEntity> getPhonesByProject(String[] projectNames) {
         return projectMapper.getPhonesByProject(projectNames);
     }
+
+    @Override
+    public List<ProjectListDto> getAllProjectsList() {
+        List<ProjectListDto> allProjectsList = projectMapper.getAllProjectsList();
+        return allProjectsList;
+    }
 }

@@ -22,4 +22,9 @@ public interface ProjectService {
      * @return 手机号列表
      */
     List<PhoneEntity> getPhonesByProject(String[] projectNames);
+
+    /**
+     * 获取所有项目列表
+     */
+    List<ProjectListDto> getAllProjectsList();
 }

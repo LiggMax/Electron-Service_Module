@@ -1,3 +1,4 @@
+import com.ligg.common.dto.ProjectListDto;
 import com.ligg.entrance.EntranceApplication;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.service.ProjectService;
@@ -5,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 
 @Slf4j
@@ -22,5 +25,14 @@ public class TestProject {
 
         Integer projectCountByName = projectMapper.getProjectCountByName(name);
         log.info("数量:{}",projectCountByName);
+    }
+
+    //获取项目列表
+    @Test
+    public void getAllProjectListTest(){
+
+        List<ProjectListDto> allProjectsList = projectMapper.getAllProjectsList();
+        System.out.println(allProjectsList);
+
     }
 }

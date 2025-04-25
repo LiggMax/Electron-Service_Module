@@ -24,11 +24,10 @@ public class ProjectListController {
 
     /**
      * 获取所有项目列表
-     * @return 项目列表，包含项目名称、价格和可用数量
      */
     @GetMapping("/list")
     public Result<List<ProjectListDto>> getAllProjects() {
-        List<ProjectListDto> projects = projectService.getAllProjects();
+        List<ProjectListDto> projects = projectService.getAllProjectsList();
         return Result.success(200,projects);
     }
     

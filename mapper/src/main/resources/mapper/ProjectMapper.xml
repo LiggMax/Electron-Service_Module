@@ -7,14 +7,20 @@
     </select>
 
     <!-- 查询项目列表 -->
-    <select id="projectList" resultType="com.ligg.common.entity.PhoneEntity">
-        select *
-        from phone
-        <where>
-            <if test="projectName != '' ">
-                project_name like concat('%', #{projectName}, '%')
-            </if>
-        </where>
+    <select id="getAllProjectsList" resultType="com.ligg.common.dto.ProjectListDto">
+        SELECT 
+            p.project_id AS projectId,
+            p.project_name AS projectName,
+            p.project_price AS projectPrice,
+            COUNT(ph.phone_id) AS phoneCount
+        FROM 
+            project p
+        LEFT JOIN 
+            phone ph ON ph.phone_project_id = p.project_id 
+        GROUP BY
+            p.project_id, p.project_name, p.project_price
+        ORDER BY 
+            phoneCount DESC
     </select>
 
     <!-- 获取指定项目的手机号数量 -->
