@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public String buyProject(Long userId, Integer projectId) {
-        List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(projectId);
+    public String buyProject(Long userId, Integer regionId) {
+        List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(regionId);
         // 从phoneEntities列表中随机获取一个号码
         if (!phoneEntities.isEmpty()) {
             int randomIndex = (int) (Math.random() * phoneEntities.size());

@@ -35,7 +35,7 @@ public interface PhoneNumberMapper {
     /**
      * 根据项目id获取号码列表
      */
-    List<PhoneEntity> getPhonesByProject(@Param("projectId") Integer projectId);
+    List<PhoneEntity> getPhonesByProject(@Param("regionId") Integer regionId);
 
     /**
      * 根据手机号id删除手机号

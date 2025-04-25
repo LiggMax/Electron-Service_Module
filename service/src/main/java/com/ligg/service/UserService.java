@@ -33,5 +33,5 @@ public interface UserService {
     String addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //购买项目
-    String buyProject(Long userId, Integer projectId);
+    String buyProject(Long userId, Integer regionId);
 }
