@@ -1,6 +1,7 @@
 package com.ligg.service;
 
 import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
@@ -27,4 +28,9 @@ public interface ProjectService {
      * 获取所有项目列表
      */
     List<ProjectListDto> getAllProjectsList();
+
+    /**
+     * 获取指定项目商品列表
+     */
+    List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
 }

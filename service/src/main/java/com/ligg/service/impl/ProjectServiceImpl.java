@@ -1,6 +1,7 @@
 package com.ligg.service.impl;
 
 import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.service.ProjectService;
@@ -32,5 +33,11 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectListDto> getAllProjectsList() {
         List<ProjectListDto> allProjectsList = projectMapper.getAllProjectsList();
         return allProjectsList;
+    }
+
+    @Override
+    public List<RegionCommodityDto> getProjectCommodityList(Integer projectId) {
+
+        return projectMapper.getProjectCommodityList(projectId);
     }
 }

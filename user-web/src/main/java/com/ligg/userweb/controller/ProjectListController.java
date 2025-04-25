@@ -1,14 +1,12 @@
 package com.ligg.userweb.controller;
 
 import com.ligg.common.dto.ProjectListDto;
+import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,5 +38,14 @@ public class ProjectListController {
     public Result<List<PhoneEntity>> getPhonesByProject(@PathVariable String projectName) {
         List<PhoneEntity> phones = projectService.getPhonesByProject(new String[]{projectName});
         return Result.success(200,phones);
+    }
+
+    /**
+     * 根据项目ID查询项目下的商品列表
+     */
+    @GetMapping("/commodity")
+    public Result<List<RegionCommodityDto>> getProjectCommodityList(@RequestParam Integer projectId) {
+        List<RegionCommodityDto> projects = projectService.getProjectCommodityList(projectId);
+        return Result.success(200,projects);
     }
 }
