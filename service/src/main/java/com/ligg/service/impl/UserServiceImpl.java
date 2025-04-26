@@ -77,12 +77,8 @@ public class UserServiceImpl implements UserService {
      * 根据账号和密码查询用户信息
      */
     @Override
-    public UserEntity findByUser(String account, String password) {
-        UserEntity user = userMapper.findByUser(account);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        }
-        return null;
+    public UserEntity findByUser(String account) {
+        return userMapper.findByUser(account);
     }
 
     /**
@@ -163,5 +159,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logoutAccount(Long userId) {
         userMapper.logoutAccount(userId,0);
+    }
+
+    /**
+     * 根据账号和密码查询用户信息
+     */
+    @Override
+    public UserEntity findAccountAndPasswordByUser(String account, String password) {
+        return userMapper.findAccountAndPasswordByUser(account, password);
+    }
+
+    /**
+     * 注册账号
+     */
+    @Override
+    public void registerAccount(String account, String password) {
+        userMapper.registerAccount(account, password);
     }
 }

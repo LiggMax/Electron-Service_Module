@@ -19,7 +19,7 @@ public interface UserMapper {
     //根据id查询用户信息
     AdminUserEntity findByAdminUserInfo(Long userId);
 
-    //根据查询用户信息
+    //根据账号查询用户信息
     UserEntity findByUser(String account);
 
     //根据id查询用户信息
@@ -35,18 +35,24 @@ public interface UserMapper {
 
     //根据用户id查询收藏项目
     @MapKey("projectId")
-    List<Map<String,Object>> getUserFavoriteByUserId(Long userId);
+    List<Map<String, Object>> getUserFavoriteByUserId(Long userId);
 
     //添加用户收藏
     void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //添加号码
-    void addPhoneNumber(Long userId,Long phoneNumber);
+    void addPhoneNumber(Long userId, Long phoneNumber);
 
     //用户订单
     @MapKey("user_project_id")
-    List<Map<String,Object>> getUserOrder(Long userId);
+    List<Map<String, Object>> getUserOrder(Long userId);
 
     //账号注销
     void logoutAccount(Long userId, int status);
+
+    //根据账号密码查询用户信息
+    UserEntity findAccountAndPasswordByUser(String account, String password);
+
+    //注册账号
+    void registerAccount(String account, String password);
 }

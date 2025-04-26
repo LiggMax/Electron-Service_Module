@@ -23,8 +23,8 @@ public interface UserService {
     //根据用户id查询管理员用户信息
     AdminUserEntity findByAdminUserInfo(Long userId);
 
-     //根据账号和密码查询用户
-    UserEntity findByUser(String account, String password);
+     //根据账号查询用户
+    UserEntity findByUser(String account);
 
     //根据用户id查询用户信息
     UserEntity findByUserInfo(Long userId);
@@ -46,4 +46,10 @@ public interface UserService {
 
     //账号注销
     void logoutAccount(Long userId);
+
+    //根据账号密码查询信息
+    UserEntity findAccountAndPasswordByUser(String account, String password);
+
+    //注册账号
+    void registerAccount(String account, String password);
 }
