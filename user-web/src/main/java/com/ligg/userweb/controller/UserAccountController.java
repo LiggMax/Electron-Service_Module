@@ -26,6 +26,9 @@ public class UserAccountController {
 
         UserEntity byAccount = userService.findByUser(account, password);
         if (byAccount != null){
+            if (byAccount.getUserStatus() == 0){
+                return Result.error(400,"账号已被注销");
+            }
             String userToken = userService.createToken(byAccount.getUserId(), byAccount.getAccount());
             return Result.success(200,userToken);
         }

@@ -105,4 +105,16 @@ public class UserController {
         List<Map<String, Object>> userOrder = userService.getUserOrder(userId);
         return Result.success(200, userOrder);
     }
+
+    /**
+     * 账号注销
+     */
+    @DeleteMapping("/logoutAccount")
+    public Result<?> logoutAccount() {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        Long userId = (Long) map.get("userId");
+        userService.logoutAccount(userId);
+        userService.clearToken(userId.toString());
+        return Result.success();
+    }
 }

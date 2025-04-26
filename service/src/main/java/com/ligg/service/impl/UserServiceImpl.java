@@ -156,4 +156,12 @@ public class UserServiceImpl implements UserService {
     public List<Map<String, Object>> getUserOrder(Long userId) {
         return userMapper.getUserOrder(userId);
     }
+
+    /**
+     * 账号注销
+     */
+    @Override
+    public void logoutAccount(Long userId) {
+        userMapper.logoutAccount(userId,0);
+    }
 }

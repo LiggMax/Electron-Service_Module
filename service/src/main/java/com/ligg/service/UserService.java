@@ -43,4 +43,7 @@ public interface UserService {
 
     //获取用户订单
     List<Map<String,Object>> getUserOrder(Long userId);
+
+    //账号注销
+    void logoutAccount(Long userId);
 }

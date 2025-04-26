@@ -46,4 +46,7 @@ public interface UserMapper {
     //用户订单
     @MapKey("user_project_id")
     List<Map<String,Object>> getUserOrder(Long userId);
+
+    //账号注销
+    void logoutAccount(Long userId, int status);
 }

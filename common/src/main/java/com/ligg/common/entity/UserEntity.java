@@ -20,4 +20,5 @@ public class UserEntity {
     private String userAvatar;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer userStatus; // 1: 正常 0: 注销
 }

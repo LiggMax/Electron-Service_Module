@@ -10,8 +10,8 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into user_order(user_id,phone_number,created_at)
-        values (#{userId},#{phoneNumber},NOW())
+        insert into user_order(user_id, phone_number, created_at)
+        values (#{userId}, #{phoneNumber}, NOW())
     </insert>
     <!--修改密码-->
     <update id="updateUserPassword">
@@ -21,42 +21,72 @@
     </update>
 
     <!--修改用户信息-->
-       <update id="updateUserInfo">
-           update users
-           <set>
-               <if test="nickName != null and nickName != ''">
-                   nick_name = #{nickName},
-               </if>
-               <if test="userAvatar != null and userAvatar != ''">
-                   user_avatar = #{userAvatar},
-               </if>
-           </set>
-           where user_id = #{userId}
-       </update>
+    <update id="updateUserInfo">
+        update users
+        <set>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+            <if test="userAvatar != null and userAvatar != ''">
+                user_avatar = #{userAvatar},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--账号注销-->
+    <update id="logoutAccount">
+        update users
+        set user_status = #{status}
+        where user_id = #{userId}
+    </update>
 
     <!-- 根据账号密码查询用户信息-->
     <select id="findByAdminUser" resultType="com.ligg.common.entity.AdminUserEntity">
-        select user_id,account,password,email,nick_name
+        select user_id, account, password, email, nick_name
         from admin_users
-        where account = #{account} and password = #{password}
+        where account = #{account}
+          and password = #{password}
     </select>
 
     <!-- 根据用户id查询用户信息-->
     <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.AdminUserEntity">
-        select user_id,account,nick_name,password,email,created_at,updated_at,user_avatar
+        select user_id,
+               account,
+               nick_name,
+               password,
+               email,
+               created_at,
+               updated_at,
+               user_avatar
         from admin_users
         where user_id = #{userId}
     </select>
     <!-- 根据账号查询用户信息-->
     <select id="findByUser" resultType="com.ligg.common.entity.UserEntity">
-        select user_id,account,password,email,nick_name,created_at,updated_at,user_avatar
+        select user_id,
+               account,
+               password,
+               email,
+               nick_name,
+               created_at,
+               updated_at,
+               user_avatar,
+               user_status
         from users
         where account = #{account}
     </select>
 
     <!--根据id查询用户信息-->
     <select id="findByUserInfo" resultType="com.ligg.common.entity.UserEntity">
-        select user_id,account,password,email,nick_name,created_at,updated_at,user_avatar
+        select user_id,
+               account,
+               password,
+               email,
+               nick_name,
+               created_at,
+               updated_at,
+               user_avatar
         from users
         where user_id = #{userId}
     </select>
@@ -65,21 +95,24 @@
     <select id="getUserFavorite" resultType="com.ligg.common.entity.UserFavoriteEntity">
         select *
         from user_favorite
-        where user_id = #{userId} and project_id = #{projectId}
+        where user_id = #{userId}
+          and project_id = #{projectId}
     </select>
 
     <!--根据用户id查询收藏数据-->
     <select id="getUserFavoriteByUserId" resultType="java.util.Map">
-        select p.project_id,p.project_name,p.project_price,
+        select p.project_id,
+               p.project_name,
+               p.project_price,
                uf.created_at
         from user_favorite uf
-        join project p on uf.project_id = p.project_id
+                 join project p on uf.project_id = p.project_id
         where uf.user_id = #{userId}
     </select>
 
     <!--获取用户订单-->
     <select id="getUserOrder" resultType="java.util.Map">
-        select user_project_id,phone_number,created_at
+        select user_project_id, phone_number, created_at
         from user_order
         where user_id = #{userId}
     </select>
