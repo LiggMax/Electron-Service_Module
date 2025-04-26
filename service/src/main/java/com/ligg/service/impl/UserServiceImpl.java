@@ -134,13 +134,9 @@ public class UserServiceImpl implements UserService {
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
 
             // 使用事务来确保操作的原子性
-            try {
-                phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
-                userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber());
-                return null;
-            } catch (Exception e) {
-                return "购买失败，请重试";
-            }
+            phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
+            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber());
+            return null;
         }
         return "号码可能已经被购买";
     }
@@ -150,7 +146,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<Map<String, Object>> getUserFavorite(Long userId) {
-        List<Map<String, Object>> userFavoriteByUserId = userMapper.getUserFavoriteByUserId(userId);
-        return userFavoriteByUserId;
+        return userMapper.getUserFavoriteByUserId(userId);
+    }
+
+    /**
+     * 获取用户订单
+     */
+    @Override
+    public List<Map<String, Object>> getUserOrder(Long userId) {
+        return userMapper.getUserOrder(userId);
     }
 }

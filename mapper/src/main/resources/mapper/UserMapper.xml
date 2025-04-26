@@ -10,8 +10,8 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into user_phone(user_id,phone_number,created_at)
-        values (#{userId},#{projectNumber},NOW())
+        insert into user_order(user_id,phone_number,created_at)
+        values (#{userId},#{phoneNumber},NOW())
     </insert>
     <!--修改密码-->
     <update id="updateUserPassword">
@@ -75,5 +75,12 @@
         from user_favorite uf
         join project p on uf.project_id = p.project_id
         where uf.user_id = #{userId}
+    </select>
+
+    <!--获取用户订单-->
+    <select id="getUserOrder" resultType="java.util.Map">
+        select user_project_id,phone_number,created_at
+        from user_order
+        where user_id = #{userId}
     </select>
 </mapper>

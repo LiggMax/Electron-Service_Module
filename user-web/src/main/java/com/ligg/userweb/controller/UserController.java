@@ -94,4 +94,15 @@ public class UserController {
         List<Map<String, Object>> userFavorite = userService.getUserFavorite(userId);
         return Result.success(200, userFavorite);
    }
+
+    /**
+     * 获取用户订单
+     */
+    @GetMapping("/order")
+    public Result<List<Map<String, Object>>> getUserOrder() {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        Long userId = (Long) map.get("userId");
+        List<Map<String, Object>> userOrder = userService.getUserOrder(userId);
+        return Result.success(200, userOrder);
+    }
 }

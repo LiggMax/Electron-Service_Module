@@ -4,6 +4,7 @@ import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public interface UserMapper {
     UserFavoriteEntity getUserFavorite(Long userId, Long projectId);
 
     //根据用户id查询收藏项目
+    @MapKey("projectId")
     List<Map<String,Object>> getUserFavoriteByUserId(Long userId);
 
     //添加用户收藏
@@ -40,4 +42,8 @@ public interface UserMapper {
 
     //添加号码
     void addPhoneNumber(Long userId,Long phoneNumber);
+
+    //用户订单
+    @MapKey("user_project_id")
+    List<Map<String,Object>> getUserOrder(Long userId);
 }

@@ -40,4 +40,7 @@ public interface UserService {
 
     //查询用户收藏项目
     List<Map<String,Object>> getUserFavorite(Long userId);
+
+    //获取用户订单
+    List<Map<String,Object>> getUserOrder(Long userId);
 }
