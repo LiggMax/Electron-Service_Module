@@ -6,6 +6,9 @@ import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
 
+import java.util.List;
+import java.util.Map;
+
 public interface UserService {
 
     //根据账号和密码查询用户
@@ -34,4 +37,7 @@ public interface UserService {
 
     //购买项目
     String buyProject(Long userId, Integer regionId);
+
+    //查询用户收藏项目
+    List<Map<String,Object>> getUserFavorite(Long userId);
 }

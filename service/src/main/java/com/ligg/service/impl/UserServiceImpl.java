@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -144,4 +145,12 @@ public class UserServiceImpl implements UserService {
         return "号码可能已经被购买";
     }
 
+    /**
+     * 获取用户收藏的项目
+     */
+    @Override
+    public List<Map<String, Object>> getUserFavorite(Long userId) {
+        List<Map<String, Object>> userFavoriteByUserId = userMapper.getUserFavoriteByUserId(userId);
+        return userFavoriteByUserId;
+    }
 }

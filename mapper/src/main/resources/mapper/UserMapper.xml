@@ -67,4 +67,13 @@
         from user_favorite
         where user_id = #{userId} and project_id = #{projectId}
     </select>
+
+    <!--根据用户id查询收藏数据-->
+    <select id="getUserFavoriteByUserId" resultType="java.util.Map">
+        select p.project_id,p.project_name,p.project_price,
+               uf.created_at
+        from user_favorite uf
+        join project p on uf.project_id = p.project_id
+        where uf.user_id = #{userId}
+    </select>
 </mapper>

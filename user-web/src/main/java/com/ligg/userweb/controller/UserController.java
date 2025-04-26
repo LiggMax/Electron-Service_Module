@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -81,5 +82,16 @@ public class UserController {
             return Result.error(400, result);
         }
         return Result.success();
+   }
+
+   /**
+    * 获取用户收藏
+    */
+   @GetMapping("/favorite")
+    public Result<List<Map<String, Object>>> getUserFavorite() {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        Long userId = (Long) map.get("userId");
+        List<Map<String, Object>> userFavorite = userService.getUserFavorite(userId);
+        return Result.success(200, userFavorite);
    }
 }
