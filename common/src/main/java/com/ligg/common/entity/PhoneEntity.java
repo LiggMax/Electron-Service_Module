@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class PhoneEntity {
     private Integer phoneId;//id
     private Long phoneNumber;//手机号
+    private Integer phoneProjectId;//项目id
     private Integer lineStatus;//线路状态 1.在线、2.离线
     private String countryCode;//号码归属地
     private LocalDateTime registrationTime;//注册时间

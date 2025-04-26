@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 
             // 使用事务来确保操作的原子性
             phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
-            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber());
+            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),phoneEntity.getPhoneProjectId());
             return null;
         }
         return "号码可能已经被购买";

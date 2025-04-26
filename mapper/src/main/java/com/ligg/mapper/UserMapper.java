@@ -41,7 +41,7 @@ public interface UserMapper {
     void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //添加号码
-    void addPhoneNumber(Long userId, Long phoneNumber);
+    void addPhoneNumber(Long userId, Long phoneNumber,Integer PhoneProjectId);
 
     //用户订单
     @MapKey("user_project_id")

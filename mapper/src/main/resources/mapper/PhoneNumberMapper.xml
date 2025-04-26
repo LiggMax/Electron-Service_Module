@@ -65,7 +65,7 @@
         WHERE p.phone_id = #{phoneId}
     </select>
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        select phone_id, phone_number
+        select phone_id, phone_number,phone_project_id
         from phone
         where phone_region_id = #{regionId}
     </select>
