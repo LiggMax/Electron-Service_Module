@@ -85,4 +85,34 @@
         ORDER BY 
             phoneCount DESC
     </select>
+
+    <!--获取所有项目数据-->
+    <select id="getProject" resultType="com.ligg.common.entity.ProjectEntity">
+        select project_id,project_name,project_price,project_created_at
+        from project
+    </select>
+
+    <!--获取所有地区-->
+    <select id="getRegion" resultType="com.ligg.common.entity.RegionEntity">
+        select region_id,region_name,region_mark
+        from region
+    </select>
+    
+    <!--根据项目名称查询项目ID-->
+    <select id="getProjectIdByName" resultType="java.lang.Integer">
+        SELECT project_id
+        FROM project
+        WHERE project_name = #{projectName}
+        LIMIT 1
+    </select>
+    
+    <!--批量根据项目名称查询项目ID列表-->
+    <select id="getProjectIdsByNames" resultType="java.lang.Integer">
+        SELECT project_id
+        FROM project
+        WHERE project_name IN
+        <foreach collection="projectNames" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
 </mapper>

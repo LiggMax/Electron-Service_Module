@@ -3,10 +3,13 @@ package com.ligg.mapper;
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.entity.ProjectEntity;
+import com.ligg.common.entity.RegionEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProjectMapper {
@@ -40,4 +43,27 @@ public interface ProjectMapper {
      */
     List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
 
+    /**
+     * 获取所有项目数据
+     */
+    List<ProjectEntity> getProject();
+
+    /**
+     * 获取所哟地区数据
+     */
+    List<RegionEntity> getRegion();
+    
+    /**
+     * 根据项目名称查询项目ID
+     * @param projectName 项目名称
+     * @return 项目ID，如果不存在则返回null
+     */
+    Integer getProjectIdByName(@Param("projectName") String projectName);
+    
+    /**
+     * 批量根据项目名称查询项目ID列表
+     * @param projectNames 项目名称列表
+     * @return 项目ID列表
+     */
+    List<Integer> getProjectIdsByNames(@Param("projectNames") List<String> projectNames);
 }

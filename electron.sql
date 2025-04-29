@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 25/04/2025 17:06:32
+ Date: 29/04/2025 09:59:17
 */
 
 SET NAMES utf8mb4;
@@ -47,7 +47,7 @@ CREATE TABLE `phone`  (
   `phone_region_id` int NULL DEFAULT NULL COMMENT '号码归属地区',
   PRIMARY KEY (`phone_id`) USING BTREE,
   UNIQUE INDEX `idx_phone_number`(`phone_number` ASC) USING BTREE COMMENT '手机号唯一索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 61 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_tr_0900_as_cs ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_tr_0900_as_cs ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for project
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project`  (
   `project_id` int NOT NULL AUTO_INCREMENT,
   `project_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `project_price` decimal(10, 2) NOT NULL,
+  `project_price` decimal(10, 2) NOT NULL COMMENT '价格',
   `project_created_at` datetime NOT NULL COMMENT '项目创建时间',
   PRIMARY KEY (`project_id`) USING BTREE,
   INDEX `project_project_id_index`(`project_id` ASC) USING BTREE
@@ -85,21 +85,38 @@ CREATE TABLE `user_favorite`  (
   `created_at` datetime NULL DEFAULT NULL COMMENT '收藏时间',
   PRIMARY KEY (`favorite_id`) USING BTREE,
   INDEX `user_favorite_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_order
+-- ----------------------------
+DROP TABLE IF EXISTS `user_order`;
+CREATE TABLE `user_order`  (
+  `user_project_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `phone_number` bigint NOT NULL COMMENT '号码',
+  `created_at` datetime NOT NULL COMMENT '购买时间',
+  `project_id` int NOT NULL,
+  PRIMARY KEY (`user_project_id`) USING BTREE,
+  INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`  (
-  `user_id` bigint NULL DEFAULT NULL,
+  `user_id` bigint NOT NULL AUTO_INCREMENT,
   `account` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
   `password` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
   `nick_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
   `email` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT NULL,
   `updated_at` datetime NULL DEFAULT NULL,
-  `user_avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = Dynamic;
+  `user_avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
+  `user_status` int NOT NULL DEFAULT 1 COMMENT '用户状态(1=‘正常’   0=‘已注销’)',
+  PRIMARY KEY (`user_id`) USING BTREE,
+  INDEX `users_user_id_index`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8259543160 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

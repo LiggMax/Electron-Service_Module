@@ -5,6 +5,7 @@ import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 项目服务接口
@@ -33,4 +34,23 @@ public interface ProjectService {
      * 获取指定项目商品列表
      */
     List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
+
+    /**
+     * 获取项目和地区列表
+     */
+    Map<String, Object> getProjectAndRegionList();
+    
+    /**
+     * 根据项目名称查询项目ID
+     * @param projectName 项目名称
+     * @return 项目ID，如果不存在则返回null
+     */
+    Integer getProjectIdByName(String projectName);
+    
+    /**
+     * 批量根据项目名称查询项目ID
+     * @param projectNames 项目名称列表
+     * @return 项目ID列表
+     */
+    List<Integer> getProjectIdsByNames(List<String> projectNames);
 }

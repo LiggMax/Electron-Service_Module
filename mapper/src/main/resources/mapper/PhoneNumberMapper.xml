@@ -2,26 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ligg.mapper.PhoneNumberMapper">
 
-    <!-- 批量插入手机号，使用INSERT IGNORE忽略唯一键冲突 -->
+    <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
-        INSERT IGNORE INTO phone
-        (phone_number, country_code, line_status, registration_time, usage_status)
+        INSERT INTO phone
+        (phone_number, line_status, registration_time, usage_status, phone_region_id, phone_project_id)
         values
-        <foreach collection="phones" item="phone" separator=",">
+        <foreach collection="list" item="phone" separator=",">
             (
             #{phone.phoneNumber},
-            #{phone.countryCode},
             #{phone.lineStatus},
             #{phone.registrationTime},
-            #{phone.usageStatus}
+            #{phone.usageStatus},
+            #{phone.phoneRegionId},
+            #{phone.phoneProjectId}
             )
         </foreach>
     </insert>
 
-    <!-- 插入手机号和项目关联信息 -->
+    <!-- 查询手机号是否存在 -->
+    <select id="getPhoneByNumber" resultType="com.ligg.common.entity.PhoneEntity">
+        SELECT * FROM phone WHERE phone_number = #{phoneNumber}
+    </select>
+    
+    <!-- 检查手机号是否存在 -->
+    <select id="checkPhoneExists" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM phone WHERE phone_number = #{phoneNumber}
+    </select>
+
+    <!-- 插入手机号和项目关联信息到用户订单表 -->
     <insert id="insertPhoneProject">
-        insert into phone_info(phone_number, project_name,time_of_use)
-        values (#{phoneNumber}, #{projectName},NOW())
+        INSERT INTO user_order(user_id, phone_number, created_at, project_id)
+        VALUES (1, #{phoneNumber}, NOW(), #{projectId})
     </insert>
 
     <!-- 删除手机号 -->
@@ -32,19 +43,20 @@
 
 
     <select id="phoneList" resultType="com.ligg.common.entity.PhoneEntity">
-        select *
-        from phone
+        select p.*, r.region_name as countryCode
+        from phone p
+        left join region r on p.phone_region_id = r.region_id
         <where>
-            <if test="countryCode != '' ">
-                country_code like concat('%', #{countryCode}, '%')
+            <if test="countryCode != null and countryCode != '' ">
+                r.region_name like concat('%', #{countryCode}, '%')
             </if>
             <if test="usageStatus != null">
-                and usage_status = #{usageStatus}
+                and p.usage_status = #{usageStatus}
             </if>
-            <if test="keyword != ''">
-                and phone_number  like concat('%', #{keyword}, '%')
-                or country_code like concat('%', #{keyword}, '%')
-                or usage_status like concat('%', #{keyword}, '%')
+            <if test="keyword != null and keyword != ''">
+                and (p.phone_number like concat('%', #{keyword}, '%')
+                or r.region_name like concat('%', #{keyword}, '%')
+                or p.usage_status like concat('%', #{keyword}, '%'))
             </if>
         </where>
     </select>
@@ -54,21 +66,22 @@
         SELECT
             p.phone_id,
             p.phone_number,
-            p.country_code,
+            r.region_name as countryCode,
             p.line_status,
             p.usage_status,
             p.registration_time,
-            pp.project_name,
-            pp.time_of_use
+            pj.project_name,
+            uo.created_at as time_of_use
         FROM phone p
-                 LEFT JOIN phone_info pp ON p.phone_number = pp.phone_number
+        LEFT JOIN region r ON p.phone_region_id = r.region_id
+        LEFT JOIN user_order uo ON p.phone_number = uo.phone_number
+        LEFT JOIN project pj ON uo.project_id = pj.project_id
         WHERE p.phone_id = #{phoneId}
     </select>
+    
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        select phone_id, phone_number,phone_project_id
+        select phone_id, phone_number, phone_project_id
         from phone
         where phone_region_id = #{regionId}
     </select>
-
-
 </mapper>
