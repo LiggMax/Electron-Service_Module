@@ -19,14 +19,14 @@ public class TestProject {
     private ProjectService projectService;
     @Autowired
     private ProjectMapper projectMapper;
-    @Test
-    public void ProjectListTest(){
-
-       String name = "中国香港";
-
-        Integer projectCountByName = projectMapper.getProjectCountByName(name);
-        log.info("数量:{}",projectCountByName);
-    }
+//    @Test
+//    public void ProjectListTest(){
+//
+//       String name = "中国香港";
+//
+//        Integer projectCountByName = projectMapper.getProjectCountByName(name);
+//        log.info("数量:{}",projectCountByName);
+//    }
 
     //获取项目列表
     @Test

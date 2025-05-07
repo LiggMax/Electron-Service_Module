@@ -1,4 +1,4 @@
-package com.ligg.adminweb.controller;
+package com.ligg.controller;
 
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;

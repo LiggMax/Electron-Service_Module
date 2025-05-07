@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ligg</groupId>
-        <artifactId>Electron-Service-Module</artifactId>
+        <artifactId>web</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>user-web</artifactId>
+    <artifactId>admin-controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-web</name>
-    <description>user-web</description>
+    <name>admin-controller</name>
+    <description>管理后台接口控制器</description>
     <packaging>jar</packaging>
 
     <dependencies>

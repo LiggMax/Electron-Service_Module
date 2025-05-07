@@ -1,4 +1,4 @@
-package com.ligg.userweb.controller;
+package com.ligg.controller;
 
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;

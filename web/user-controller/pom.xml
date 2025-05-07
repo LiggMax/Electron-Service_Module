@@ -4,32 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ligg</groupId>
-        <artifactId>Electron-Service-Module</artifactId>
+        <artifactId>web</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>entrance</artifactId>
+    <artifactId>user-controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>entrance</name>
-    <description>entrance</description>
+    <name>user-controller</name>
+    <description>用户接口控制器</description>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>admin-controller</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ligg</groupId>
-            <artifactId>user-controller</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ligg</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>service</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
@@ -39,9 +27,8 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!--指定启动类-->
                 <configuration>
-                    <mainClass>com.ligg.entrance.EntranceApplication</mainClass>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
