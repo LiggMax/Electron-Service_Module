@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 后台管理web登录
+ */
 @RestController
 @RequestMapping("/api/adminWeb/account")
 public class AdminWebAccountController {

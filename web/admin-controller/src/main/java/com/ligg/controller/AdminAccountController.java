@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 管理员ui登录
+ */
 @RestController
 @RequestMapping("/api/admin/account")
 public class AdminAccountController {

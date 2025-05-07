@@ -54,9 +54,6 @@ public interface UserService {
     //注册账号
     void registerAccount(String account, String password);
 
-    //登录校验
-    Boolean verifyPassword(String plainPassword, String hashedPassword);
-
     //获取管理员信息
     AdminWebUserEntity getAdminWebInfo(String account);
 }
