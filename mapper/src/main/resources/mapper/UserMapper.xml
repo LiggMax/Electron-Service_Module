@@ -131,4 +131,12 @@
         <!--区分大小写-->
         where binary account = #{account} and binary password = #{password}
     </select>
+
+    <!--查询后台管理用户信息-->
+    <select id="findByAdminWebUser" resultType="com.ligg.common.entity.AdminWebUserEntity">
+        select admin_id,account,password,email,nick_name
+        from admin_web_user
+        <!--区分大小写-->
+        where binary account = #{account}
+    </select>
 </mapper>

@@ -1,9 +1,7 @@
 package com.ligg.service.impl;
 
-import com.ligg.common.entity.AdminUserEntity;
-import com.ligg.common.entity.PhoneEntity;
-import com.ligg.common.entity.UserEntity;
-import com.ligg.common.entity.UserFavoriteEntity;
+import com.ligg.common.entity.*;
+import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
@@ -175,5 +173,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerAccount(String account, String password) {
         userMapper.registerAccount(account, password);
+    }
+
+    /**
+     * 校验密码
+     */
+    @Override
+    public Boolean verifyPassword(String plainPassword,String hashedPassword) {
+        return BCryptUtil.verify(plainPassword, hashedPassword);
+    }
+
+    /**
+     * 获取管理信息
+     */
+    @Override
+    public AdminWebUserEntity getAdminWebInfo(String account) {
+        return userMapper.findByAdminWebUser(account);
     }
 }

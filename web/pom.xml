@@ -19,7 +19,7 @@
         <module>user-controller</module>
         <module>admin-controller</module>
         <module>admin-web-controller</module>
-        <!-- 新模块会在这里添加 -->
+        <!-- 新模块在这里添加 -->
     </modules>
 
     <dependencies>

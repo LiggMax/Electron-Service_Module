@@ -2,6 +2,7 @@ package com.ligg.service;
 
 
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
@@ -52,4 +53,10 @@ public interface UserService {
 
     //注册账号
     void registerAccount(String account, String password);
+
+    //登录校验
+    Boolean verifyPassword(String plainPassword, String hashedPassword);
+
+    //获取管理员信息
+    AdminWebUserEntity getAdminWebInfo(String account);
 }

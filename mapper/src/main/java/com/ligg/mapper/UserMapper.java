@@ -1,6 +1,7 @@
 package com.ligg.mapper;
 
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
@@ -55,4 +56,7 @@ public interface UserMapper {
 
     //注册账号
     void registerAccount(String account, String password);
+
+    //根据账号密码查询后台管理用户信息
+    AdminWebUserEntity findByAdminWebUser(String account);
 }

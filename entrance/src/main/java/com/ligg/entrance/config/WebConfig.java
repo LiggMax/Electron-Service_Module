@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
         //登录拦截器
         registry.addInterceptor(loginInterceptors)
                 .order(1)
-                .excludePathPatterns("/api/admin/account/**","/api/user/account/**")//放行路径
+                .excludePathPatterns("/api/admin/account/**","/api/user/account/**","/api/adminWeb/account/**")//放行路径
                 .excludePathPatterns("/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico") // 放行静态资源
                 .excludePathPatterns("/error") // 放行错误页面
                 .excludePathPatterns("/ws/**", "/socket/**") // 放行WebSocket路径
