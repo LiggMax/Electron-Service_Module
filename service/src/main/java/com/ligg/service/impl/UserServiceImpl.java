@@ -175,13 +175,6 @@ public class UserServiceImpl implements UserService {
         userMapper.registerAccount(account, password);
     }
 
-    /**
-     * 校验密码
-     */
-    @Override
-    public Boolean verifyPassword(String plainPassword,String hashedPassword) {
-        return BCryptUtil.verify(plainPassword, hashedPassword);
-    }
 
     /**
      * 获取管理信息
