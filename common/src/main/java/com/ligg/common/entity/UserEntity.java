@@ -1,5 +1,7 @@
 package com.ligg.common.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +12,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@TableName("users")
 public class UserEntity {
+    @TableId
     private Long userId;
     private String account;
     @JsonIgnore
