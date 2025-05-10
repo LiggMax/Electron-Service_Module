@@ -4,7 +4,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/electron?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
     username: root
     password: 200309
-mybatis:
+mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true # 开启驼峰命名
   mapper-locations: classpath:mapper/*.xml
