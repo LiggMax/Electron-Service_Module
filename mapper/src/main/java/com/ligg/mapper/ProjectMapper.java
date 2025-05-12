@@ -1,5 +1,6 @@
 package com.ligg.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface ProjectMapper {
+public interface ProjectMapper extends BaseMapper<ProjectEntity> {
 
 
     /**

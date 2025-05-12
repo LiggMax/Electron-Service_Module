@@ -1,5 +1,6 @@
 package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
@@ -19,7 +20,7 @@ import java.util.Map;
  * 项目服务实现类
  */
 @Service
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity> implements ProjectService {
 
     @Autowired
     private ProjectMapper projectMapper;

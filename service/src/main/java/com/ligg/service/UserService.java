@@ -56,4 +56,5 @@ public interface UserService {
 
     //获取管理员信息
     AdminWebUserEntity getAdminWebInfo(String account);
+
 }

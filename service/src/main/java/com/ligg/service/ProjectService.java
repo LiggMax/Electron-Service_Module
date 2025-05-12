@@ -1,8 +1,10 @@
 package com.ligg.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.entity.ProjectEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
 /**
  * 项目服务接口
  */
-public interface ProjectService {
+public interface ProjectService extends IService<ProjectEntity> {
     
     /**
      * 获取所有项目列表及数量
