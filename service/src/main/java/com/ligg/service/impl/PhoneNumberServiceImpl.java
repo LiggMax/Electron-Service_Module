@@ -1,5 +1,6 @@
 package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.PhoneDetailDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.mapper.PhoneNumberMapper;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class PhoneNumberServiceImpl implements PhoneNumberService {
+public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneEntity> implements PhoneNumberService {
 
     @Autowired
     private PhoneNumberMapper phoneNumberMapper;

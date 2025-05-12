@@ -1,11 +1,12 @@
 package com.ligg.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
 import java.util.Map;
 
-public interface PhoneNumberService {
+public interface PhoneNumberService extends IService<PhoneEntity> {
 
     /**
      * 条件查询卡号数据

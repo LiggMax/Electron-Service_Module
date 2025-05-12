@@ -1,12 +1,13 @@
 package com.ligg.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminUserService;
 import com.ligg.service.CustomerService;
+import com.ligg.service.PhoneNumberService;
 import com.ligg.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,9 @@ public class CustomerController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private PhoneNumberService phoneNumberService;
+
     /**
      * 客户列表
      */
@@ -46,6 +50,14 @@ public class CustomerController {
     @GetMapping("/adminUser")
     public Result<List<AdminUserEntity>> getAdminUserList(){
         return Result.success(200,adminUserService.getBaseMapper().selectList(null));
+    }
+
+    /**
+     * 号码列表
+     */
+    @GetMapping("/phone")
+    public Result<List<PhoneEntity>> getPhoneList(){
+        return Result.success(200,phoneNumberService.getBaseMapper().selectList(null));
     }
 
     /**

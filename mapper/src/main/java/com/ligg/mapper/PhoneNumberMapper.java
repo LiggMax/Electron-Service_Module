@@ -1,5 +1,6 @@
 package com.ligg.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.dto.PhoneDetailDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface PhoneNumberMapper {
+public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
 
     /**
      * 条件查询卡号数据
