@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("phone")
 public class PhoneEntity {
-    @TableId(value = "phone",type = IdType.AUTO)
+    @TableId(value = "phone_id",type = IdType.AUTO)
     private Integer phoneId;//id
     private Long phoneNumber;//手机号
-    private Integer phoneProjectId;//项目id
     private Integer lineStatus;//线路状态 1.在线、2.离线
-    private String countryCode;//号码归属地
     private LocalDateTime registrationTime;//注册时间
     private Integer usageStatus;//状态
-    private Integer phoneRegionId;//号码归属地区id
+    private Integer phoneProjectId;//项目id
+    private Integer phoneRegionId;//归属地id
 }

@@ -26,15 +26,6 @@ public class CustomerController {
     @Autowired
     private CustomerService userManagementService;
 
-    @Autowired
-    private AdminUserService adminUserService;
-
-    @Autowired
-    private ProjectService projectService;
-
-    @Autowired
-    private PhoneNumberService phoneNumberService;
-
     /**
      * 客户列表
      */
@@ -42,29 +33,5 @@ public class CustomerController {
     public Result<List<UserEntity>> getUserList(){
         List<UserEntity> userEntities = userManagementService.getBaseMapper().selectList(null);
         return Result.success(200,userEntities);
-    }
-
-    /**
-     * 卡商列表
-     */
-    @GetMapping("/adminUser")
-    public Result<List<AdminUserEntity>> getAdminUserList(){
-        return Result.success(200,adminUserService.getBaseMapper().selectList(null));
-    }
-
-    /**
-     * 号码列表
-     */
-    @GetMapping("/phone")
-    public Result<List<PhoneEntity>> getPhoneList(){
-        return Result.success(200,phoneNumberService.getBaseMapper().selectList(null));
-    }
-
-    /**
-     * 项目列表
-     */
-    @GetMapping("/project")
-    public Result<List<ProjectEntity>> getProjectList(){
-        return Result.success(200,projectService.getBaseMapper().selectList(null));
     }
 }

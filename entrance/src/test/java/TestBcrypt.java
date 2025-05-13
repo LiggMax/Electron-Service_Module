@@ -14,7 +14,7 @@ public class TestBcrypt {
     // 测试加密
     @Test
     public void testEncrypt() {
-        String password = "123456";
+        String password = "admin";
         String encrypt = BCryptUtil.encrypt(password);
         log.info("encrypt: {}", encrypt);
     }
