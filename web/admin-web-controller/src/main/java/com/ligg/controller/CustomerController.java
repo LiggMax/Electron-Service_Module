@@ -1,14 +1,8 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.AdminUserEntity;
-import com.ligg.common.entity.PhoneEntity;
-import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.AdminUserService;
 import com.ligg.service.CustomerService;
-import com.ligg.service.PhoneNumberService;
-import com.ligg.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

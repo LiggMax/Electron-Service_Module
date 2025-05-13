@@ -1,12 +1,10 @@
 package com.ligg.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
-import com.ligg.service.AdminUserService;
 import com.ligg.service.AdminWebUserService;
 import com.ligg.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +25,7 @@ public class AdminWebAccountController {
     private UserService userService;
     @Autowired
     private AdminWebUserService adminWebUserService;
-    @Autowired
-    private JWTUtil jwtUtil;
+
 
     /**
      * 登录
@@ -53,15 +50,5 @@ public class AdminWebAccountController {
        return Result.error(400,"账号或密码错误");
     }
 
-    /**
-     * 获取用户想信息
-     */
-    @GetMapping("/info")
-    public Result<AdminWebUserEntity> getUserInfo(HttpServletRequest request) {
-        Map<String, Object> userMap = jwtUtil.parseToken(request.getHeader("Token"));
-        Long userId = (Long) userMap.get("userId");
-        AdminWebUserEntity userInfo = adminWebUserService.getById(userId);
-        userInfo.setPassword(null);
-        return Result.success(200,userInfo);
-    }
+
 }
