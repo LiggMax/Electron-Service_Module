@@ -6,9 +6,8 @@ import com.ligg.common.utils.Result;
 import com.ligg.service.AdminWebUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -23,6 +22,8 @@ public class AdminUserWebController {
     private JWTUtil jwtUtil;
     @Autowired
     private AdminWebUserService adminWebUserService;
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 获取用户想信息
@@ -34,5 +35,19 @@ public class AdminUserWebController {
         AdminWebUserEntity userInfo = adminWebUserService.getById(userId);
         userInfo.setPassword(null);
         return Result.success(200,userInfo);
+    }
+
+    /**
+     * 资料编辑
+     */
+    @PostMapping("/edit")
+    public Result<String> editUserInfo(@RequestBody @Validated AdminWebUserEntity adminWebUserEntity) {
+        Map<String, Object> userMap = jwtUtil.parseToken(request.getHeader("Token"));
+        if(userMap.get("userId") == null) {
+            return Result.error(400,"用户数据错误");
+        }
+        adminWebUserEntity.setAdminId((Long) userMap.get("userId"));
+        adminWebUserService.updateById(adminWebUserEntity);
+        return Result.success();
     }
 }
