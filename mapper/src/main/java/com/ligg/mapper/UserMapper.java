@@ -1,5 +1,6 @@
 package com.ligg.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserEntity;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<UserEntity> {
 
     //根据账号密码查询用户信息
     AdminUserEntity findByAdminUser(String account, String password);

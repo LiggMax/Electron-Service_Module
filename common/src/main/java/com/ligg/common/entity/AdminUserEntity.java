@@ -19,6 +19,7 @@ public class AdminUserEntity {
     private String password;
     private String email;
     private String userAvatar;
+    private LocalDateTime loginTime;//登录时间
     private LocalDateTime createdAt;//创建时间
     private LocalDateTime updatedAt;//更新时间
 }

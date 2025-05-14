@@ -1,5 +1,6 @@
 package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.entity.*;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,13 @@ public class UserServiceImpl implements UserService {
         redisTemplate.opsForValue()
                 .set("Token:" + userId, token,
                         6, TimeUnit.HOURS);
+
+        //更新登录时间
+        LocalDateTime nowTime = LocalDateTime.now();
+        LambdaUpdateWrapper<UserEntity> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(UserEntity::getUserId, userId)
+                .set(UserEntity::getLoginTime, nowTime);
+        userMapper.update(lambdaUpdateWrapper);
         return token;
     }
 
