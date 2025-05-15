@@ -42,6 +42,10 @@ public class CardController {
      * 添加卡商
      */
     @PostMapping("/add")
+    public Result<String> addCardInfo(@Validated @RequestBody AdminUserEntity adminUserEntity) {
+        adminUserService.saveCardUser(adminUserEntity);
+        return Result.success(200,"添加成功");
+    }
 
     /**
      * 重置密码

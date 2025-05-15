@@ -9,6 +9,8 @@ import com.ligg.service.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUserEntity> implements AdminUserService {
 
@@ -24,5 +26,15 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         updateWrapper.eq(AdminUserEntity ::getUserId, userId)
                 .set(AdminUserEntity::getPassword, BCryptUtil.encrypt(password));
         adminUserMapper.update(null, updateWrapper);
+    }
+
+    /**
+     * 添加卡商
+     */
+    @Override
+    public void saveCardUser(AdminUserEntity adminUserEntity) {
+        adminUserEntity.setCreatedAt(LocalDateTime.now());
+        adminUserEntity.setPassword(BCryptUtil.encrypt(adminUserEntity.getPassword()));
+        adminUserMapper.insert(adminUserEntity);
     }
 }
