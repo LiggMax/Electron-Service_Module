@@ -16,7 +16,7 @@ import java.util.Map;
 public interface UserMapper extends BaseMapper<UserEntity> {
 
     //根据账号密码查询用户信息
-    AdminUserEntity findByAdminUser(String account, String password);
+    AdminUserEntity findByAdminUser(String account);
 
     //根据id查询用户信息
     AdminUserEntity findByAdminUserInfo(Long userId);
@@ -53,7 +53,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     void logoutAccount(Long userId, int status);
 
     //根据账号密码查询用户信息
-    UserEntity findAccountAndPasswordByUser(String account, String password);
+    UserEntity findAccountAndPasswordByUser(String account);
 
     //注册账号
     void registerAccount(String account, String password);

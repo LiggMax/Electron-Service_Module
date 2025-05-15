@@ -1,13 +1,17 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.UserEntity;
+import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.UserService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user/account")
 public class UserAccountController {
@@ -15,24 +19,25 @@ public class UserAccountController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 用户登录
-     */
-    @PostMapping("/login")
-    public Result<String> login(@RequestBody Map<String, Object> user) {
+  @PostMapping("/login")
+public Result<String> login(@RequestBody Map<String, String> request) {
+    String account = request.get("account");
+    String password = request.get("password");
 
-        if (!(user.get("account") instanceof String account && user.get("password") instanceof String password)) {
-            return Result.error(400, "参数错误");
-        }
-        UserEntity byAccount = userService.findAccountAndPasswordByUser(account,password);
-        if (byAccount != null){
-            if (byAccount.getUserStatus() == 0) {
-                return Result.error(400, "该账号已被注销");
-            }
-            return Result.success(200, userService.createToken(byAccount.getUserId(), byAccount.getAccount()));
-        }
+    UserEntity byAccount = userService.findAccountAndPasswordByUser(account);
+    if (byAccount == null || !BCryptUtil.verify(password, byAccount.getPassword())) {
+        log.warn("登录失败：账号 {}", account);
         return Result.error(400, "账号或密码错误");
     }
+
+    if (byAccount.getUserStatus() == 0) {
+        return Result.error(400, "该账号已被注销");
+    }
+
+    String token = userService.createToken(byAccount.getUserId(), byAccount.getAccount());
+    return Result.success(200, token);
+}
+
 
     /**
      * 账户注册
@@ -47,7 +52,7 @@ public class UserAccountController {
         if (byUser != null) {
             return Result.error(400, "账号已存在");
         }
-        userService.registerAccount(user.get("account"),user.get("password"));
+        userService.registerAccount(user.get("account"), user.get("password"));
         return Result.success();
     }
 }

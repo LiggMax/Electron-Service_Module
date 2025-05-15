@@ -3,6 +3,8 @@ package com.ligg.controller;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.CustomerService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +52,11 @@ public class CustomerController {
      * 重置密码
      */
     @PutMapping("/reset")
-    public Result<String> resetPassword(@RequestParam Long userId,@RequestParam String password){
+    public Result<String> resetPassword(@RequestParam Long userId,
+                                        @RequestParam
+                                        @Min(value = 6,message = "密码长度不能小于6位")
+                                        @Max(value = 16,message = "密码长度不能超过16位")
+                                        String password){
         userManagementService.updatePassword(userId,password);
         return Result.success(200,"重置成功");
     }

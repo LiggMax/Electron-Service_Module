@@ -2,7 +2,6 @@ package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.entity.*;
-import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
@@ -33,11 +32,11 @@ public class UserServiceImpl implements UserService {
     private PhoneNumberMapper phoneNumberMapper;
 
     /**
-     * 根据账号和密码查询管理员用户信息
+     * 根据账号查询管理员用户信息
      */
     @Override
-    public AdminUserEntity findByAdminUser(String account, String password) {
-        return userMapper.findByAdminUser(account, password);
+    public AdminUserEntity findByAdminUser(String account) {
+        return userMapper.findByAdminUser(account);
     }
 
     /**
@@ -172,8 +171,8 @@ public class UserServiceImpl implements UserService {
      * 根据账号和密码查询用户信息
      */
     @Override
-    public UserEntity findAccountAndPasswordByUser(String account, String password) {
-        return userMapper.findAccountAndPasswordByUser(account, password);
+    public UserEntity findAccountAndPasswordByUser(String account) {
+        return userMapper.findAccountAndPasswordByUser(account);
     }
 
     /**

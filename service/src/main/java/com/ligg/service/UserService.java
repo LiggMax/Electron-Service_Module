@@ -13,7 +13,7 @@ import java.util.Map;
 public interface UserService {
 
     //根据账号和密码查询用户
-    AdminUserEntity findByAdminUser(String account, String password);
+    AdminUserEntity findByAdminUser(String account);
 
     //生成token
     String createToken(Long userId, String account);
@@ -48,8 +48,8 @@ public interface UserService {
     //账号注销
     void logoutAccount(Long userId);
 
-    //根据账号密码查询信息
-    UserEntity findAccountAndPasswordByUser(String account, String password);
+    //根据账号查询信息
+    UserEntity findAccountAndPasswordByUser(String account);
 
     //注册账号
     void registerAccount(String account, String password);
