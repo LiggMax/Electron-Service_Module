@@ -4,10 +4,8 @@ import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,9 +31,27 @@ public class CustomerController {
     /**
      * 更新客户状态
      */
-    @PutMapping
-    public Result<String> updateUserStatus(Long userId,Boolean status ){
+    @PutMapping("/status")
+    public Result<String> updateUserStatus(@RequestParam Long userId,@RequestParam Boolean status ){
         userManagementService.updateUserStatus(userId,status);
         return Result.success(200,"更新成功");
+    }
+
+    /**
+     * 编辑客户个人信息
+     */
+    @PutMapping("/edit")
+    public Result<String> updateUserInfo(@Validated @RequestBody UserEntity userEntity){
+        userManagementService.updateById(userEntity);
+        return Result.success(200,"更新成功");
+    }
+
+    /**
+     * 重置密码
+     */
+    @PutMapping("/reset")
+    public Result<String> resetPassword(@RequestParam Long userId,@RequestParam String password){
+        userManagementService.updatePassword(userId,password);
+        return Result.success(200,"重置成功");
     }
 }
