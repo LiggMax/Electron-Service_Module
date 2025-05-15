@@ -1,15 +1,13 @@
 package com.ligg.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.adminweb.AdminWebUserService;
 import com.ligg.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 /**
  * 后台管理web登录
@@ -29,17 +27,15 @@ public class AdminWebAccountController {
      * return: token
      */
     @PostMapping("/login")
-    public Result<String> login(@RequestBody AdminWebUserEntity adminWebUserEntity) {
+    public Result<String> login(@RequestBody AdminWebUserEntity adminWebUserEntity, HttpServletRequest request) {
 
        AdminWebUserEntity adminWebInfo = userService.getAdminWebInfo(adminWebUserEntity.getAccount());
        if (adminWebInfo != null){
            boolean verify = BCryptUtil.verify(adminWebUserEntity.getPassword(), adminWebInfo.getPassword());
            if (verify){
                String token = userService.createToken(adminWebInfo.getAdminId(), adminWebInfo.getAccount());
-               UpdateWrapper<AdminWebUserEntity> updateWrapper = new UpdateWrapper<>();
-               updateWrapper.eq("admin_id", adminWebInfo.getAdminId())
-                       .set("login_time", LocalDateTime.now());
-               adminWebUserService.update(updateWrapper);
+                //更新最后登录时间和ip
+               adminWebUserService.updateLoginTimeAndIp(adminWebInfo.getAdminId(),request);
                return Result.success(200,token);
            }
            return Result.error(400,"账号或密码错误");

@@ -24,4 +24,5 @@ public class AdminWebUserEntity {
     private String nickName;
     private Long phoneNumber;//号码
     private LocalDateTime loginTime;//登录时间
+    private String loginIp;//登录ip
 }

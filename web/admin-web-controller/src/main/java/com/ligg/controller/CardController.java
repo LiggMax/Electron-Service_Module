@@ -3,8 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminUserService;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +41,15 @@ public class CardController {
      * 添加卡商
      */
     @PostMapping("/add")
-    public Result<String> addCardInfo(@Validated @RequestBody AdminUserEntity adminUserEntity) {
+    public Result<String> addCardInfo(@Pattern(regexp = "^[a-zA-Z\\d]{6,20}$") String account,
+                                      @Pattern(regexp = "^[a-zA-Z\\d]{6,20}$") String password,
+                                      @Pattern(regexp = "^[a-zA-Z\\d]{1,20}$") String nickName,
+                                      @Email String email) {
+        AdminUserEntity adminUserEntity = new AdminUserEntity();
+        adminUserEntity.setAccount(account);
+        adminUserEntity.setPassword(password);
+        adminUserEntity.setNickName(nickName);
+        adminUserEntity.setEmail(email);
         adminUserService.saveCardUser(adminUserEntity);
         return Result.success(200,"添加成功");
     }
