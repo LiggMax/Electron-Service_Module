@@ -3,6 +3,8 @@ package com.ligg.controller;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminUserService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +36,22 @@ public class CardController {
     public Result<String> updateCardInfo(@Validated @RequestBody AdminUserEntity adminUserEntity) {
         adminUserService.updateById(adminUserEntity);
         return Result.success(200,"修改成功");
+    }
+
+    /**
+     * 添加卡商
+     */
+    @PostMapping("/add")
+
+    /**
+     * 重置密码
+     */
+    @PutMapping("/reset")
+    public Result<String> resetPassword(@RequestParam Long userId,
+                                        @Min(value = 6,message = "密码长度不能小于6位")
+                                        @Max (value = 20,message = "密码长度不能大于20位")
+                                        @RequestParam String password){
+        adminUserService.resetPassword(userId,password);
+        return Result.success(200,"重置成功");
     }
 }
