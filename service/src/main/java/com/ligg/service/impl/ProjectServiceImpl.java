@@ -38,8 +38,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
 
     @Override
     public List<ProjectListDto> getAllProjectsList() {
-        List<ProjectListDto> allProjectsList = projectMapper.getAllProjectsList();
-        return allProjectsList;
+        return projectMapper.getAllProjectsList();
     }
 
     @Override

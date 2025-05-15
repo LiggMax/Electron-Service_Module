@@ -3,7 +3,6 @@ package com.ligg.controller;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.ProjectService;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * 项目
  */
 @RestController
-@RequestMapping("/api/project")
+@RequestMapping("/api/adminWeb/project")
 public class ProjectController {
 
     @Autowired
