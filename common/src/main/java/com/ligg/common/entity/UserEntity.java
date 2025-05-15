@@ -2,6 +2,7 @@ package com.ligg.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @TableName("users")
 public class UserEntity {
     @TableId
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
     private String account;
     @JsonIgnore

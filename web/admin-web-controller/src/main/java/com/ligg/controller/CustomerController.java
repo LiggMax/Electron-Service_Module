@@ -20,6 +20,8 @@ public class CustomerController {
 
     @Autowired
     private CustomerService userManagementService;
+    @Autowired
+    private CustomerService customerService;
 
     /**
      * 客户列表
@@ -59,5 +61,14 @@ public class CustomerController {
                                         String password){
         userManagementService.updatePassword(userId,password);
         return Result.success(200,"重置成功");
+    }
+
+    /**
+     * 添加客户
+     */
+    @PostMapping("/addUser")
+    public Result<String> addUser(@RequestBody UserEntity userEntity){
+        customerService.save(userEntity);
+        return Result.success(200,"添加成功");
     }
 }

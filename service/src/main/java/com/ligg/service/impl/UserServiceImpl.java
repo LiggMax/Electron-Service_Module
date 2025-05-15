@@ -2,6 +2,7 @@ package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.entity.*;
+import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
@@ -180,7 +181,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void registerAccount(String account, String password) {
-        userMapper.registerAccount(account, password);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setCreatedAt(LocalDateTime.now());
+        userEntity.setAccount(account);
+        userEntity.setPassword(BCryptUtil.encrypt(password));
+        userMapper.insert(userEntity);
     }
 
 
