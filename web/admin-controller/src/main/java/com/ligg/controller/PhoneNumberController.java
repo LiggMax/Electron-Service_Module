@@ -91,9 +91,6 @@ public class PhoneNumberController {
             // 1. 提取并验证地区ID
             Integer regionId = extractRegionId(uploadData);
             log.info("提取的地区ID: {}", regionId);
-            if (regionId == null) {
-                return Result.error(400, "无法识别有效的地区ID");
-            }
 
             // 2. 提取并验证项目ID
             List<Integer> projectIds = extractProjectIds(uploadData);

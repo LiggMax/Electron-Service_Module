@@ -89,9 +89,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
      * 添加项目
      */
     @Override
-    public void saveProject(String projectName) {
+    public void saveProject(String projectName, Float projectPrice) {
         ProjectEntity projectEntity = new ProjectEntity();
         projectEntity.setProjectName(projectName);
+        projectEntity.setProjectPrice(projectPrice);
         projectEntity.setProjectCreatedAt(LocalDateTime.now());
         projectMapper.insert(projectEntity);
     }

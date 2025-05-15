@@ -5,12 +5,10 @@ import com.ligg.common.utils.Result;
 import com.ligg.service.adminweb.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 公告
@@ -29,5 +27,13 @@ public class AnnouncementController {
         announcementEntity.setCreateTime(LocalDateTime.now());
         announcementService.saveOrUpdate(announcementEntity);
         return Result.success();
+    }
+
+    /**
+     * 获取公告
+     */
+    @GetMapping
+    public Result<List<AnnouncementEntity>> getAnnouncement() {
+        return Result.success(200,announcementService.getBaseMapper().selectList(null));
     }
 }

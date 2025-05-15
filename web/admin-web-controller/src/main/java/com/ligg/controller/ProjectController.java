@@ -27,11 +27,12 @@ public class ProjectController {
     }
 
     /**
-     * 添加号码
+     * 添加项目
      */
     @PostMapping("/add")
-    public Result<String> addProject(@RequestParam String projectName){
-        projectService.saveProject(projectName);
+    public Result<String> addProject(@RequestParam String projectName,
+                                     @RequestParam Float  projectPrice){
+        projectService.saveProject(projectName,projectPrice);
         return Result.success(200,"添加成功");
     }
 

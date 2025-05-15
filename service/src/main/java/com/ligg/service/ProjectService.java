@@ -57,5 +57,5 @@ public interface ProjectService extends IService<ProjectEntity> {
     List<Integer> getProjectIdsByNames(List<String> projectNames);
 
     // 新增项目
-    void saveProject(String projectName);
+    void saveProject(String projectName,Float projectPrice);
 }
