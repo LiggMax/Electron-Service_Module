@@ -29,6 +29,7 @@ public class UserEntity {
     @Email
     private String email;
     private String userAvatar;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime loginTime;//登录时间

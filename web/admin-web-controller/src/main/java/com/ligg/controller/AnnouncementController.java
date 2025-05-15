@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.AnnouncementEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.AnnouncementService;
+import com.ligg.service.adminweb.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

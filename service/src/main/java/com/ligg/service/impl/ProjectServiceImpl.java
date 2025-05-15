@@ -11,6 +11,7 @@ import com.ligg.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,5 +84,16 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
             return new ArrayList<>();
         }
         return projectMapper.getProjectIdsByNames(projectNames);
+    }
+
+    /**
+     * 添加项目
+     */
+    @Override
+    public void saveProject(String projectName) {
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setProjectName(projectName);
+        projectEntity.setProjectCreatedAt(LocalDateTime.now());
+        projectMapper.insert(projectEntity);
     }
 }

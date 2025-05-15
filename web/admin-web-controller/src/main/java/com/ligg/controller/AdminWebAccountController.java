@@ -3,16 +3,13 @@ package com.ligg.controller;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.utils.BCryptUtil;
-import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
-import com.ligg.service.AdminWebUserService;
+import com.ligg.service.adminweb.AdminWebUserService;
 import com.ligg.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 后台管理web登录

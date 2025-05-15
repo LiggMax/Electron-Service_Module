@@ -1,13 +1,15 @@
-package com.ligg.service.impl;
+package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.CustomerMapper;
-import com.ligg.service.CustomerService;
+import com.ligg.service.adminweb.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, UserEntity> implements CustomerService {
@@ -39,5 +41,12 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, UserEntity>
         updateWrapper.eq(UserEntity::getUserId, userId)
                 .set(UserEntity::getPassword, encrypt);
         customerMapper.update(updateWrapper);
+    }
+
+    @Override
+    public void saveUser(UserEntity userEntity) {
+        userEntity.setPassword(BCryptUtil.encrypt(userEntity.getPassword()));
+        userEntity.setCreatedAt(LocalDateTime.now());
+        customerMapper.insert(userEntity);
     }
 }

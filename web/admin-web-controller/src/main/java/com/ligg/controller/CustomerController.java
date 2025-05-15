@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.CustomerService;
+import com.ligg.service.adminweb.CustomerService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class CustomerController {
      */
     @PostMapping("/addUser")
     public Result<String> addUser(@RequestBody UserEntity userEntity){
-        customerService.save(userEntity);
+        customerService.saveUser(userEntity);
         return Result.success(200,"添加成功");
     }
 }
