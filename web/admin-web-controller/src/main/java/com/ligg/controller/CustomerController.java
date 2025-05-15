@@ -81,4 +81,13 @@ public class CustomerController {
         customerService.saveUser(userEntity);
         return Result.success(200, "添加成功");
     }
+
+    /**
+     * 删除客户
+     */
+    @DeleteMapping("/deleteUser")
+    public Result<String> deleteUser(@RequestParam Long userId){
+        customerService.removeById(userId);
+        return Result.success(200,"删除成功");
+    }
 }

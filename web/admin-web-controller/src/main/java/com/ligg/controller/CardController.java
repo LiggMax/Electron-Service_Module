@@ -65,4 +65,13 @@ public class CardController {
         adminUserService.resetPassword(userId,password);
         return Result.success(200,"重置成功");
     }
+
+    /**
+     * 删除卡商
+     */
+    @DeleteMapping("/deleteCard")
+    public Result<String> deleteCardInfo(@RequestParam Long userId){
+        adminUserService.removeById(userId);
+        return Result.success(200,"删除成功");
+    }
 }
