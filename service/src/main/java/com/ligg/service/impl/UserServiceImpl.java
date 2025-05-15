@@ -1,6 +1,7 @@
 package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.ligg.common.entity.*;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
@@ -53,13 +54,6 @@ public class UserServiceImpl implements UserService {
         redisTemplate.opsForValue()
                 .set("Token:" + userId, token,
                         6, TimeUnit.HOURS);
-
-        //更新登录时间
-        LocalDateTime nowTime = LocalDateTime.now();
-        LambdaUpdateWrapper<UserEntity> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        lambdaUpdateWrapper.eq(UserEntity::getUserId, userId)
-                .set(UserEntity::getLoginTime, nowTime);
-        userMapper.update(lambdaUpdateWrapper);
         return token;
     }
 
@@ -67,7 +61,7 @@ public class UserServiceImpl implements UserService {
      * 清除token
      */
     @Override
-    public void clearToken(String userId) {
+    public void clearToken(Long userId) {
         redisTemplate.delete("Token:" + userId);
     }
 
@@ -188,12 +182,22 @@ public class UserServiceImpl implements UserService {
         userMapper.insert(userEntity);
     }
 
-
     /**
      * 获取管理信息
      */
     @Override
     public AdminWebUserEntity getAdminWebInfo(String account) {
         return userMapper.findByAdminWebUser(account);
+    }
+
+    /**
+     * 更新登录时间
+     */
+    @Override
+    public void updateLoginTime(Long userId) {
+        LambdaUpdateWrapper<UserEntity> wrapper = new LambdaUpdateWrapper<UserEntity>()
+                .eq(UserEntity::getUserId, userId)
+                .set(UserEntity::getLoginTime, LocalDateTime.now());
+        userMapper.update(null, wrapper);
     }
 }

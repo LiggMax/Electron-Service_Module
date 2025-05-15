@@ -30,7 +30,7 @@ public class AdminUserController {
     public Result<String> logout() {
         String token = request.getHeader("Token");
         Map<String, Object> map = jwtUtil.parseToken(token);
-        String userId = (String) map.get("userId");
+        Long userId = (Long) map.get("userId");
         userService.clearToken(userId);
         return Result.success(200, "退出成功");
     }

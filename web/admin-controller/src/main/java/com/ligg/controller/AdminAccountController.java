@@ -3,6 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
+import com.ligg.service.AdminUserService;
 import com.ligg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,8 @@ public class AdminAccountController {
 
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private AdminUserService adminUserService;
     /**
      * 登录
      */
@@ -34,6 +36,8 @@ public class AdminAccountController {
             return Result.error(400,"账号或密码错误");
         }
         String token = userService.createToken(userInfo.getUserId(),userInfo.getAccount());
+        //更新登录时间
+        adminUserService.updateLoginTime(userInfo.getUserId());
         return Result.success(200,token);
     }
 

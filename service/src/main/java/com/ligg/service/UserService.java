@@ -19,7 +19,7 @@ public interface UserService {
     String createToken(Long userId, String account);
 
     //清理token
-    void clearToken(String userId);
+    void clearToken(Long userId);
 
     //根据用户id查询管理员用户信息
     AdminUserEntity findByAdminUserInfo(Long userId);
@@ -57,4 +57,6 @@ public interface UserService {
     //获取管理员信息
     AdminWebUserEntity getAdminWebInfo(String account);
 
+    //更新登录时间
+    void updateLoginTime(Long userId);
 }

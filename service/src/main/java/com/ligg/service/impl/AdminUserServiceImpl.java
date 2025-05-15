@@ -23,7 +23,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
     @Override
     public void resetPassword(Long userId, String password) {
         LambdaUpdateWrapper<AdminUserEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(AdminUserEntity ::getUserId, userId)
+        updateWrapper.eq(AdminUserEntity::getUserId, userId)
                 .set(AdminUserEntity::getPassword, BCryptUtil.encrypt(password));
         adminUserMapper.update(null, updateWrapper);
     }
@@ -36,5 +36,16 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         adminUserEntity.setCreatedAt(LocalDateTime.now());
         adminUserEntity.setPassword(BCryptUtil.encrypt(adminUserEntity.getPassword()));
         adminUserMapper.insert(adminUserEntity);
+    }
+
+    /**
+     * 更新登录时间
+     */
+    @Override
+    public void updateLoginTime(Long userId) {
+        LambdaUpdateWrapper<AdminUserEntity> updateWrapper = new LambdaUpdateWrapper<AdminUserEntity>()
+                .eq(AdminUserEntity::getUserId, userId)
+                .set(AdminUserEntity::getLoginTime, LocalDateTime.now());
+        adminUserMapper.update(null, updateWrapper);
     }
 }

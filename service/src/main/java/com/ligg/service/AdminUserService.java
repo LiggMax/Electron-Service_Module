@@ -10,4 +10,6 @@ public interface AdminUserService extends IService<AdminUserEntity> {
     void resetPassword(Long userId, @Min(value = 6,message = "密码长度不能小于6位") @Max(value = 20,message = "密码长度不能大于20位") String password);
     //添加卡商
     void saveCardUser(AdminUserEntity adminUserEntity);
+    //更新登录时间
+    void updateLoginTime(Long userId);
 }

@@ -35,6 +35,8 @@ public Result<String> login(@RequestBody Map<String, String> request) {
     }
 
     String token = userService.createToken(byAccount.getUserId(), byAccount.getAccount());
+    //更新登录时间
+    userService.updateLoginTime(byAccount.getUserId());
     return Result.success(200, token);
 }
 

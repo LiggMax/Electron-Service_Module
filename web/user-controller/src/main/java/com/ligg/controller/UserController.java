@@ -114,7 +114,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         userService.logoutAccount(userId);
-        userService.clearToken(userId.toString());
+        userService.clearToken(userId);
         return Result.success();
     }
 }
