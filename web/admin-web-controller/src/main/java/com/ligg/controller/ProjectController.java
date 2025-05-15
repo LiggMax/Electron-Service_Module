@@ -44,5 +44,4 @@ public class ProjectController {
         projectService.removeById(projectId);
         return Result.success(200,"删除成功");
     }
-
 }
