@@ -1,9 +1,12 @@
 package com.ligg.controller;
 
+import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.PhoneNumberService;
 import com.ligg.service.ProjectService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +27,12 @@ public class PhoneNumberController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 获取项目和地区数据
@@ -60,18 +69,19 @@ public class PhoneNumberController {
      * 查询手机号详情
      */
     @GetMapping("/phoneDetail")
-    public Result<?> phoneDetail(Integer phoneId) {
-        try {
-            if (phoneId == null) {
-                return Result.error(400, "手机号ID不能为空");
-            }
-            // 调用服务获取手机号详情（包含基本信息和项目列表）
-            Map<String, Object> phoneDetailData = phoneNumberService.phoneDetail(phoneId);
-            return Result.success(200, phoneDetailData);
-        } catch (Exception e) {
-            log.error("查询手机号详情失败: {}", e.getMessage(), e);
-            return Result.error(500, "查询手机号详情失败: " + e.getMessage());
+    public Result<PhoneAndProjectDto> phoneDetail(Long phoneId) {
+        if (phoneId == null) {
+            log.info("查询号码详情缺少Id");
+            return Result.error(400, "请求参数错误");
         }
+        Map<String, Object> userInfo = jwtUtil.parseToken(request.getHeader("Token"));
+        if (userInfo == null || userInfo.get("userId") == null) {
+            log.info("查询号码详情缺少用户id");
+            return Result.error(400, "请求参数错误");
+        }
+        Long adminUserId = (Long) userInfo.get("userId");
+        PhoneAndProjectDto phoneDetailData = phoneNumberService.phoneDetail(phoneId,adminUserId);
+        return Result.success(200, phoneDetailData);
     }
 
     /**
@@ -80,7 +90,7 @@ public class PhoneNumberController {
     @PostMapping("/upload")
     public Result<?> uploadPhoneNumbers(@RequestBody Map<String, Object> uploadData) {
         log.info("接收到上传数据: {}", uploadData);
-        
+
         // 用于记录处理结果
         int totalProcessed = 0; // 总处理数量
         int totalAdded = 0;     // 成功添加数量
@@ -104,19 +114,19 @@ public class PhoneNumberController {
             if (CollectionUtils.isEmpty(allPhoneNumbers)) {
                 return Result.error(400, "没有找到有效的手机号数据");
             }
-            
+
             totalProcessed = allPhoneNumbers.size();
             log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}", totalProcessed, regionId, projectIds);
-            
+
             // 4. 批量添加手机号到数据库
             totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds);
-            
+
             // 5. 计算重复和无效数量
             totalDuplicate = totalProcessed - totalAdded;
 
             // 6. 构建响应结果
             Map<String, Object> resultData = buildResultData(totalProcessed, totalAdded, totalDuplicate, totalInvalid);
-            
+
             // 返回成功结果和详细信息
             return Result.success(200, resultData);
         } catch (Exception e) {
@@ -125,10 +135,10 @@ public class PhoneNumberController {
             return Result.error(500, "上传失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 从请求数据中提取地区ID
-     * 
+     *
      * @param uploadData 上传数据
      * @return 地区ID，如果无法识别则返回默认值1
      */
@@ -136,22 +146,22 @@ public class PhoneNumberController {
         // 默认地区ID
         Integer defaultRegionId = 1;
         Integer resultRegionId = null;
-        
+
         // 尝试获取地区ID - 兼容多种可能的字段名
         if (uploadData.containsKey("regionId")) {
             // 新版本使用regionId
             Object regionIdObj = uploadData.get("regionId");
             resultRegionId = convertToInteger(regionIdObj, null);
             log.info("从regionId字段提取地区ID: {}", resultRegionId);
-        } 
-        
+        }
+
         if (resultRegionId == null && uploadData.containsKey("countryId")) {
             // 使用countryId
             Object countryIdObj = uploadData.get("countryId");
             resultRegionId = convertToInteger(countryIdObj, null);
             log.info("从countryId字段提取地区ID: {}", resultRegionId);
-        } 
-        
+        }
+
         if (resultRegionId == null && uploadData.containsKey("country")) {
             // 旧版本使用country，需要做映射
             String country = (String) uploadData.get("country");
@@ -159,26 +169,26 @@ public class PhoneNumberController {
             resultRegionId = mapCountryToRegionId(country);
             log.info("从country字段映射地区ID: {}", resultRegionId);
         }
-        
+
         // 如果没有找到有效的regionId，使用默认值
         if (resultRegionId == null || resultRegionId <= 0) {
             log.warn("未找到有效的regionId，使用默认值：{}", defaultRegionId);
             resultRegionId = defaultRegionId;
         }
-        
+
         return resultRegionId;
     }
-    
+
     /**
      * 从请求数据中提取项目ID列表
-     * 
+     *
      * @param uploadData 上传数据
      * @return 项目ID列表，如果无法识别则返回包含默认值[1]的列表
      */
     private List<Integer> extractProjectIds(Map<String, Object> uploadData) {
         List<Integer> projectIds = new ArrayList<>();
         Integer defaultProjectId = 1;
-        
+
         // 尝试获取项目ID列表 - 兼容多种可能的字段名
         if (uploadData.containsKey("projectIds") && uploadData.get("projectIds") != null) {
             // 新版本使用projectIds，预期是整数列表
@@ -187,7 +197,7 @@ public class PhoneNumberController {
                 if (projectIdsObj instanceof List) {
                     @SuppressWarnings("unchecked")
                     List<?> projectIdsList = (List<?>) projectIdsObj;
-                    
+
                     // 处理可能的不同类型（整数或字符串）
                     for (Object idObj : projectIdsList) {
                         Integer projectId = convertToInteger(idObj, null);
@@ -195,7 +205,7 @@ public class PhoneNumberController {
                             projectIds.add(projectId);
                         }
                     }
-                    
+
                     log.info("从projectIds字段提取项目ID列表: {}", projectIds);
                 }
             } catch (Exception e) {
@@ -216,13 +226,13 @@ public class PhoneNumberController {
                 log.warn("projects格式转换失败: {}", e.getMessage());
             }
         }
-        
+
         // 如果没有找到有效的项目ID，使用默认值
         if (projectIds.isEmpty()) {
             projectIds.add(defaultProjectId);
             log.warn("未找到有效的项目ID，使用默认值：{}", projectIds);
         }
-        
+
         // 检查所有项目ID的有效性
         List<Integer> validProjectIds = new ArrayList<>();
         for (Integer id : projectIds) {
@@ -230,57 +240,57 @@ public class PhoneNumberController {
                 validProjectIds.add(id);
             }
         }
-        
+
         // 如果过滤后没有有效ID，使用默认值
         if (validProjectIds.isEmpty()) {
             validProjectIds.add(defaultProjectId);
             log.warn("所有项目ID均无效，使用默认值：{}", validProjectIds);
         }
-        
+
         return validProjectIds;
     }
-    
+
     /**
      * 从请求数据中提取所有手机号
-     * 
+     *
      * @param uploadData 上传数据
      * @return 所有有效的手机号列表
      */
     private List<String> extractPhoneNumbers(Map<String, Object> uploadData) {
         List<String> allPhoneNumbers = new ArrayList<>();
-        
+
         try {
             // 获取文件列表
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> files = (List<Map<String, Object>>) uploadData.get("files");
-            
+
             if (files != null && !files.isEmpty()) {
                 // 处理每个文件中的手机号
                 for (Map<String, Object> fileData : files) {
                     // 获取手机号列表
                     @SuppressWarnings("unchecked")
                     List<String> phoneNumbers = (List<String>) fileData.get("phoneNumbers");
-                    
+
                     if (phoneNumbers != null && !phoneNumbers.isEmpty()) {
                         // 过滤掉空字符串和无效字符
                         List<String> validPhoneNumbers = phoneNumbers.stream()
-                            .filter(phone -> phone != null && !phone.trim().isEmpty())
-                            .map(phone -> phone.trim().replaceAll("[\\s-]", ""))
-                            .toList();
-                        
+                                .filter(phone -> phone != null && !phone.trim().isEmpty())
+                                .map(phone -> phone.trim().replaceAll("[\\s-]", ""))
+                                .toList();
+
                         allPhoneNumbers.addAll(validPhoneNumbers);
                     }
                 }
             }
-            
+
             log.info("提取的手机号数量: {}", allPhoneNumbers.size());
         } catch (Exception e) {
             log.error("解析手机号数据失败: {}", e.getMessage(), e);
         }
-        
+
         return allPhoneNumbers;
     }
-    
+
     /**
      * 构建上传结果数据
      */
@@ -290,7 +300,7 @@ public class PhoneNumberController {
         resultData.put("added", totalAdded);
         resultData.put("duplicate", totalDuplicate);
         resultData.put("invalid", totalInvalid);
-        
+
         String message = "导入成功：成功添加" + totalAdded + "个手机号";
         if (totalDuplicate > 0) {
             message += "，" + totalDuplicate + "个重复号码已跳过";
@@ -298,11 +308,11 @@ public class PhoneNumberController {
         if (totalInvalid > 0) {
             message += "，" + totalInvalid + "个无效号码已忽略";
         }
-        
+
         resultData.put("message", message);
         return resultData;
     }
-    
+
     /**
      * 将各种类型转换为Integer
      */
@@ -310,7 +320,7 @@ public class PhoneNumberController {
         if (obj == null) {
             return defaultValue;
         }
-        
+
         if (obj instanceof Integer) {
             return (Integer) obj;
         } else if (obj instanceof String) {
@@ -323,12 +333,13 @@ public class PhoneNumberController {
         } else if (obj instanceof Number) {
             return ((Number) obj).intValue();
         }
-        
+
         return defaultValue;
     }
-    
+
     /**
      * 将国家/地区名称映射为地区ID
+     *
      * @param country 国家/地区名称
      * @return 地区ID
      */
@@ -336,7 +347,7 @@ public class PhoneNumberController {
         if (country == null || country.trim().isEmpty()) {
             return null;
         }
-        
+
         // 尝试通过数据库查询获取地区ID
         Integer regionId = null;
         try {
@@ -345,7 +356,7 @@ public class PhoneNumberController {
         } catch (Exception e) {
             log.warn("通过数据库查询地区ID失败: {}", e.getMessage());
         }
-        
+
         // 如果数据库查询失败，使用静态映射作为回退
         if (regionId == null) {
             Map<String, Integer> countryMap = new HashMap<>();
@@ -354,25 +365,26 @@ public class PhoneNumberController {
             countryMap.put("英国", 3);
             countryMap.put("日本", 4);
             countryMap.put("韩国", 5);
-            
+
             regionId = countryMap.getOrDefault(country.trim(), null);
         }
-        
+
         return regionId;
     }
-    
+
     /**
      * 将项目名称列表映射为项目ID列表
+     *
      * @param projectObjects 项目对象列表
      * @return 项目ID列表
      */
     private List<Integer> mapProjectNamesToIds(List<?> projectObjects) {
         List<Integer> projectIds = new ArrayList<>();
-        
+
         if (projectObjects == null || projectObjects.isEmpty()) {
             return projectIds;
         }
-        
+
         for (Object project : projectObjects) {
             // 直接的字符串列表
             if (project instanceof String) {
@@ -383,12 +395,12 @@ public class PhoneNumberController {
                         projectIds.add(projectId);
                     }
                 }
-            } 
+            }
             // Map格式的项目对象
             else if (project instanceof Map) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> projectMap = (Map<String, Object>) project;
-                
+
                 // 尝试直接获取projectId
                 Object projectIdObj = projectMap.get("projectId");
                 if (projectIdObj != null) {
@@ -396,7 +408,7 @@ public class PhoneNumberController {
                     if (projectId != null && projectId > 0) {
                         projectIds.add(projectId);
                     }
-                } 
+                }
                 // 如果没有projectId，尝试通过projectName查询
                 else {
                     Object projectNameObj = projectMap.get("projectName");
@@ -412,7 +424,7 @@ public class PhoneNumberController {
                 }
             }
         }
-        
+
         return projectIds;
     }
 }

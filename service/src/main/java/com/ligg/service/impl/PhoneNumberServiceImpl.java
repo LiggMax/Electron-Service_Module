@@ -1,7 +1,7 @@
 package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.dto.PhoneDetailDto;
+import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.PhoneNumberService;
@@ -13,10 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,51 +29,10 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
 
     /**
      * 根据手机号ID查询手机号详情
-     *
-     * @param phoneId 手机号ID
-     * @return 手机号详情（包含基本信息和项目列表）
      */
     @Override
-    public Map<String, Object> phoneDetail(Integer phoneId) {
-        // 获取手机号的详细信息
-        List<PhoneDetailDto> phoneDetails = phoneNumberMapper.queryByIdPhoneDetail(phoneId);
-        Map<String, Object> resultMap = new HashMap<>();
-        
-        // 如果没有找到手机号详情，返回空结果
-        if (CollectionUtils.isEmpty(phoneDetails)) {
-            return resultMap;
-        }
-        
-        // 获取第一条记录的基本信息
-        PhoneDetailDto baseInfo = phoneDetails.get(0);
-        
-        // 构建基本信息
-        Map<String, Object> phoneInfo = new HashMap<>();
-        phoneInfo.put("phoneId", baseInfo.getPhoneId());
-        phoneInfo.put("phoneNumber", baseInfo.getPhoneNumber());
-        phoneInfo.put("countryCode", baseInfo.getCountryCode());
-        phoneInfo.put("lineStatus", baseInfo.getLineStatus());
-        phoneInfo.put("usageStatus", baseInfo.getUsageStatus());
-        phoneInfo.put("registrationTime", baseInfo.getRegistrationTime());
-        
-        // 添加基本信息到结果
-        resultMap.put("basicInfo", phoneInfo);
-        
-        // 构建项目列表
-        List<Map<String, Object>> projectList = phoneDetails.stream()
-                .filter(detail -> detail.getProjectName() != null)
-                .map(detail -> {
-                    Map<String, Object> projectMap = new HashMap<>();
-                    projectMap.put("projectName", detail.getProjectName());
-                    projectMap.put("timeOfUse", detail.getTimeOfUse());
-                    return projectMap;
-                })
-                .collect(Collectors.toList());
-        
-        // 添加项目列表到结果
-        resultMap.put("projects", projectList);
-        
-        return resultMap;
+    public PhoneAndProjectDto phoneDetail(Long phoneId, Long adminUserId) {
+        return phoneNumberMapper.getPhoneAndProject(phoneId,adminUserId);
     }
 
     /**

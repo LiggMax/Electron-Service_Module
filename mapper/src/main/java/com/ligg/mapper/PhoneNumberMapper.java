@@ -1,6 +1,7 @@
 package com.ligg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.dto.PhoneDetailDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
@@ -68,5 +69,24 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      */
     List<PhoneEntity> getRegion();
 
+    //查询号码详情
+    PhoneDetailDto  getPhoneDetail(Long phoneId);
+
+    //查询号码关联的项目
+    List<ProjectEntity> getPhoneProject(Long phoneId);
+    
+    /**
+     * 获取手机号信息及其关联的项目（嵌套结构）
+     * @param phoneId 手机号ID
+     * @return 包含基本信息和项目列表的Map
+     */
+    Map<String, Object> getPhoneWithProjects(Long phoneId);
+    
+    /**
+     * 获取手机号和关联项目信息（使用DTO对象）
+     * @param phoneId 手机号ID
+     * @return PhoneAndProjectDto对象，包含嵌套的项目信息
+     */
+    PhoneAndProjectDto getPhoneAndProject(Long phoneId,Long adminUserId);
 }
 

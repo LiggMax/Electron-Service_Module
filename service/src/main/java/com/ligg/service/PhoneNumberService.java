@@ -1,10 +1,10 @@
 package com.ligg.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface PhoneNumberService extends IService<PhoneEntity> {
 
@@ -15,10 +15,11 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
 
     /**
      * 查询手机号详情
-     * @param phoneId 手机号ID
+     *
+     * @param phoneId     手机号ID
      * @return 详情数据
      */
-    Map<String, Object> phoneDetail(Integer phoneId);
+    PhoneAndProjectDto phoneDetail(Long phoneId,Long adminUserId);
 
     /**
      * 批量添加手机号
