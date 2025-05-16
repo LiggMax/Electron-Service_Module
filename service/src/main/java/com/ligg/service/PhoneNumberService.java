@@ -5,7 +5,6 @@ import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface PhoneNumberService extends IService<PhoneEntity> {
 
@@ -14,14 +13,7 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      */
     List<PhoneEntity> phoneList(String countryCode, Integer usageStatus, String keyword);
 
-    /**
-     * 查询手机号详情
-     *
-     * @param phoneId     手机号ID
-     * @return 详情数据
-     */
-    PhoneAndProjectDto phoneDetail(Long phoneId,Long adminUserId);
-    
+
     /**
      * 根据手机号查询详情
      *
@@ -36,8 +28,9 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      * @param phoneNumbers 手机号列表
      * @param regionId 地区ID
      * @param projectIds 项目ID列表
+     * @param adminUserId 管理员用户ID
      * @return 成功添加的数量
      */
-    int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Integer> projectIds);
+    int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Integer> projectIds, Long adminUserId);
 
 }

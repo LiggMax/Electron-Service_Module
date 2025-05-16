@@ -104,8 +104,7 @@ public class PhoneNumberController {
             phoneDetailData.setPhoneNumber(phoneEntity.getPhoneNumber());
             phoneDetailData.setLineStatus(phoneEntity.getLineStatus());
             phoneDetailData.setUsageStatus(phoneEntity.getUsageStatus());
-            phoneDetailData.setRegistrationTime(phoneEntity.getRegistrationTime());
-            
+
             return Result.success(200, phoneDetailData);
         } catch (Exception e) {
             log.error("查询手机号详情失败: phoneId={}, error={}", phoneId, e.getMessage(), e);
@@ -127,6 +126,13 @@ public class PhoneNumberController {
         int totalInvalid = 0;   // 无效数量
 
         try {
+            // 获取管理员ID
+            Map<String, Object> token = jwtUtil.parseToken(request.getHeader("Token"));
+            Long adminUserId = (Long) token.get("userId");
+            if (adminUserId == null) {
+                return Result.error(401, "未授权的操作，请先登录");
+            }
+            
             // 1. 提取并验证地区ID
             Integer regionId = extractRegionId(uploadData);
             log.info("提取的地区ID: {}", regionId);
@@ -145,10 +151,11 @@ public class PhoneNumberController {
             }
 
             totalProcessed = allPhoneNumbers.size();
-            log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}", totalProcessed, regionId, projectIds);
+            log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}, 管理员ID={}", 
+                    totalProcessed, regionId, projectIds, adminUserId);
 
             // 4. 批量添加手机号到数据库
-            totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds);
+            totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds, adminUserId);
             
             // 5. 建立手机号和项目的关联关系（直接使用手机号和项目ID）
             if (totalAdded > 0 && !projectIds.isEmpty()) {

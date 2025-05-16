@@ -5,7 +5,7 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, line_status, registration_time, usage_status, phone_region_id, phone_project_id)
+        (phone_number, line_status, registration_time, usage_status, phone_region_id, phone_project_id,admin_user_id)
         values
         <foreach collection="list" item="phone" separator=",">
             (
@@ -14,7 +14,8 @@
             #{phone.registrationTime},
             #{phone.usageStatus},
             #{phone.phoneRegionId},
-            #{phone.phoneProjectId}
+            #{phone.phoneProjectId},
+            #{phone.adminUserId}
             )
         </foreach>
     </insert>
