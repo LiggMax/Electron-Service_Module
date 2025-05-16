@@ -78,9 +78,10 @@ public class PhoneTest {
     public void getPhoneAndProjectDtoTest() {
         // 假设存在ID为1的号码
         Long phoneId = 128L;
+        Long adminUserId = 1922883816214745090L;
         
         // 使用DTO直接获取嵌套结构
-        PhoneAndProjectDto phoneAndProject = phoneNumberMapper.getPhoneAndProject(phoneId);
+        PhoneAndProjectDto phoneAndProject = phoneNumberMapper.getPhoneAndProject(phoneId,adminUserId);
         
         // 输出JSON格式
         System.out.println("基于DTO的嵌套JSON结构:");

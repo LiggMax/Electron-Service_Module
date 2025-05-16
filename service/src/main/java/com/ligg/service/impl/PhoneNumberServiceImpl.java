@@ -3,6 +3,7 @@ package com.ligg.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.entity.ProjectEntity;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.PhoneNumberService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -33,6 +36,52 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     @Override
     public PhoneAndProjectDto phoneDetail(Long phoneId, Long adminUserId) {
         return phoneNumberMapper.getPhoneAndProject(phoneId,adminUserId);
+    }
+
+    /**
+     * 根据手机号查询详情
+     *
+     * @param phoneNumber 手机号
+     * @param adminUserId 管理员用户ID
+     * @return 详情数据
+     */
+    @Override
+    public PhoneAndProjectDto phoneDetailByNumber(Long phoneNumber, Long adminUserId) {
+        try {
+            // 创建基础DTO对象
+            PhoneAndProjectDto dto = new PhoneAndProjectDto();
+            
+            // 获取手机号基本信息
+            PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
+            if (phoneEntity == null) {
+                log.warn("未找到手机号: {}", phoneNumber);
+                return null;
+            }
+            
+            // 设置基本信息
+            dto.setPhoneNumber(phoneNumber);
+            dto.setLineStatus(phoneEntity.getLineStatus());
+            dto.setUsageStatus(phoneEntity.getUsageStatus());
+            dto.setRegistrationTime(phoneEntity.getRegistrationTime());
+            
+            // 获取地区信息
+            Integer regionId = phoneEntity.getPhoneRegionId();
+            if (regionId != null) {
+                // 这里可以添加获取地区信息的逻辑
+                // 例如: RegionEntity region = regionMapper.selectById(regionId);
+                // dto.setRegionName(region.getRegionName());
+                // dto.setCountryCode(region.getRegionCode());
+            }
+            
+            // 获取项目列表
+            List<ProjectEntity> projects = phoneNumberMapper.getProjectByPhoneNumber(phoneNumber);
+            dto.setProjects(projects);
+            
+            return dto;
+        } catch (Exception e) {
+            log.error("根据手机号查询详情失败: phoneNumber={}, error={}", phoneNumber, e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -163,6 +212,42 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             log.info("成功添加手机号: {}, 关联项目: {}", totalAdded, projectIds);
             return totalAdded;
+        } catch (Exception e) {
+            log.error("批量添加手机号失败: {}", e.getMessage(), e);
+            throw e; // 抛出异常以触发事务回滚
+        }
+    }
+    
+    /**
+     * 执行批量插入手机号及关联，并返回添加的手机号ID列表
+     */
+    private Map<String, Object> insertPhonesAndReturnIds(List<PhoneEntity> phonesToInsert, List<Long> validPhoneNumbers, List<Integer> projectIds) {
+        Map<String, Object> result = new HashMap<>();
+        List<Long> insertedPhoneIds = new ArrayList<>();
+        
+        try {
+            // 批量插入手机号
+            int totalAdded = phoneNumberMapper.batchInsertPhones(phonesToInsert);
+            
+            // 为每个项目插入关联信息到user_order表，并收集手机号ID
+            for (Long phoneNumber : validPhoneNumbers) {
+                // 插入到user_order表
+                for (Integer projectId : projectIds) {
+                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
+                }
+                
+                // 获取插入的手机号ID
+                PhoneEntity insertedPhone = phoneNumberMapper.getPhoneByNumber(phoneNumber);
+                if (insertedPhone != null && insertedPhone.getPhoneId() != null) {
+                    insertedPhoneIds.add(Long.valueOf(insertedPhone.getPhoneId()));
+                }
+            }
+            
+            log.info("成功添加手机号: {}, 获取手机号ID: {}, 关联项目: {}", totalAdded, insertedPhoneIds.size(), projectIds);
+            
+            result.put("count", totalAdded);
+            result.put("phoneIds", insertedPhoneIds);
+            return result;
         } catch (Exception e) {
             log.error("批量添加手机号失败: {}", e.getMessage(), e);
             throw e; // 抛出异常以触发事务回滚

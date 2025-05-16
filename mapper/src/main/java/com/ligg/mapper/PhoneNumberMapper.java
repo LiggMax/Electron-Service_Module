@@ -64,24 +64,18 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      */
     void deletePhone(Integer phoneId);
 
-    /**
-     * 获取地区
-     */
-    List<PhoneEntity> getRegion();
-
     //查询号码详情
-    PhoneDetailDto  getPhoneDetail(Long phoneId);
+    PhoneDetailDto getPhoneDetail(Long phoneId);
 
-    //查询号码关联的项目
-    List<ProjectEntity> getPhoneProject(Long phoneId);
-    
+
     /**
-     * 获取手机号信息及其关联的项目（嵌套结构）
-     * @param phoneId 手机号ID
-     * @return 包含基本信息和项目列表的Map
+     * 根据手机号查询关联的项目
+     * @param phoneNumber 手机号
+     * @return 项目列表
      */
-    Map<String, Object> getPhoneWithProjects(Long phoneId);
+    List<ProjectEntity> getProjectByPhoneNumber(@Param("phoneNumber") Long phoneNumber);
     
+
     /**
      * 获取手机号和关联项目信息（使用DTO对象）
      * @param phoneId 手机号ID

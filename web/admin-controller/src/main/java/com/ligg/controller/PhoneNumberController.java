@@ -6,6 +6,7 @@ import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.PhoneNumberService;
 import com.ligg.service.ProjectService;
+import com.ligg.service.adminweb.PhoneProjectRelationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class PhoneNumberController {
 
     @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    private PhoneProjectRelationService phoneProjectRelationService;
 
     /**
      * 获取项目和地区数据
@@ -80,8 +84,33 @@ public class PhoneNumberController {
             return Result.error(400, "请求参数错误");
         }
         Long adminUserId = (Long) userInfo.get("userId");
-        PhoneAndProjectDto phoneDetailData = phoneNumberService.phoneDetail(phoneId,adminUserId);
-        return Result.success(200, phoneDetailData);
+        
+        try {
+            // 1. 获取手机号基本信息
+            PhoneEntity phoneEntity = phoneNumberService.getById(phoneId);
+            if (phoneEntity == null) {
+                log.warn("未找到ID为{}的手机号", phoneId);
+                return Result.error(404, "未找到手机号");
+            }
+            
+            // 2. 使用手机号查询详情和关联项目
+            PhoneAndProjectDto phoneDetailData = phoneNumberService.phoneDetailByNumber(phoneEntity.getPhoneNumber(), adminUserId);
+            
+            // 3. 填充手机号ID等基本信息
+            if (phoneDetailData == null) {
+                phoneDetailData = new PhoneAndProjectDto();
+            }
+            phoneDetailData.setPhoneId(phoneEntity.getPhoneId());
+            phoneDetailData.setPhoneNumber(phoneEntity.getPhoneNumber());
+            phoneDetailData.setLineStatus(phoneEntity.getLineStatus());
+            phoneDetailData.setUsageStatus(phoneEntity.getUsageStatus());
+            phoneDetailData.setRegistrationTime(phoneEntity.getRegistrationTime());
+            
+            return Result.success(200, phoneDetailData);
+        } catch (Exception e) {
+            log.error("查询手机号详情失败: phoneId={}, error={}", phoneId, e.getMessage(), e);
+            return Result.error(500, "查询手机号详情失败");
+        }
     }
 
     /**
@@ -120,11 +149,38 @@ public class PhoneNumberController {
 
             // 4. 批量添加手机号到数据库
             totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds);
+            
+            // 5. 建立手机号和项目的关联关系（直接使用手机号和项目ID）
+            if (totalAdded > 0 && !projectIds.isEmpty()) {
+                log.info("开始建立手机号和项目的关联关系, 有效手机号数量: {}, 项目数量: {}", totalAdded, projectIds.size());
+                
+                // 处理每个有效的手机号
+                for (String phoneStr : allPhoneNumbers) {
+                    try {
+                        // 解析手机号
+                        Long phoneNumber = Long.parseLong(phoneStr.trim().replaceAll("[\\s-]", ""));
+                        
+                        // 为每个项目建立关联
+                        for (Integer projectId : projectIds) {
+                            try {
+                                phoneProjectRelationService.savePhoneNumberProjectRelation(phoneNumber, Long.valueOf(projectId));
+                                log.debug("成功建立关联: 手机号={}, 项目ID={}", phoneNumber, projectId);
+                            } catch (Exception e) {
+                                log.warn("建立手机号与项目关联失败: phoneNumber={}, projectId={}, error={}", 
+                                        phoneNumber, projectId, e.getMessage());
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        log.warn("手机号格式错误，无法建立关联: {}", phoneStr);
+                    }
+                }
+                log.info("手机号和项目关联关系建立完成");
+            }
 
-            // 5. 计算重复和无效数量
+            // 6. 计算重复和无效数量
             totalDuplicate = totalProcessed - totalAdded;
 
-            // 6. 构建响应结果
+            // 7. 构建响应结果
             Map<String, Object> resultData = buildResultData(totalProcessed, totalAdded, totalDuplicate, totalInvalid);
 
             // 返回成功结果和详细信息

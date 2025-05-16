@@ -91,43 +91,7 @@
         where phone_id = #{phoneId}
     </select>
 
-    <!-- 根据号码ID查询关联的项目 -->
-    <select id="getPhoneProject" resultType="com.ligg.common.entity.ProjectEntity">
-        select *
-        from phone_project_relation ppr
-        left join project p on ppr.project_id = p.project_id
-        where ppr.phone_id = #{phoneId}
-    </select>
-    
-    <!-- 定义Phone与Project的嵌套结果映射 -->
-    <resultMap id="PhoneWithProjectsMap" type="java.util.HashMap">
-        <!-- 基本信息部分 -->
-        <result property="phoneId" column="phone_id"/>
-        <result property="phoneNumber" column="phone_number"/>
-        <result property="countryCode" column="country_code"/>
-        <result property="lineStatus" column="line_status"/>
-        <result property="usageStatus" column="usage_status"/>
-        <result property="registrationTime" column="registration_time"/>
-        
-        <!-- 项目信息集合，使用collection标签 -->
-        <collection property="projects" ofType="com.ligg.common.entity.ProjectEntity" 
-                    column="phone_id" select="getPhoneProject"/>
-    </resultMap>
-    
-    <!-- 获取手机号信息及其关联的项目（嵌套结构） -->
-    <select id="getPhoneWithProjects" resultMap="PhoneWithProjectsMap">
-        SELECT 
-            p.phone_id,
-            p.phone_number,
-            r.region_name as country_code,
-            p.line_status,
-            p.usage_status,
-            p.registration_time
-        FROM phone p
-        LEFT JOIN region r ON p.phone_region_id = r.region_id
-        WHERE p.phone_id = #{phoneId}
-    </select>
-    
+
     <!-- 使用PhoneAndProjectDto的嵌套结果映射 -->
     <resultMap id="PhoneAndProjectDtoMap" type="com.ligg.common.dto.PhoneAndProjectDto">
         <!-- 基本信息部分 -->
@@ -156,5 +120,16 @@
         FROM phone p
         LEFT JOIN region r ON p.phone_region_id = r.region_id
         WHERE p.phone_id = #{phoneId} and p.admin_user_id = #{adminUserId}
+    </select>
+
+    <!-- 根据手机号查询关联的项目 -->
+    <select id="getProjectByPhoneNumber" resultType="com.ligg.common.entity.ProjectEntity">
+        SELECT 
+            p.project_id,
+            p.project_name,
+            p.project_price
+        FROM phone_project_relation ppr
+        LEFT JOIN project p ON ppr.project_id = p.project_id
+        WHERE ppr.phone_number = #{phoneNumber}
     </select>
 </mapper>
