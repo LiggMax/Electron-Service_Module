@@ -70,7 +70,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             dto.setRegistrationTime(phoneEntity.getRegistrationTime());
             
             // 获取地区信息
-            Integer regionId = phoneEntity.getPhoneRegionId();
+            Integer regionId = phoneEntity.getRegionId();
             if (regionId != null) {
                 // 这里可以添加获取地区信息的逻辑
                 // 例如: RegionEntity region = regionMapper.selectById(regionId);
@@ -193,7 +193,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, LocalDateTime now, Long adminUserId) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
-        phone.setPhoneRegionId(regionId);
+        phone.setRegionId(regionId);
         phone.setLineStatus(1);
         phone.setUsageStatus(1);
         phone.setRegistrationTime(now);

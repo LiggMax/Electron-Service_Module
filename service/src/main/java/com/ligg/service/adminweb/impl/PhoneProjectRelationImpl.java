@@ -9,6 +9,7 @@ import com.ligg.service.adminweb.PhoneProjectRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -25,11 +26,27 @@ public class PhoneProjectRelationImpl extends ServiceImpl<PhoneProjectRelationMa
      */
     @Override
     public boolean savePhoneProjectRelation(Long phoneNumber, Long projectId) {
-        PhoneProjectRelationEntity relationEntity = new PhoneProjectRelationEntity();
-        relationEntity.setPhoneNumber(phoneNumber);
-        relationEntity.setProjectId(projectId);
-        phoneProjectRelationMapper.insert(relationEntity);
-        return true;
+        try {
+            // 根据手机号查询手机号ID
+            PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
+            if (phoneEntity == null || phoneEntity.getPhoneId() == null) {
+                log.warn("未找到手机号: {}", phoneNumber);
+                return false;
+            }
+            
+            // 保存关联关系
+            PhoneProjectRelationEntity relationEntity = new PhoneProjectRelationEntity();
+            relationEntity.setPhoneId(phoneEntity.getPhoneId());
+            relationEntity.setProjectId(projectId);
+            relationEntity.setCreatedAt(LocalDateTime.now());
+            phoneProjectRelationMapper.insert(relationEntity);
+            
+            log.info("成功保存手机号和项目关系: 手机号={}, 项目ID={}", phoneNumber, projectId);
+            return true;
+        } catch (Exception e) {
+            log.error("保存手机号和项目关系失败: 手机号={}, 项目ID={}, 错误={}", phoneNumber, projectId, e.getMessage(), e);
+            return false;
+        }
     }
     
     /**
@@ -48,8 +65,9 @@ public class PhoneProjectRelationImpl extends ServiceImpl<PhoneProjectRelationMa
             
             // 保存关联关系
             PhoneProjectRelationEntity relationEntity = new PhoneProjectRelationEntity();
-            relationEntity.setPhoneNumber(phoneNumber);
+            relationEntity.setPhoneId(phoneEntity.getPhoneId());
             relationEntity.setProjectId(projectId);
+            relationEntity.setCreatedAt(LocalDateTime.now());
             phoneProjectRelationMapper.insert(relationEntity);
             
             log.info("成功保存手机号和项目关系: 手机号={}, 项目ID={}", phoneNumber, projectId);

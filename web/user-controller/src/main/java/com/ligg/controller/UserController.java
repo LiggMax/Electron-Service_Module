@@ -75,25 +75,30 @@ public class UserController {
     public Result<?> buyProject(@RequestBody Map<String, Object> userData) {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
-        Long projectId = (Long) userData.get("projectId");
-        Integer regionId = (Integer) userData.get("regionId");
-        String result = userService.buyProject(userId, regionId,projectId);
+        
+        // 获取项目ID、地区ID和购买数量
+        Integer projectId =  (Integer) userData.get("projectId");
+        Integer regionId = ((Number) userData.get("regionId")).intValue();
+
+        
+        // 调用Service层方法处理购买逻辑
+        String result = userService.buyProject(userId, regionId, projectId);
         if (result != null) {
             return Result.error(400, result);
         }
         return Result.success();
-   }
+    }
 
-   /**
-    * 获取用户收藏
-    */
-   @GetMapping("/favorite")
+    /**
+     * 获取用户收藏
+     */
+    @GetMapping("/favorite")
     public Result<List<Map<String, Object>>> getUserFavorite() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         List<Map<String, Object>> userFavorite = userService.getUserFavorite(userId);
         return Result.success(200, userFavorite);
-   }
+    }
 
     /**
      * 获取用户订单

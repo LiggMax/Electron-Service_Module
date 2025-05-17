@@ -5,7 +5,7 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, line_status, registration_time, usage_status, phone_region_id,admin_user_id)
+        (phone_number, line_status, registration_time, usage_status, region_id, admin_user_id)
         values
         <foreach collection="list" item="phone" separator=",">
             (
@@ -13,7 +13,7 @@
             #{phone.lineStatus},
             #{phone.registrationTime},
             #{phone.usageStatus},
-            #{phone.phoneRegionId},
+            #{phone.regionId},
             #{phone.adminUserId}
             )
         </foreach>
@@ -31,8 +31,10 @@
 
     <!-- 插入手机号和项目关联信息到 phone_project_relation 表 -->
     <insert id="insertPhoneProject">
-        INSERT INTO phone_project_relation(phone_number, project_id)
-        VALUES (#{phoneNumber}, #{projectId})
+        INSERT INTO phone_project_relation(phone_id, project_id, created_at)
+        SELECT p.phone_id, #{projectId}, NOW()
+        FROM phone p 
+        WHERE p.phone_number = #{phoneNumber}
     </insert>
 
     <!-- 删除手机号 -->
@@ -45,7 +47,7 @@
     <select id="phoneList" resultType="com.ligg.common.entity.PhoneEntity">
         select p.*, r.region_name as countryCode
         from phone p
-        left join region r on p.phone_region_id = r.region_id
+        left join region r on p.region_id = r.region_id
         <where>
             <if test="countryCode != null and countryCode != '' ">
                 r.region_name like concat('%', #{countryCode}, '%')
@@ -73,7 +75,7 @@
             pj.project_name,
             uo.created_at as time_of_use
         FROM phone p
-        LEFT JOIN region r ON p.phone_region_id = r.region_id
+        LEFT JOIN region r ON p.region_id = r.region_id
         LEFT JOIN user_order uo ON p.phone_number = uo.phone_number
         LEFT JOIN project pj ON uo.project_id = pj.project_id
         WHERE p.phone_id = #{phoneId}
@@ -82,7 +84,7 @@
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
         select phone_id, phone_number
         from phone
-        where phone_region_id = #{regionId}
+        where region_id = #{regionId}
     </select>
 
     <select id="getPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDto">
@@ -118,7 +120,7 @@
             p.registration_time,
             r.region_name
         FROM phone p
-        LEFT JOIN region r ON p.phone_region_id = r.region_id
+        LEFT JOIN region r ON p.region_id = r.region_id
         WHERE p.phone_id = #{phoneId} and p.admin_user_id = #{adminUserId}
     </select>
 
@@ -129,7 +131,25 @@
             p.project_name,
             p.project_price
         FROM phone_project_relation ppr
+        JOIN phone ph ON ppr.phone_id = ph.phone_id
         LEFT JOIN project p ON ppr.project_id = p.project_id
-        WHERE ppr.phone_number = #{phoneNumber}
+        WHERE ph.phone_number = #{phoneNumber}
     </select>
+    
+    <!-- 根据地区ID获取可用的手机号 -->
+    <select id="getAvailablePhonesByRegion" resultType="com.ligg.common.entity.PhoneEntity">
+        SELECT *
+        FROM phone
+        WHERE region_id = #{regionId}
+        AND usage_status = 1
+        AND line_status = 1
+        LIMIT 100
+    </select>
+    
+    <!-- 更新手机号状态 -->
+    <update id="updatePhoneStatus">
+        UPDATE phone
+        SET usage_status = #{status}
+        WHERE phone_id = #{phoneId}
+    </update>
 </mapper>

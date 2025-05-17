@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @TableName("phone")
 public class PhoneEntity {
     @TableId(value = "phone_id",type = IdType.AUTO)
-    private Integer phoneId;//id
+    private Long phoneId;//id
     private Long phoneNumber;//手机号
-    private Integer lineStatus;//线路状态 1.在线、2.离线
+    private Integer lineStatus;//线路状态 1.正常、0.异常
     private LocalDateTime registrationTime;//注册时间
-    private Integer usageStatus;//状态
-    private Long adminUserId;//号码归属卡商id
-    private Integer phoneRegionId;//归属地id
+    private Integer usageStatus;//使用状态 1.可用、0.不可用
+    private Integer regionId;//归属地id，修改名称与新表匹配
+    private Long adminUserId;//管理员用户id
 }

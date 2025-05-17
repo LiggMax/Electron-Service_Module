@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public String buyProject(Long userId, Integer regionId, Long projectId) {
+    public String buyProject(Long userId, Integer regionId, Integer projectId) {
         List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(regionId);
         // 从phoneEntities列表中随机获取一个号码
         if (!phoneEntities.isEmpty()) {
@@ -131,11 +131,11 @@ public class UserServiceImpl implements UserService {
 
             // 使用事务来确保操作的原子性
             userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),projectId);
-            phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
             return null;
         }
         return "号码可能已经被购买";
     }
+
 
     /**
      * 获取用户收藏的项目

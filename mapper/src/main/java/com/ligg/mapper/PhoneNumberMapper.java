@@ -62,7 +62,7 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     /**
      * 根据手机号id删除手机号
      */
-    void deletePhone(Integer phoneId);
+    void deletePhone(Long phoneId);
 
     //查询号码详情
     PhoneDetailDto getPhoneDetail(Long phoneId);
@@ -82,5 +82,20 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      * @return PhoneAndProjectDto对象，包含嵌套的项目信息
      */
     PhoneAndProjectDto getPhoneAndProject(Long phoneId,Long adminUserId);
+
+    /**
+     * 根据地区ID获取所有可用的手机号
+     * @param regionId 地区ID
+     * @return 可用的手机号列表
+     */
+    List<PhoneEntity> getAvailablePhonesByRegion(@Param("regionId") Integer regionId);
+    
+    /**
+     * 更新手机号的状态
+     * @param phoneId 手机号ID
+     * @param status 新状态 (1-可用，0-不可用)
+     * @return 受影响的行数
+     */
+    int updatePhoneStatus(@Param("phoneId") Long phoneId, @Param("status") Integer status);
 }
 

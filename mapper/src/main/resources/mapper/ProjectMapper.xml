@@ -9,30 +9,27 @@
     <!-- 查询项目列表 -->
     <select id="getAllProjectsList" resultType="com.ligg.common.dto.ProjectListDto">
         SELECT 
-            p.project_id AS projectId,
-            p.project_name AS projectName,
-            p.project_price AS projectPrice,
-            COUNT(ph.phone_id) AS phoneCount
+            project_id AS projectId,
+            project_name AS projectName,
+            project_price AS projectPrice,
+            phone_count AS phoneCount
         FROM 
-            project p
-        LEFT JOIN 
-            phone_project_relation ppr ON p.project_id = ppr.project_id
-        LEFT JOIN phone ph ON ppr.phone_number = ph.phone_number
-        GROUP BY
-            p.project_id, p.project_name, p.project_price
+            view_project_phone_count
         ORDER BY 
-            phoneCount DESC
+            phone_count DESC
     </select>
 
 
     <!-- 根据项目名称查询手机号列表 -->
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        SELECT *
-        FROM phone
-        WHERE usage_status = 1 
-        AND line_status = 1
+        SELECT p.*
+        FROM phone p
+        JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
+        JOIN project pj ON ppr.project_id = pj.project_id
+        WHERE p.usage_status = 1 
+        AND p.line_status = 1
         <if test="projectNames != null and projectNames.length > 0">
-            AND project_name IN
+            AND pj.project_name IN
             <foreach collection="projectNames" item="name" open="(" separator="," close=")">
                 #{name}
             </foreach>
@@ -46,12 +43,12 @@
             r.region_name as regionName,
             r.region_mark as regionMark,
             pj.project_price as projectPrice,
-            COUNT(ppr.phone_number) as phoneCount
+            COUNT(p.phone_id) as phoneCount
         FROM 
             project pj
         LEFT JOIN phone_project_relation ppr ON pj.project_id = ppr.project_id
-        LEFT JOIN phone p ON ppr.phone_number = p.phone_number
-        LEFT JOIN region r ON p.phone_region_id =r.region_id
+        LEFT JOIN phone p ON ppr.phone_id = p.phone_id AND p.usage_status = 1 AND p.line_status = 1
+        LEFT JOIN region r ON p.region_id = r.region_id
         WHERE
             pj.project_id = #{projectId}
         GROUP BY 

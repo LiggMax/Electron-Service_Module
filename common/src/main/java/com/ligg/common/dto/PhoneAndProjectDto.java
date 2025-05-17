@@ -13,7 +13,7 @@ import java.util.Map;
 @Data
 public class PhoneAndProjectDto {
     @TableId(value = "phone_id",type = IdType.AUTO)
-    private Integer phoneId;//id
+    private Long phoneId;//id
     private Long phoneNumber;//手机号
     private Integer lineStatus;//线路状态 1.在线、2.离线
     private LocalDateTime registrationTime;//注册时间
