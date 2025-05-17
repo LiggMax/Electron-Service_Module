@@ -56,36 +56,39 @@ public class UserAccountController {
      */
     @PostMapping("/register")
     public Result<String> register(@RequestBody Map<String, String> user) {
-        //校验account和password长度不小于6位
-        if (user.get("account").length() < 6 || user.get("password").length() < 6) {
+        String account = user.get("account");
+        String password = user.get("password");
+        String invitationCode = user.get("invitationCode");
+
+        // 校验账号和密码长度
+        if (account.length() < 6 || password.length() < 6) {
             return Result.error(400, "账号或密码长度不小于6位");
         }
-        if (user.get("account").length() > 20 || user.get("password").length() > 20) {
+        if (account.length() > 20 || password.length() > 20) {
             return Result.error(400, "账号或密码长度不大于20位");
         }
-        UserEntity byUser = userService.findByUser(user.get("account"));
-        if (byUser != null) {
+
+        // 检查账号是否已存在
+        if (userService.findByUser(account) != null) {
             return Result.error(400, "账号已存在");
         }
-        String account = user.get("account");
 
-        //判断输入的邀请码是否有效
-        if (user.get("invitationCode") != null) {
+        // 注册账户
+        userService.registerAccount(account, password);
 
-            //获取邀请人账号
+        // 处理邀请码逻辑
+        if (invitationCode != null && !invitationCode.isEmpty()) {
             UserEntity inviterAccount = userService.getBaseMapper()
                     .selectOne(new LambdaQueryWrapper<UserEntity>()
-                            .eq(UserEntity::getInvitationCode, user.get("invitationCode")));
+                            .eq(UserEntity::getInvitationCode, invitationCode));
             if (inviterAccount == null) {
                 return Result.error(400, "邀请码无效");
             }
-            userService.registerAccount(account, user.get("password"));
-            //添加邀请关系
-            invitationRelationsService.addInvitationRelations(user.get("invitationCode"), inviterAccount.getAccount(),account);
-            return Result.success();
+
+            // 添加邀请关系
+            invitationRelationsService.addInvitationRelations(invitationCode, inviterAccount.getAccount(), account);
         }
-        //如果邀请码为空，则直接注册
-        userService.registerAccount(account, user.get("password"));
+
         return Result.success();
     }
 }
