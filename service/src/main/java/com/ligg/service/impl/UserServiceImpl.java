@@ -19,9 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -136,7 +140,15 @@ public class UserServiceImpl implements UserService {
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
                         .eq(PhoneEntity::getPhoneNumber, phoneEntity.getPhoneNumber())
                         .set(PhoneEntity::getUsageStatus, 0));
-            }            return null;
+                
+                // 删除phone_project_relation表中的关联数据
+                phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);
+                
+                // 记录日志
+                log.info("用户[{}]成功购买项目[{}]的手机号[{}]，并从关联表中移除", 
+                        userId, projectId, phoneEntity.getPhoneNumber());
+            }
+            return null;
         }
         return "号码可能已经被购买";
     }

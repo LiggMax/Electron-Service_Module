@@ -152,4 +152,10 @@
         SET usage_status = #{status}
         WHERE phone_id = #{phoneId}
     </update>
+
+    <!-- 删除手机号与项目的关联关系 -->
+    <delete id="deletePhoneProjectRelation">
+        DELETE FROM phone_project_relation
+        WHERE phone_id = #{phoneId} AND project_id = #{projectId}
+    </delete>
 </mapper>

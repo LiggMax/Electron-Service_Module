@@ -97,5 +97,13 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      * @return 受影响的行数
      */
     int updatePhoneStatus(@Param("phoneId") Long phoneId, @Param("status") Integer status);
+
+    /**
+     * 删除手机号与项目的关联关系
+     * @param phoneId 手机号ID
+     * @param projectId 项目ID
+     * @return 受影响的行数
+     */
+    int deletePhoneProjectRelation(@Param("phoneId") Long phoneId, @Param("projectId") Integer projectId);
 }
 

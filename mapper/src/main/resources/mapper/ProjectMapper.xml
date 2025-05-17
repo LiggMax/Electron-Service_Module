@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ligg.mapper.ProjectMapper">
 
-    <select id="projectCount" resultType="java.lang.Integer">
-        select count(*) from phone_project where project_name = #{projectName}
-    </select>
-
     <!-- 查询项目列表 -->
     <select id="getAllProjectsList" resultType="com.ligg.common.dto.ProjectListDto">
         SELECT 
