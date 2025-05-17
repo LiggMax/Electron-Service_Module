@@ -1,5 +1,6 @@
 package com.ligg.common.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -14,9 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName("project")
 public class ProjectEntity {
-    @TableId
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long projectId;
+    @TableId(type = IdType.AUTO)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Integer projectId;
     private String projectName;
     private Float projectPrice;// 项目价格
     private LocalDateTime projectCreatedAt;// 创建时间
