@@ -130,13 +130,13 @@ public class UserServiceImpl implements UserService {
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
 
             // 使用事务来确保操作的原子性
-            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),projectId);
-
-            //  更新号码状态
-            phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
-                    .eq(PhoneEntity :: getPhoneNumber, phoneEntity.getPhoneNumber())
-                    .set(PhoneEntity::getUsageStatus, 0));
-            return null;
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId);
+            if (addResult > 0) {
+                // 只有在添加号码成功时才更新号码状态
+                phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
+                        .eq(PhoneEntity::getPhoneNumber, phoneEntity.getPhoneNumber())
+                        .set(PhoneEntity::getUsageStatus, 0));
+            }            return null;
         }
         return "号码可能已经被购买";
     }

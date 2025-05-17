@@ -43,7 +43,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //添加号码
-    void addPhoneNumber(Long userId, Long phoneNumber,Integer projectId);
+    int addPhoneNumber(Long userId, Long phoneNumber,Integer projectId);
 
     //用户订单
     @MapKey("user_project_id")
