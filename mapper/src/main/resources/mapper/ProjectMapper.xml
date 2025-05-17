@@ -16,31 +16,14 @@
         FROM 
             project p
         LEFT JOIN 
-            phone ph ON ph.phone_project_id = p.project_id 
+            phone_project_relation ppr ON p.project_id = ppr.project_id
+        LEFT JOIN phone ph ON ppr.phone_number = ph.phone_number
         GROUP BY
             p.project_id, p.project_name, p.project_price
         ORDER BY 
             phoneCount DESC
     </select>
 
-
-    <!-- 获取所有项目列表及数量 -->
-    <select id="getAllProjects" resultType="com.ligg.common.dto.ProjectListDto">
-        SELECT 
-            pp.project_id AS projectId,
-            pp.project_name AS projectName,
-            pp.project_price AS projectPrice,
-            pp.project_flag AS projectFlag,
-            COUNT(*) AS phoneCount
-        FROM 
-            phone_project pp
-        LEFT JOIN 
-            phone p ON pp.project_name = p.project_name
-        GROUP BY
-            pp.project_id, pp.project_name, pp.project_price, pp.project_flag
-        ORDER BY 
-            phoneCount DESC
-    </select>
 
     <!-- 根据项目名称查询手机号列表 -->
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
@@ -56,14 +39,6 @@
         </if>
     </select>
 
-    <!--根据项目名称查询项目数量-->
-    <select id="getProjectCountByName" resultType="java.lang.Integer">
-        SELECT COUNT(*)
-        FROM phone_project pp
-        left join phone p on pp.project_name = p.project_name
-        WHERE p.project_name = #{projectName}
-    </select>
-
     <!--获取项目所有地区和每个地区的手机号数量-->
     <select id="getProjectCommodityList" resultType="com.ligg.common.dto.RegionCommodityDto">
         SELECT 
@@ -71,13 +46,13 @@
             r.region_name as regionName,
             r.region_mark as regionMark,
             p.project_price as projectPrice,
-            COUNT(ph.phone_id) as phoneCount
+            COUNT(ppr.phone_number) as phoneCount
         FROM 
             region r
         CROSS JOIN
             project p
         LEFT JOIN 
-            phone ph ON r.region_id = ph.phone_region_id AND ph.phone_project_id = #{projectId}
+            phone_project_relation ppr ON p.project_id = ppr.project_id
         WHERE
             p.project_id = #{projectId}
         GROUP BY 

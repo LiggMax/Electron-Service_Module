@@ -20,7 +20,6 @@ public class PhoneEntity {
     private Integer lineStatus;//线路状态 1.在线、2.离线
     private LocalDateTime registrationTime;//注册时间
     private Integer usageStatus;//状态
-    private Integer phoneProjectId;//项目id
     private Long adminUserId;//号码归属卡商id
     private Integer phoneRegionId;//归属地id
 }

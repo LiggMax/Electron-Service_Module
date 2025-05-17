@@ -27,11 +27,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
     private ProjectMapper projectMapper;
 
     @Override
-    public List<ProjectListDto> getAllProjects() {
-        return projectMapper.getAllProjects();
-    }
-
-    @Override
     public List<PhoneEntity> getPhonesByProject(String[] projectNames) {
         return projectMapper.getPhonesByProject(projectNames);
     }
@@ -43,7 +38,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
 
     @Override
     public List<RegionCommodityDto> getProjectCommodityList(Integer projectId) {
-
         return projectMapper.getProjectCommodityList(projectId);
     }
 

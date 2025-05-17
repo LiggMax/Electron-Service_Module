@@ -5,7 +5,7 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, line_status, registration_time, usage_status, phone_region_id, phone_project_id,admin_user_id)
+        (phone_number, line_status, registration_time, usage_status, phone_region_id,admin_user_id)
         values
         <foreach collection="list" item="phone" separator=",">
             (
@@ -14,7 +14,6 @@
             #{phone.registrationTime},
             #{phone.usageStatus},
             #{phone.phoneRegionId},
-            #{phone.phoneProjectId},
             #{phone.adminUserId}
             )
         </foreach>
@@ -81,7 +80,7 @@
     </select>
     
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        select phone_id, phone_number, phone_project_id
+        select phone_id, phone_number
         from phone
         where phone_region_id = #{regionId}
     </select>

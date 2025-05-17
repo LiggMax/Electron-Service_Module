@@ -143,7 +143,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             // 添加到有效列表
             validPhoneNumbers.add(phoneNumber);
-            phonesToInsert.add(createPhoneEntity(phoneNumber, regionId, primaryProjectId, now, adminUserId));
+            phonesToInsert.add(createPhoneEntity(phoneNumber, regionId,now, adminUserId));
         }
         
         // 如果没有有效的手机号，直接返回
@@ -186,11 +186,10 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 创建手机号实体对象
      */
-    private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, Integer projectId, LocalDateTime now, Long adminUserId) {
+    private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, LocalDateTime now, Long adminUserId) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
         phone.setPhoneRegionId(regionId);
-        phone.setPhoneProjectId(projectId);
         phone.setLineStatus(1);
         phone.setUsageStatus(1);
         phone.setRegistrationTime(now);
