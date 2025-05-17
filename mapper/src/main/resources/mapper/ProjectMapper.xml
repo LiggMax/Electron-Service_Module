@@ -50,8 +50,8 @@
         LEFT JOIN phone p ON ppr.phone_id = p.phone_id AND p.usage_status = 1 AND p.line_status = 1
         LEFT JOIN region r ON p.region_id = r.region_id
         WHERE
-            pj.project_id = #{projectId}
-        GROUP BY 
+            pj.project_id = #{projectId} AND p.usage_status = 1
+        GROUP BY
             r.region_id, r.region_name, r.region_mark, pj.project_price
         ORDER BY 
             phoneCount DESC
