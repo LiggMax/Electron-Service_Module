@@ -45,18 +45,17 @@
             r.region_id as regionId,
             r.region_name as regionName,
             r.region_mark as regionMark,
-            p.project_price as projectPrice,
+            pj.project_price as projectPrice,
             COUNT(ppr.phone_number) as phoneCount
         FROM 
-            region r
-        CROSS JOIN
-            project p
-        LEFT JOIN 
-            phone_project_relation ppr ON p.project_id = ppr.project_id
+            project pj
+        LEFT JOIN phone_project_relation ppr ON pj.project_id = ppr.project_id
+        LEFT JOIN phone p ON ppr.phone_number = p.phone_number
+        LEFT JOIN region r ON p.phone_region_id =r.region_id
         WHERE
-            p.project_id = #{projectId}
+            pj.project_id = #{projectId}
         GROUP BY 
-            r.region_id, r.region_name, r.region_mark, p.project_price
+            r.region_id, r.region_name, r.region_mark, pj.project_price
         ORDER BY 
             phoneCount DESC
     </select>
