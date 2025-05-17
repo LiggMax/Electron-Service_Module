@@ -5,6 +5,7 @@ import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PhoneNumberService extends IService<PhoneEntity> {
 
@@ -33,4 +34,50 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      */
     int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
 
+    /**
+     * 从请求数据中提取地区ID
+     *
+     * @param uploadData 上传数据
+     * @return 地区ID，如果无法识别则返回默认值1
+     */
+    Integer extractRegionId(Map<String, Object> uploadData);
+
+    /**
+     * 从请求数据中提取项目ID列表
+     *
+     * @param uploadData 上传数据
+     * @return 项目ID列表，如果无法识别则返回包含默认值[1]的列表
+     */
+    List<Long> extractProjectIds(Map<String, Object> uploadData);
+
+    /**
+     * 从请求数据中提取所有手机号
+     *
+     * @param uploadData 上传数据
+     * @return 所有有效的手机号列表
+     */
+    List<String> extractPhoneNumbers(Map<String, Object> uploadData);
+
+    /**
+     * 构建上传结果数据
+     */
+    Map<String, Object> buildResultData(int totalProcessed, int totalAdded, int totalDuplicate, int totalInvalid);
+
+    /**
+     * 将各种类型转换为Integer
+     */
+    Integer convertToInteger(Object obj, Integer defaultValue);
+
+    /**
+     * 将各种类型转换为Long
+     */
+    Long convertToLong(Object obj, Long defaultValue);
+
+    /**
+     * 将国家/地区名称映射为地区ID
+     *
+     * @param country 国家/地区名称
+     * @return 地区ID
+     */
+    Integer mapCountryToRegionId(String country);
 }
