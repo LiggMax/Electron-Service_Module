@@ -37,7 +37,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper,ProjectEntity>
     }
 
     @Override
-    public List<RegionCommodityDto> getProjectCommodityList(Integer projectId) {
+    public List<RegionCommodityDto> getProjectCommodityList(Long projectId) {
         return projectMapper.getProjectCommodityList(projectId);
     }
 

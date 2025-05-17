@@ -29,7 +29,7 @@ public interface ProjectService extends IService<ProjectEntity> {
     /**
      * 获取指定项目商品列表
      */
-    List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
+    List<RegionCommodityDto> getProjectCommodityList(Long projectId);
 
     /**
      * 获取项目和地区列表

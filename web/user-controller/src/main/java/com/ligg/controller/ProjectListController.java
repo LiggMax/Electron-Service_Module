@@ -44,7 +44,7 @@ public class ProjectListController {
      * 根据项目ID查询项目下的商品列表
      */
     @GetMapping("/commodity")
-    public Result<List<RegionCommodityDto>> getProjectCommodityList(@RequestParam Integer projectId) {
+    public Result<List<RegionCommodityDto>> getProjectCommodityList(@RequestParam Long projectId) {
         List<RegionCommodityDto> projects = projectService.getProjectCommodityList(projectId);
         return Result.success(200,projects);
     }

@@ -31,7 +31,7 @@ public interface ProjectMapper extends BaseMapper<ProjectEntity> {
     /**
      * 获取指定项目商品列表
      */
-    List<RegionCommodityDto> getProjectCommodityList(Integer projectId);
+    List<RegionCommodityDto> getProjectCommodityList(Long projectId);
 
     /**
      * 获取所有项目数据

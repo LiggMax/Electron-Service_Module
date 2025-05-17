@@ -213,7 +213,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             for (Long phoneNumber : validPhoneNumbers) {
                 for (Long projectId : projectIds) {
                     try {
-                        phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
+                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
                     } catch (Exception e) {
                         log.error("插入手机号和项目关联失败: phoneNumber={}, projectId={}, error={}", 
                                 phoneNumber, projectId, e.getMessage());

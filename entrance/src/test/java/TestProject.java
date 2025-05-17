@@ -40,7 +40,7 @@ public class TestProject {
     //获取项目购买列表
     @Test
     public void getProjectCommodityListTest(){
-        Integer projectId = 2;
+        Long projectId = 2L;
         List<RegionCommodityDto> projectCommodityList = projectMapper.getProjectCommodityList(projectId);
         System.out.println(projectCommodityList);
 
