@@ -1,6 +1,7 @@
 package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.*;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
@@ -14,16 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -195,6 +193,9 @@ public class UserServiceImpl implements UserService {
         userEntity.setCreatedAt(LocalDateTime.now());
         userEntity.setAccount(account);
         userEntity.setPassword(BCryptUtil.encrypt(password));
+
+        //生成20位数的UUID用户邀请码
+        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 20));
         userMapper.insert(userEntity);
     }
 

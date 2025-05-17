@@ -29,7 +29,7 @@ public class UserEntity {
     @Email
     private String email;
     private String userAvatar;
-
+    private String invitationCode; //邀请码
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime loginTime;//登录时间

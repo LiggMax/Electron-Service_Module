@@ -1,6 +1,8 @@
 package com.ligg.service;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserEntity;
@@ -10,7 +12,7 @@ import com.ligg.common.vo.UserDataVo;
 import java.util.List;
 import java.util.Map;
 
-public interface UserService {
+public interface UserService extends IService<UserEntity> {
 
     //根据账号和密码查询用户
     AdminUserEntity findByAdminUser(String account);
