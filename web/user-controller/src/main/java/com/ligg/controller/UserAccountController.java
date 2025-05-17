@@ -6,7 +6,6 @@ import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.InvitationRelationsService;
 import com.ligg.service.UserService;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -61,21 +60,32 @@ public class UserAccountController {
         if (user.get("account").length() < 6 || user.get("password").length() < 6) {
             return Result.error(400, "账号或密码长度不小于6位");
         }
+        if (user.get("account").length() > 20 || user.get("password").length() > 20) {
+            return Result.error(400, "账号或密码长度不大于20位");
+        }
         UserEntity byUser = userService.findByUser(user.get("account"));
         if (byUser != null) {
             return Result.error(400, "账号已存在");
         }
         String account = user.get("account");
-        userService.registerAccount(account, user.get("password"));
 
-        //添加邀请关系
+        //判断输入的邀请码是否有效
         if (user.get("invitationCode") != null) {
-            UserEntity userEntity = userService.getBaseMapper()
-                    .selectOne(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getAccount, account));
-            if (userEntity != null) {
-                invitationRelationsService.addInvitationRelations(user.get("invitationCode"),userEntity.getUserId());
+
+            //获取邀请人账号
+            UserEntity inviterAccount = userService.getBaseMapper()
+                    .selectOne(new LambdaQueryWrapper<UserEntity>()
+                            .eq(UserEntity::getInvitationCode, user.get("invitationCode")));
+            if (inviterAccount == null) {
+                return Result.error(400, "邀请码无效");
             }
+            userService.registerAccount(account, user.get("password"));
+            //添加邀请关系
+            invitationRelationsService.addInvitationRelations(user.get("invitationCode"), inviterAccount.getAccount(),account);
+            return Result.success();
         }
+        //如果邀请码为空，则直接注册
+        userService.registerAccount(account, user.get("password"));
         return Result.success();
     }
 }

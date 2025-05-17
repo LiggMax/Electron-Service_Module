@@ -13,7 +13,7 @@ import lombok.Data;
 public class InvitationRelationsEntity {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private Long inviterId; //邀请人id
-    private Long inviteeId; //被邀请人id
+    private String inviterAccount; //邀请人账号
+    private String inviteeAccount; //被邀请人账号
     private String invitationCode; //使用的邀请码
 }
