@@ -29,10 +29,10 @@
         SELECT COUNT(1) FROM phone WHERE phone_number = #{phoneNumber}
     </select>
 
-    <!-- 插入手机号和项目关联信息到用户订单表 -->
+    <!-- 插入手机号和项目关联信息到 phone_project_relation 表 -->
     <insert id="insertPhoneProject">
-        INSERT INTO user_order(user_id, phone_number, created_at, project_id)
-        VALUES (1, #{phoneNumber}, NOW(), #{projectId})
+        INSERT INTO phone_project_relation(phone_number, project_id)
+        VALUES (#{phoneNumber}, #{projectId})
     </insert>
 
     <!-- 删除手机号 -->

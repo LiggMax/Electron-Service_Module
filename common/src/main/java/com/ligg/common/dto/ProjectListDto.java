@@ -1,5 +1,7 @@
 package com.ligg.common.dto;
 
+import com.fasterxml.jackson.annotation.JacksonAnnotation;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -10,6 +12,7 @@ public class ProjectListDto {
     /**
      * 项目ID
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long projectId;
     
     /**

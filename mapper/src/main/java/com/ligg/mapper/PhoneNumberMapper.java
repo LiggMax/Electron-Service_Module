@@ -47,12 +47,12 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     int checkPhoneExists(@Param("phoneNumber") Long phoneNumber);
 
     /**
-     * 插入手机号与项目关联（用户订单）
+     * 插入手机号与项目关联
      * @param phoneNumber 手机号
      * @param projectId 项目ID
      * @return 插入结果
      */
-    int insertPhoneProject(@Param("phoneNumber") Long phoneNumber, @Param("projectId") Integer projectId);
+    int insertPhoneProject(@Param("phoneNumber") Long phoneNumber, @Param("projectId") Long projectId);
 
     /**
      * 根据项目id获取号码列表

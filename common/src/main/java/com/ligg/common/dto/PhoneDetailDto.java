@@ -1,5 +1,6 @@
 package com.ligg.common.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class PhoneDetailDto {
     private Integer phoneId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long phoneNumber;
     private String countryCode;
     private Integer lineStatus;

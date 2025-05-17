@@ -138,7 +138,7 @@ public class PhoneNumberController {
             log.info("提取的地区ID: {}", regionId);
 
             // 2. 提取并验证项目ID
-            List<Integer> projectIds = extractProjectIds(uploadData);
+            List<Long> projectIds = extractProjectIds(uploadData);
             log.info("提取的项目IDs: {}", projectIds);
             if (CollectionUtils.isEmpty(projectIds)) {
                 return Result.error(400, "无法识别有效的项目ID");
@@ -168,9 +168,9 @@ public class PhoneNumberController {
                         Long phoneNumber = Long.parseLong(phoneStr.trim().replaceAll("[\\s-]", ""));
                         
                         // 为每个项目建立关联
-                        for (Integer projectId : projectIds) {
+                        for (Long projectId : projectIds) {
                             try {
-                                phoneProjectRelationService.savePhoneNumberProjectRelation(phoneNumber, Long.valueOf(projectId));
+                                phoneProjectRelationService.savePhoneNumberProjectRelation(phoneNumber, projectId);
                                 log.debug("成功建立关联: 手机号={}, 项目ID={}", phoneNumber, projectId);
                             } catch (Exception e) {
                                 log.warn("建立手机号与项目关联失败: phoneNumber={}, projectId={}, error={}", 
@@ -248,22 +248,20 @@ public class PhoneNumberController {
      * @param uploadData 上传数据
      * @return 项目ID列表，如果无法识别则返回包含默认值[1]的列表
      */
-    private List<Integer> extractProjectIds(Map<String, Object> uploadData) {
-        List<Integer> projectIds = new ArrayList<>();
-        Integer defaultProjectId = 1;
+    private List<Long> extractProjectIds(Map<String, Object> uploadData) {
+        List<Long> projectIds = new ArrayList<>();
+        Long defaultProjectId = 1L;
 
         // 尝试获取项目ID列表 - 兼容多种可能的字段名
         if (uploadData.containsKey("projectIds") && uploadData.get("projectIds") != null) {
             // 新版本使用projectIds，预期是整数列表
             try {
                 Object projectIdsObj = uploadData.get("projectIds");
-                if (projectIdsObj instanceof List) {
-                    @SuppressWarnings("unchecked")
-                    List<?> projectIdsList = (List<?>) projectIdsObj;
+                if (projectIdsObj instanceof List<?> projectIdsList) {
 
                     // 处理可能的不同类型（整数或字符串）
                     for (Object idObj : projectIdsList) {
-                        Integer projectId = convertToInteger(idObj, null);
+                        Long projectId = convertToLong(idObj, null);
                         if (projectId != null && projectId > 0) {
                             projectIds.add(projectId);
                         }
@@ -281,9 +279,50 @@ public class PhoneNumberController {
                 if (projectsObj instanceof List) {
                     @SuppressWarnings("unchecked")
                     List<?> projectsList = (List<?>) projectsObj;
-                    List<Integer> mappedIds = mapProjectNamesToIds(projectsList);
-                    projectIds.addAll(mappedIds);
-                    log.info("从projects字段映射项目ID列表: {}", projectIds);
+                    
+                    // 直接从每个项目对象中提取 projectId
+                    for (Object project : projectsList) {
+                        if (project instanceof Map) {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> projectMap = (Map<String, Object>) project;
+                            
+                            // 获取 projectId
+                            if (projectMap.containsKey("projectId")) {
+                                Object projectIdObj = projectMap.get("projectId");
+                                // 直接处理 Long 类型的 projectId
+                                Long projectId = convertToLong(projectIdObj, null);
+                                if (projectId != null && projectId > 0) {
+                                    projectIds.add(projectId);
+                                    continue;
+                                }
+                            }
+                            
+                            // 如果没有有效的 projectId，尝试通过 projectName 查询
+                            Object projectNameObj = projectMap.get("projectName");
+                            if (projectNameObj instanceof String) {
+                                String projectName = (String) projectNameObj;
+                                if (projectName != null && !projectName.trim().isEmpty()) {
+                                    // 获取项目ID并转换为Long
+                                    Integer projectIdInt = projectService.getProjectIdByName(projectName.trim());
+                                    if (projectIdInt != null && projectIdInt > 0) {
+                                        projectIds.add(Long.valueOf(projectIdInt));
+                                    }
+                                }
+                            }
+                        } else if (project instanceof String) {
+                            // 处理字符串类型的项目名称
+                            String projectName = (String) project;
+                            if (projectName != null && !projectName.trim().isEmpty()) {
+                                // 获取项目ID并转换为Long
+                                Integer projectIdInt = projectService.getProjectIdByName(projectName.trim());
+                                if (projectIdInt != null && projectIdInt > 0) {
+                                    projectIds.add(Long.valueOf(projectIdInt));
+                                }
+                            }
+                        }
+                    }
+                    
+                    log.info("从projects字段提取项目ID列表: {}", projectIds);
                 }
             } catch (Exception e) {
                 log.warn("projects格式转换失败: {}", e.getMessage());
@@ -297,8 +336,8 @@ public class PhoneNumberController {
         }
 
         // 检查所有项目ID的有效性
-        List<Integer> validProjectIds = new ArrayList<>();
-        for (Integer id : projectIds) {
+        List<Long> validProjectIds = new ArrayList<>();
+        for (Long id : projectIds) {
             if (id != null && id > 0) {
                 validProjectIds.add(id);
             }
@@ -401,6 +440,32 @@ public class PhoneNumberController {
     }
 
     /**
+     * 将各种类型转换为Long
+     */
+    private Long convertToLong(Object obj, Long defaultValue) {
+        if (obj == null) {
+            return defaultValue;
+        }
+
+        if (obj instanceof Long) {
+            return (Long) obj;
+        } else if (obj instanceof Integer) {
+            return Long.valueOf((Integer) obj);
+        } else if (obj instanceof String) {
+            try {
+                return Long.parseLong((String) obj);
+            } catch (NumberFormatException e) {
+                log.warn("无法解析字符串为长整数: {}", obj);
+                return defaultValue;
+            }
+        } else if (obj instanceof Number) {
+            return ((Number) obj).longValue();
+        }
+
+        return defaultValue;
+    }
+
+    /**
      * 将国家/地区名称映射为地区ID
      *
      * @param country 国家/地区名称
@@ -433,61 +498,5 @@ public class PhoneNumberController {
         }
 
         return regionId;
-    }
-
-    /**
-     * 将项目名称列表映射为项目ID列表
-     *
-     * @param projectObjects 项目对象列表
-     * @return 项目ID列表
-     */
-    private List<Integer> mapProjectNamesToIds(List<?> projectObjects) {
-        List<Integer> projectIds = new ArrayList<>();
-
-        if (projectObjects == null || projectObjects.isEmpty()) {
-            return projectIds;
-        }
-
-        for (Object project : projectObjects) {
-            // 直接的字符串列表
-            if (project instanceof String) {
-                String projectName = (String) project;
-                if (projectName != null && !projectName.trim().isEmpty()) {
-                    Integer projectId = projectService.getProjectIdByName(projectName.trim());
-                    if (projectId != null && projectId > 0) {
-                        projectIds.add(projectId);
-                    }
-                }
-            }
-            // Map格式的项目对象
-            else if (project instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> projectMap = (Map<String, Object>) project;
-
-                // 尝试直接获取projectId
-                Object projectIdObj = projectMap.get("projectId");
-                if (projectIdObj != null) {
-                    Integer projectId = convertToInteger(projectIdObj, null);
-                    if (projectId != null && projectId > 0) {
-                        projectIds.add(projectId);
-                    }
-                }
-                // 如果没有projectId，尝试通过projectName查询
-                else {
-                    Object projectNameObj = projectMap.get("projectName");
-                    if (projectNameObj instanceof String) {
-                        String projectName = (String) projectNameObj;
-                        if (projectName != null && !projectName.trim().isEmpty()) {
-                            Integer projectId = projectService.getProjectIdByName(projectName.trim());
-                            if (projectId != null && projectId > 0) {
-                                projectIds.add(projectId);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return projectIds;
     }
 }

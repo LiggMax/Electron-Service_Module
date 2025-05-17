@@ -75,9 +75,9 @@ public class UserController {
     public Result<?> buyProject(@RequestBody Map<String, Object> userData) {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
-
+        Long projectId = (Long) userData.get("projectId");
         Integer regionId = (Integer) userData.get("regionId");
-        String result = userService.buyProject(userId, regionId);
+        String result = userService.buyProject(userId, regionId,projectId);
         if (result != null) {
             return Result.error(400, result);
         }

@@ -96,7 +96,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
      */
     @Override
     @Transactional
-    public int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Integer> projectIds, Long adminUserId) {
+    public int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId) {
         // 参数校验
         if (CollectionUtils.isEmpty(phoneNumbers) || CollectionUtils.isEmpty(projectIds) || regionId == null) {
             log.warn("批量添加手机号参数无效: phoneNumbers={}, regionId={}, projectIds={}", 
@@ -111,12 +111,12 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         }
         
         // 获取第一个项目ID作为主项目ID
-        Integer primaryProjectId = projectIds.get(0);
+        Long primaryProjectId = projectIds.get(0);
         
         // 确保primaryProjectId不是默认值
         if (primaryProjectId <= 0) {
             log.warn("项目ID无效，已设置为默认值1: {}", primaryProjectId);
-            primaryProjectId = 1;
+            primaryProjectId = 1L;
         }
         
         // 记录实际使用的地区ID和项目ID
@@ -200,17 +200,20 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 执行批量插入手机号及关联
      */
-    private int insertPhones(List<PhoneEntity> phonesToInsert, List<Long> validPhoneNumbers, List<Integer> projectIds) {
+    private int insertPhones(List<PhoneEntity> phonesToInsert, List<Long> validPhoneNumbers, List<Long> projectIds) {
         try {
             // 批量插入手机号
-
-
             int totalAdded = phoneNumberMapper.batchInsertPhones(phonesToInsert);
             
-            // 为每个项目插入关联信息到user_order表
+            // 为每个项目插入关联信息到 phone_project_relation 表
             for (Long phoneNumber : validPhoneNumbers) {
-                for (Integer projectId : projectIds) {
-                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
+                for (Long projectId : projectIds) {
+                    try {
+                        phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
+                    } catch (Exception e) {
+                        log.error("插入手机号和项目关联失败: phoneNumber={}, projectId={}, error={}", 
+                                phoneNumber, projectId, e.getMessage());
+                    }
                 }
             }
             

@@ -1,7 +1,6 @@
 package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.ligg.common.entity.*;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
@@ -123,7 +122,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public String buyProject(Long userId, Integer regionId) {
+    public String buyProject(Long userId, Integer regionId, Long projectId) {
         List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(regionId);
         // 从phoneEntities列表中随机获取一个号码
         if (!phoneEntities.isEmpty()) {
@@ -131,8 +130,8 @@ public class UserServiceImpl implements UserService {
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
 
             // 使用事务来确保操作的原子性
+            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),projectId);
             phoneNumberMapper.deletePhone(phoneEntity.getPhoneId());
-            userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber());
             return null;
         }
         return "号码可能已经被购买";

@@ -37,7 +37,7 @@ public interface UserService {
     String addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //购买项目
-    String buyProject(Long userId, Integer regionId);
+    String buyProject(Long userId, Integer regionId,Long projectId);
 
     //查询用户收藏项目
     List<Map<String,Object>> getUserFavorite(Long userId);

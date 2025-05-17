@@ -31,6 +31,6 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      * @param adminUserId 管理员用户ID
      * @return 成功添加的数量
      */
-    int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Integer> projectIds, Long adminUserId);
+    int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
 
 }
