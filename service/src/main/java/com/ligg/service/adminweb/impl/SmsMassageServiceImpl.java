@@ -31,7 +31,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
         // (\\d+), - 匹配手机号码和逗号
         // \\[(.*?)\\] - 匹配方括号中的任意文本（平台名）
         // .*?验证码(\\d{4,6}) - 匹配"验证码"后面的4-6位数字
-        Pattern pattern = Pattern.compile("(COM\\d+),(\\d+),\\[(.*?)\\].*?验证码(\\d{4,6})");
+        Pattern pattern = Pattern.compile("(COM\\d+),(\\d+),\\[(.*?)].*?验证码(\\d{4,6})");
         Matcher matcher = pattern.matcher(sms);
         
         while (matcher.find()) {
