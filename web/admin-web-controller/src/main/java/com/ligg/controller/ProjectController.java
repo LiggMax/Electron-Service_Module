@@ -46,10 +46,7 @@ public class ProjectController {
     @PutMapping("/edit")
     public Result<String> editProject(@RequestParam Long projectId,
                                       @RequestParam Double projectPrice,
-                                      @RequestParam String projectName) {
-        if(projectService.nameFindProjectInfo(projectName)){
-            return Result.error(400, "项目已存在");
-        }
+                                      @RequestParam(required = false) String projectName) {
         projectService.updateProject(projectId, projectPrice, projectName);
         return Result.success(200, "修改成功");
     }

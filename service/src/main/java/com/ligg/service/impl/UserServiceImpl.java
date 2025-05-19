@@ -137,13 +137,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             UserEntity userInfo = userMapper.selectById(userId);
             //获取项目价格
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
-
-            if (userInfo.getMoney() < projectEntity.getProjectPrice()) {
+            Double projectMoney = projectEntity.getProjectPrice();
+            if (userInfo.getMoney() < projectMoney) {
                 return "您的余额不足";
             }
 
-            // 使用事务来确保操作的原子性
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId);
+            /*
+               使用事务来确保操作的原子性
+               添加号码订单
+             */
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
