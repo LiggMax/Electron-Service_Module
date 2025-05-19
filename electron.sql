@@ -1,17 +1,17 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : localhost_3306
+ Source Server         : mysql
  Source Server Type    : MySQL
- Source Server Version : 80039
+ Source Server Version : 80040 (8.0.40)
  Source Host           : localhost:3306
  Source Schema         : electron
 
  Target Server Type    : MySQL
- Target Server Version : 80039
+ Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 18/05/2025 01:57:57
+ Date: 19/05/2025 14:37:52
 */
 
 SET NAMES utf8mb4;
@@ -57,7 +57,7 @@ CREATE TABLE `admin_web_user`  (
   `login_time` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
   `login_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL COMMENT '登录ip',
   PRIMARY KEY (`admin_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11825954457 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 11825954457 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admin_web_user
@@ -74,7 +74,7 @@ CREATE TABLE `announcement`  (
   `create_time` datetime NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `announcement_id_index`(`id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '公告' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '公告' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of announcement
@@ -96,24 +96,16 @@ INSERT INTO `announcement` VALUES (10, '12313212414', '2025-05-14 18:58:40');
 DROP TABLE IF EXISTS `invitation_relations`;
 CREATE TABLE `invitation_relations`  (
   `id` int NOT NULL AUTO_INCREMENT,
-  `inviter_account` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '邀请人账号',
-  `invitee_account` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '被邀请人账号',
+  `inviter_id` bigint NOT NULL COMMENT '邀请人ID',
+  `invitee_id` bigint NOT NULL COMMENT '被邀请人Id',
   `invitation_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '使用的邀请码Id',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `invitation_relations_invitation_code_index`(`invitation_code` ASC) USING BTREE,
-  INDEX `invitation_relations_inviter_account_index`(`inviter_account` ASC) USING BTREE,
-  INDEX `invitation_relations_invitee_account_index`(`invitee_account` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '邀请码关系表' ROW_FORMAT = DYNAMIC;
+  INDEX `invitation_relations_invitation_code_index`(`invitation_code` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '邀请码关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of invitation_relations
 -- ----------------------------
-INSERT INTO `invitation_relations` VALUES (1, '1923785397963644929', '1923783783919960066', '99c67262eb12488687a5');
-INSERT INTO `invitation_relations` VALUES (2, '1923783783919960066', '1923793595017793538', '99c67262eb12488687a5');
-INSERT INTO `invitation_relations` VALUES (3, 'eeeeee', 'yyyyyy', '99c67262eb12488687a5');
-INSERT INTO `invitation_relations` VALUES (4, 'eeeeee', 'yyyyyy', '99c67262eb12488687a5');
-INSERT INTO `invitation_relations` VALUES (5, 'eeeeee', 'iiiiiiiii', '99c67262eb12488687a5');
-INSERT INTO `invitation_relations` VALUES (6, 'eeeeee', 'iiiiiiiiiiiiiiiii', '99c67262eb12488687a5');
 
 -- ----------------------------
 -- Table structure for phone
@@ -131,7 +123,7 @@ CREATE TABLE `phone`  (
   UNIQUE INDEX `uk_phone_number`(`phone_number` ASC) USING BTREE COMMENT '手机号码唯一索引',
   INDEX `fk_phone_region`(`region_id` ASC) USING BTREE,
   CONSTRAINT `fk_phone_region` FOREIGN KEY (`region_id`) REFERENCES `region` (`region_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of phone
@@ -161,7 +153,7 @@ CREATE TABLE `phone_project_relation`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_phone_project`(`phone_id` ASC, `project_id` ASC) USING BTREE COMMENT '手机号和项目的唯一关联',
   INDEX `fk_relation_project`(`project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 126 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号与项目关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 126 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号与项目关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of phone_project_relation
@@ -214,7 +206,7 @@ CREATE TABLE `project`  (
   `project_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`project_id`) USING BTREE,
   UNIQUE INDEX `uk_project_name`(`project_name` ASC) USING BTREE COMMENT '项目名称唯一索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '项目表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '项目表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of project
@@ -233,7 +225,7 @@ CREATE TABLE `region`  (
   `region_mark` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL COMMENT '地区标识',
   PRIMARY KEY (`region_id`) USING BTREE,
   UNIQUE INDEX `uk_region_name`(`region_name` ASC) USING BTREE COMMENT '地区名称唯一索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '地区表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '地区表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of region
@@ -253,7 +245,7 @@ CREATE TABLE `user_favorite`  (
   `created_at` datetime NULL DEFAULT NULL COMMENT '收藏时间',
   PRIMARY KEY (`favorite_id`) USING BTREE,
   INDEX `user_favorite_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_favorite
@@ -283,7 +275,7 @@ CREATE TABLE `user_order`  (
   `phone_number` bigint NOT NULL COMMENT '号码',
   PRIMARY KEY (`user_project_id`) USING BTREE,
   INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 444 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 444 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_order
@@ -746,24 +738,21 @@ CREATE TABLE `users`  (
   `user_status` int NOT NULL DEFAULT 1 COMMENT '用户状态(1=‘正常’   0=‘已注销’)',
   `login_time` datetime NULL DEFAULT NULL COMMENT '的登陆时间',
   `invitation_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '邀请码',
+  `money` double NULL DEFAULT 0 COMMENT '￥',
   PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE INDEX `users_pk`(`account` ASC) USING BTREE,
   INDEX `users_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (8259543156, 'ligg', '111111', '12314', '121412@qq.com', '2025-04-21 10:58:50', '2025-04-21 10:58:46', 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-15 12:53:25', '');
-INSERT INTO `users` VALUES (8259543157, '123456', '$2a$12$XmeLiy0MCGgeMFJ95wENo.tg0/k3z.5ODNIrfm16qb9sgjWke8jAm', NULL, NULL, '2025-04-26 16:25:56', NULL, NULL, 1, '2025-05-15 11:37:35', '');
-INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-04-26 16:29:54', NULL, NULL, 1, '2025-05-14 18:41:25', '');
-INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', NULL, NULL, '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '');
-INSERT INTO `users` VALUES (1923783783919960066, 'eeeeee', '$2a$12$HPIQMPIS0Is6R8im2LDLne2m871dUXcWdYn9Ia.UUqRuUl78qOxW2', NULL, NULL, '2025-05-18 00:52:51', NULL, NULL, 1, NULL, '99c67262eb12488687a5');
-INSERT INTO `users` VALUES (1923785397963644929, 'wwwwww', '$2a$12$/4WQIXJhBOPC.OWNgVJENOC3W2eVun5tM2HMjwlLhKXtqgOFHsuwe', NULL, NULL, '2025-05-18 00:59:15', NULL, NULL, 1, NULL, '0b3889f34b3b4df2ba68');
-INSERT INTO `users` VALUES (1923793596263501825, 'tttttt', '$2a$12$TF6neufqhsXhPtZkEydNr.dtUKXIc5AiRJ5aD4AViyNdi2JTSZDqy', NULL, NULL, '2025-05-18 01:31:50', NULL, NULL, 1, NULL, '69e53a66736f483eaa0a');
-INSERT INTO `users` VALUES (1923799463004266497, 'yyyyyy', '$2a$12$/3U1vphoKU4n3gcDvpraI.7b.x0OLdVAYGy.whXAnSe.vq9cT/IuC', NULL, NULL, '2025-05-18 01:55:09', NULL, NULL, 1, NULL, '83fbd94068134aaeb52b');
-INSERT INTO `users` VALUES (1923799646005944321, 'iiiiiiiii', '$2a$12$puKYqosltBd7zxzyFGyV3uqfIQE67SHmZIfuH.Eyfoyl0L8bTwR4K', NULL, NULL, '2025-05-18 01:55:52', NULL, NULL, 1, NULL, '579ce8676bd54c8fb4fa');
-INSERT INTO `users` VALUES (1923799683335249921, 'iiiiiiiiiiiiiiiii', '$2a$12$XthwHMCnkUZt4OrSl53ubeoIjJh.724jbscfFoSNyt4i0NlFWzqni', NULL, NULL, '2025-05-18 01:56:01', NULL, NULL, 1, NULL, 'a7c24afb46004835a48a');
+INSERT INTO `users` VALUES (8259543156, 'ligg', '111111', '12314', '121412@qq.com', '2025-04-21 10:58:50', '2025-04-21 10:58:46', 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-15 12:53:25', '', 0);
+INSERT INTO `users` VALUES (8259543157, '123456', '$2a$12$XmeLiy0MCGgeMFJ95wENo.tg0/k3z.5ODNIrfm16qb9sgjWke8jAm', NULL, NULL, '2025-04-26 16:25:56', NULL, NULL, 1, '2025-05-15 11:37:35', '', 0);
+INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-04-26 16:29:54', NULL, NULL, 1, '2025-05-14 18:41:25', '', 0);
+INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', NULL, NULL, '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '', 0);
+INSERT INTO `users` VALUES (1923688101231960065, '555555', '$2a$12$V9ZradzXvnpE2RYgC4t80eg.I7LNjSUVuWTu3JH1o1oYHPWffRUni', NULL, NULL, '2025-05-17 18:32:38', NULL, NULL, 1, '2025-05-17 18:33:02', 'd21f41168ed64208b28c', 0);
+INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpYAzdH7OfUOzcpUweh89bUG2TPDzpAmi26SK/dtt62', NULL, NULL, '2025-05-17 19:17:22', NULL, NULL, 1, NULL, '95e151202a4a4da4b586', 0);
+INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', NULL, NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-19 14:31:48', 'c51ddeb799e845458a5a', 0.004);
 
 -- ----------------------------
 -- View structure for view_project_phone_count
