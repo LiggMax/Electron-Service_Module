@@ -7,6 +7,7 @@ import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
+import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.UserMapper;
 import com.ligg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     private UserMapper userMapper;
     @Autowired
     private PhoneNumberMapper phoneNumberMapper;
-
+    @Autowired
+    private ProjectMapper projectMapper;
     /**
      * 根据账号查询管理员用户信息
      */
@@ -131,14 +133,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             int randomIndex = (int) (Math.random() * phoneEntities.size());
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
 
+            //获取用户信息
+            UserEntity userInfo = userMapper.selectById(userId);
+            //获取项目价格
+            ProjectEntity projectEntity = projectMapper.selectById(projectId);
+
+            if (userInfo.getMoney() < projectEntity.getProjectPrice()) {
+                return "您的余额不足";
+            }
+
             // 使用事务来确保操作的原子性
             int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId);
             if (addResult > 0) {
-                // 只有在添加号码成功时才更新号码状态
+                // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
                         .eq(PhoneEntity::getPhoneNumber, phoneEntity.getPhoneNumber())
                         .set(PhoneEntity::getUsageStatus, 0));
-                
+
+                // 更新用户余额
+                userMapper.update(new LambdaUpdateWrapper<UserEntity>()
+                        .eq(UserEntity::getUserId, userId)
+                        .set(UserEntity::getMoney, userInfo.getMoney() - projectEntity.getProjectPrice()));
+
                 // 删除phone_project_relation表中的关联数据
                 phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);
                 
