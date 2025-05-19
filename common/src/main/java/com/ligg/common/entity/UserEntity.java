@@ -34,4 +34,5 @@ public class UserEntity {
     private LocalDateTime updatedAt;
     private LocalDateTime loginTime;//登录时间
     private Integer userStatus; // 1: 正常 0: 注销
+    private Double money; // 金额
 }
