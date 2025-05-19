@@ -52,6 +52,6 @@ public interface ProjectService extends IService<ProjectEntity> {
 
     // 新增项目
     void saveProject(String projectName,Double projectPrice);
-    // 更新项目价格
-    void updateProjectPrice(Long projectId, Double projectPrice);
+    // 更新项目
+    void updateProject(Long projectId, Double projectPrice, String projectName);
 }

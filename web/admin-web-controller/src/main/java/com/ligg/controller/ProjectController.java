@@ -40,8 +40,10 @@ public class ProjectController {
      * 修改项目价格
      */
     @PutMapping("/edit")
-    public Result<String> editProject(@RequestParam Long projectId,@RequestParam Double projectPrice) {
-        projectService.updateProjectPrice(projectId,  projectPrice);
+    public Result<String> editProject(@RequestParam Long projectId,
+                                      @RequestParam Double projectPrice,
+                                      @RequestParam    String projectName) {
+        projectService.updateProject(projectId,  projectPrice,projectName);
         return Result.success(200, "修改成功");
     }
 

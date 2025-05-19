@@ -21,4 +21,5 @@ public class ProjectEntity {
     private String projectName;
     private Double projectPrice;// 项目价格
     private LocalDateTime projectCreatedAt;// 创建时间
+    private LocalDateTime projectUpdateAt;
 }

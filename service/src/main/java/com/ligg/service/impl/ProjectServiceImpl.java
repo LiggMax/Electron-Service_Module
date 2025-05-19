@@ -95,12 +95,14 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
     }
 
     /**
-     * 修改项目价格
+     * 编辑项目
      */
     @Override
-    public void updateProjectPrice(Long projectId, Double projectPrice) {
+    public void updateProject(Long projectId, Double projectPrice, String projectName) {
         projectMapper.update(new LambdaUpdateWrapper<ProjectEntity>()
                 .eq(ProjectEntity::getProjectId, projectId)
-                .set(ProjectEntity::getProjectPrice, projectPrice));
+                .set(ProjectEntity::getProjectPrice, projectPrice)
+                .set(ProjectEntity::getProjectName, projectName)
+                .set(ProjectEntity::getProjectUpdateAt, LocalDateTime.now()));
     }
 }
