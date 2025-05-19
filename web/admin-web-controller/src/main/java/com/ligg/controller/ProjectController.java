@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.ProjectService;
@@ -32,18 +33,24 @@ public class ProjectController {
     @PostMapping("/add")
     public Result<String> addProject(@RequestParam String projectName,
                                      @RequestParam Double projectPrice) {
+        if(!projectService.nameFindProjectInfo(projectName)){
+            return Result.error(400, "项目已存在");
+        }
         projectService.saveProject(projectName, projectPrice);
         return Result.success(200, "添加成功");
     }
 
     /**
-     * 修改项目价格
+     * 修改项目
      */
     @PutMapping("/edit")
     public Result<String> editProject(@RequestParam Long projectId,
                                       @RequestParam Double projectPrice,
-                                      @RequestParam    String projectName) {
-        projectService.updateProject(projectId,  projectPrice,projectName);
+                                      @RequestParam String projectName) {
+        if(projectService.nameFindProjectInfo(projectName)){
+            return Result.error(400, "项目已存在");
+        }
+        projectService.updateProject(projectId, projectPrice, projectName);
         return Result.success(200, "修改成功");
     }
 

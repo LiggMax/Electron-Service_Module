@@ -1,5 +1,6 @@
 package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.ProjectListDto;
@@ -87,13 +88,22 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      */
     @Override
     public void saveProject(String projectName, Double projectPrice) {
-        ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setProjectName(projectName);
-        projectEntity.setProjectPrice(projectPrice);
-        projectEntity.setProjectCreatedAt(LocalDateTime.now());
-        projectMapper.insert(projectEntity);
+
+            ProjectEntity projectEntity = new ProjectEntity();
+            projectEntity.setProjectName(projectName);
+            projectEntity.setProjectPrice(projectPrice);
+            projectEntity.setProjectCreatedAt(LocalDateTime.now());
+            projectMapper.insert(projectEntity);
     }
 
+    /**
+     * 根据项目名查询项目是否存在
+     */
+    @Override
+    public Boolean nameFindProjectInfo(String projectName) {
+        return projectMapper.selectOne(new LambdaQueryWrapper<ProjectEntity>()
+                .eq(ProjectEntity::getProjectName, projectName)) != null;
+    }
     /**
      * 编辑项目
      */
@@ -105,4 +115,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
                 .set(ProjectEntity::getProjectName, projectName)
                 .set(ProjectEntity::getProjectUpdateAt, LocalDateTime.now()));
     }
+
+
 }
