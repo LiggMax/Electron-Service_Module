@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 项目
+ * 项目管理
  */
 @RestController
 @RequestMapping("/api/adminWeb/project")
@@ -22,8 +22,8 @@ public class ProjectController {
      * 项目列表
      */
     @GetMapping
-    public Result<List<ProjectEntity>> getProjectList(){
-        return Result.success(200,projectService.getBaseMapper().selectList(null));
+    public Result<List<ProjectEntity>> getProjectList() {
+        return Result.success(200, projectService.getBaseMapper().selectList(null));
     }
 
     /**
@@ -31,17 +31,26 @@ public class ProjectController {
      */
     @PostMapping("/add")
     public Result<String> addProject(@RequestParam String projectName,
-                                     @RequestParam Float  projectPrice){
-        projectService.saveProject(projectName,projectPrice);
-        return Result.success(200,"添加成功");
+                                     @RequestParam Double projectPrice) {
+        projectService.saveProject(projectName, projectPrice);
+        return Result.success(200, "添加成功");
+    }
+
+    /**
+     * 修改项目价格
+     */
+    @PutMapping("/edit")
+    public Result<String> editProject(@RequestParam Long projectId,@RequestParam Double projectPrice) {
+        projectService.updateProjectPrice(projectId,  projectPrice);
+        return Result.success(200, "修改成功");
     }
 
     /**
      * 删除项目
      */
     @DeleteMapping
-    public Result<String> deleteProject(@RequestParam Long projectId){
+    public Result<String> deleteProject(@RequestParam Long projectId) {
         projectService.removeById(projectId);
-        return Result.success(200,"删除成功");
+        return Result.success(200, "删除成功");
     }
 }
