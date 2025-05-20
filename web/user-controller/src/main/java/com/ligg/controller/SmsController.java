@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 用户号码管理
+ */
 @RestController
-@RequestMapping("/api/sms")
+@RequestMapping("/api/user/sms")
 public class SmsController {
 
     @Autowired

@@ -32,6 +32,8 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public List<CodeVo> getCodeList(Long userId) {
         List<CodeVo> codeList = smsMapper.getCodeList(userId);
+
+        //更新订单状态
         for (CodeVo codeVo : codeList) {
             userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
                     .eq(UserOrderEntity::getUserId,  userId)

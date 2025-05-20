@@ -1,7 +1,11 @@
 package com.ligg.service.adminweb.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.utils.SmsParserUtil;
 import com.ligg.mapper.user.UserMapper;
+import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.adminweb.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,8 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserOrderMapper userOrderMapper;
 
     /**
      * 提取验证码和短信
@@ -48,16 +54,21 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     }
 
     /**
-     * 缓存验证码
+     * 保存验证码更新订单状态
      */
     @Override
     public void saveSmsAndCode(List<Map<String, String>> maps) {
         for (Map<String, String> map : maps) {
             String phoneNumber = map.get("phoneNumber");
             String verificationCode = map.get("verificationCode");
-            redisTemplate.opsForValue()
-                    .set("Massage：" + phoneNumber + " - " + verificationCode, "验证码:" + verificationCode);
-            //TODO 添加缓存过期时间
+//            redisTemplate.opsForValue()
+//                    .set("Massage：" + phoneNumber + " - " + verificationCode, "验证码:" + verificationCode);
+//            if(userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
+//                    .eq(UserOrderEntity::getPhoneNumber,phoneNumber)
+//            ))
+            userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
+                    .eq(UserOrderEntity::getPhoneNumber,phoneNumber)
+                    .set(UserOrderEntity::getCode,verificationCode));
         }
     }
 }
