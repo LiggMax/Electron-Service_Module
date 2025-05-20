@@ -24,3 +24,5 @@ mybatis-plus:
 logging:
   level:
     com.ligg.mapper: debug
+jwt:
+  key: 78eb6db165974e7fa48a
