@@ -3,6 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
+import com.ligg.common.vo.CodeVo;
 import com.ligg.service.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,23 @@ public class SmsController {
     private SmsService smsService;
 
     /**
-     * 获取用户短信列表
+     * 获取用户号码列表
      */
     @GetMapping
     public Result<List<SmsDto>> getSmsList() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         List<SmsDto> smsList = smsService.getSmsList((Long) map.get("userId"));
         return Result.success(200,smsList);
+    }
+
+    /**
+     * 获取用户验证码列表
+     */
+    @GetMapping("/code")
+    public Result<List<CodeVo>> getCodeList() {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        //获取用户验证码列表
+        List<CodeVo> codeList = smsService.getCodeList((Long) map.get("userId"));
+        return Result.success(200,codeList);
     }
 }

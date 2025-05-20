@@ -1,4 +1,4 @@
-package com.ligg.mapper;
+package com.ligg.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.entity.AdminUserEntity;
@@ -61,7 +61,6 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     //根据账号密码查询后台管理用户信息
     AdminWebUserEntity findByAdminWebUser(String account);
 
-    //添加用户订单
-    void addUserOrder(Long userId, Long phoneId, Long projectId);
-
+    //更新订单状态和添加验证码
+    void updateOrderAndAddCode(int i);
 }

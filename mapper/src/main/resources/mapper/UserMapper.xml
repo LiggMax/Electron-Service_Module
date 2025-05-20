@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ligg.mapper.UserMapper">
+<mapper namespace="com.ligg.mapper.user.UserMapper">
     <!--添加收藏-->
     <insert id="addUserFavorite">
         insert into user_favorite(user_id, project_id, created_at)
@@ -46,6 +46,10 @@
         update users
         set user_status = #{status}
         where user_id = #{userId}
+    </update>
+    <!--修改订单信息-->
+    <update id="updateOrderAndAddCode">
+
     </update>
 
     <!-- 根据账号密码查询用户信息-->

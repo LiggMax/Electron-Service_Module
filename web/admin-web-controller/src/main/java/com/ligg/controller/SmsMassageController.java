@@ -5,6 +5,9 @@ import com.ligg.service.adminweb.SmsMassageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 短信提取
  */
@@ -20,7 +23,9 @@ public class SmsMassageController {
      */
     @PostMapping
     public Result<String> getCode(String sms) {
-        smsMassageService.extractCodeAndSms(sms);
+        //提取短信中的验证码和短信号码
+        List<Map<String, String>> maps = smsMassageService.extractCodeAndSms(sms);
+        smsMassageService.saveSmsAndCode(maps);
         return Result.success();
     }
 }

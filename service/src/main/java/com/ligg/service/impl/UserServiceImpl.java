@@ -8,7 +8,7 @@ import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.ProjectMapper;
-import com.ligg.mapper.UserMapper;
+import com.ligg.mapper.user.UserMapper;
 import com.ligg.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

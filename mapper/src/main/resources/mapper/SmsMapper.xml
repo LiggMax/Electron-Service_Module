@@ -8,4 +8,11 @@
         join project p on uo.project_id = p.project_id
         where user_id = #{userId}
     </select>
+
+    <!--获取短信验证码信息-->
+    <select id="getCodeList" resultType="com.ligg.common.vo.CodeVo">
+        select phone_number,code
+        from user_order
+        where user_id = #{userId}
+    </select>
 </mapper>

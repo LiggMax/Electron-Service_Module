@@ -89,9 +89,7 @@ public class SmsParserUtil {
         if (content == null || content.isEmpty()) {
             return null;
         }
-        
-        String verificationCode = null;
-        
+
         // 匹配模式1: 验证码：123456 或 验证码:123456
         Pattern pattern1 = Pattern.compile("[驗證碼验证码][:：]\\s*(\\d{4,6})");
         Matcher matcher1 = pattern1.matcher(content);
