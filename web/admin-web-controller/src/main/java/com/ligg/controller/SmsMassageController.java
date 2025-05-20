@@ -12,7 +12,7 @@ import java.util.Map;
  * 短信提取
  */
 @RestController
-@RequestMapping("/api/smsMassage")
+@RequestMapping("/api/sms")
 public class SmsMassageController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class SmsMassageController {
     /**
      * 提取短信号码、验证码
      */
-    @PostMapping
+    @PostMapping("/massage")
     public Result<String> getCode(String sms) {
         //提取短信中的验证码和短信号码
         List<Map<String, String>> maps = smsMassageService.extractCodeAndSms(sms);

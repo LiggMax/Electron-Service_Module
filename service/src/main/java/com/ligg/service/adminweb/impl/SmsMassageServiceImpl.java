@@ -31,7 +31,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
      * 提取验证码和短信
      */
     @Override
-    public List<Map<String,String>> extractCodeAndSms(String sms) {
+    public List<Map<String, String>> extractCodeAndSms(String sms) {
         if (sms == null || sms.isEmpty()) {
             System.out.println("短信内容为空");
             return null;
@@ -63,12 +63,15 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             String verificationCode = map.get("verificationCode");
 //            redisTemplate.opsForValue()
 //                    .set("Massage：" + phoneNumber + " - " + verificationCode, "验证码:" + verificationCode);
-//            if(userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
-//                    .eq(UserOrderEntity::getPhoneNumber,phoneNumber)
-//            ))
+            //查询订单state是否等于1，如果等于1，则更不更新
+            if (userOrderMapper.selectOne(new LambdaQueryWrapper<UserOrderEntity>()
+                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
+                    .eq(UserOrderEntity::getState, 1)) != null) {
+                continue;
+            }
             userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                    .eq(UserOrderEntity::getPhoneNumber,phoneNumber)
-                    .set(UserOrderEntity::getCode,verificationCode));
+                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
+                    .set(UserOrderEntity::getCode, verificationCode));
         }
     }
 }

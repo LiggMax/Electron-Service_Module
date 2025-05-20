@@ -7,6 +7,7 @@ import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.CustomerMapper;
 import com.ligg.service.adminweb.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, UserEntity>
     @Autowired
     private CustomerMapper customerMapper;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
     /**
      * 更新用户状态
      */
@@ -27,8 +30,9 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerMapper, UserEntity>
         LambdaUpdateWrapper<UserEntity> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(UserEntity::getUserId, userId)
                 .set(UserEntity::getUserStatus, userStatus);
-
         customerMapper.update(null, updateWrapper);
+        //删除token
+        redisTemplate.delete("Token:" + userId);
     }
 
     /**

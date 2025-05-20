@@ -4,6 +4,7 @@ import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,5 +24,14 @@ public class PhoneController {
     @GetMapping
     public Result<List<PhoneEntity>> getPhoneList(){
         return Result.success(200,phoneNumberService.getBaseMapper().selectList(null));
+    }
+
+    /**
+     * 删除号码
+     */
+    @DeleteMapping()
+    public Result<String> deletePhone(Long phoneId){
+        phoneNumberService.getBaseMapper().deleteById(phoneId);
+        return Result.success(200,"删除成功");
     }
 }
