@@ -4,7 +4,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.ProjectService;
+import com.ligg.service.common.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

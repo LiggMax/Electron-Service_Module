@@ -2,7 +2,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.entrance.EntranceApplication;
 import com.ligg.mapper.ProjectMapper;
-import com.ligg.service.ProjectService;
+import com.ligg.service.common.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,7 @@ import com.ligg.common.dto.SmsDto;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.CodeVo;
-import com.ligg.service.SmsService;
+import com.ligg.service.common.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

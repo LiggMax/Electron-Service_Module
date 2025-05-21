@@ -1,4 +1,4 @@
-package com.ligg.service.impl;
+package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.dto.SmsDto;
@@ -6,7 +6,7 @@ import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.vo.CodeVo;
 import com.ligg.mapper.SmsMapper;
 import com.ligg.mapper.user.UserOrderMapper;
-import com.ligg.service.SmsService;
+import com.ligg.service.common.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

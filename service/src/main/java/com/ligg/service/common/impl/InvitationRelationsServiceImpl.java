@@ -1,9 +1,9 @@
-package com.ligg.service.impl;
+package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.InvitationRelationsEntity;
 import com.ligg.mapper.InvitationRelationsMapper;
-import com.ligg.service.InvitationRelationsService;
+import com.ligg.service.common.InvitationRelationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

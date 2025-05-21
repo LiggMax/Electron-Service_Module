@@ -1,7 +1,6 @@
-package com.ligg.service;
+package com.ligg.service.user;
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.entity.AdminWebUserEntity;

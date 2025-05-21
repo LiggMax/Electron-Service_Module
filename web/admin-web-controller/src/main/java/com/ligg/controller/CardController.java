@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.AdminUserService;
+import com.ligg.service.admin.AdminUserService;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

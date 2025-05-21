@@ -3,7 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
-import com.ligg.service.UserService;
+import com.ligg.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

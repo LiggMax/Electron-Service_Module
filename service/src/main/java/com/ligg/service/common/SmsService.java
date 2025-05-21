@@ -1,4 +1,4 @@
-package com.ligg.service;
+package com.ligg.service.common;
 
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.vo.CodeVo;

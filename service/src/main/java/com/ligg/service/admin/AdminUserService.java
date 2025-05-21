@@ -1,4 +1,4 @@
-package com.ligg.service;
+package com.ligg.service.admin;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.entity.AdminUserEntity;

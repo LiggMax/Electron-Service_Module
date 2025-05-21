@@ -15,8 +15,10 @@ public class AnnouncementEntity {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     @NotNull(message = "不能为空")
+    @Pattern(regexp = "^.{1,30}$", message = "长度不能超过30个字符")
+    private String title;
+    @NotNull(message = "不能为空")
     @Pattern(regexp = "^.{5,100}$", message = "长度不能超过100个字符")
     private String content;
-
     private LocalDateTime  createTime;
 }

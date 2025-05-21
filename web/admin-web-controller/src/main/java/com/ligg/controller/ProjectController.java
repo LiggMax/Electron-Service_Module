@@ -1,9 +1,8 @@
 package com.ligg.controller;
 
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.ProjectService;
+import com.ligg.service.common.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

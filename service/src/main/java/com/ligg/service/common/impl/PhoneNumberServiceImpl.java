@@ -1,4 +1,4 @@
-package com.ligg.service.impl;
+package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.PhoneAndProjectDto;
@@ -6,8 +6,8 @@ import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.mapper.PhoneNumberMapper;
-import com.ligg.service.PhoneNumberService;
-import com.ligg.service.ProjectService;
+import com.ligg.service.common.PhoneNumberService;
+import com.ligg.service.common.ProjectService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

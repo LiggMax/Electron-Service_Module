@@ -5,7 +5,7 @@ import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;
-import com.ligg.service.UserService;
+import com.ligg.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.ligg.service.impl;
+package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -9,7 +9,7 @@ import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.RegionEntity;
 import com.ligg.mapper.ProjectMapper;
-import com.ligg.service.ProjectService;
+import com.ligg.service.common.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

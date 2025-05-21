@@ -1,4 +1,4 @@
-package com.ligg.service.impl;
+package com.ligg.service.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,7 +9,7 @@ import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserMapper;
-import com.ligg.service.UserService;
+import com.ligg.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;

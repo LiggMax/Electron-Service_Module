@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.PhoneNumberService;
+import com.ligg.service.common.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

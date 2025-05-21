@@ -1,11 +1,11 @@
-package com.ligg.service.impl;
+package com.ligg.service.admin.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.AdminUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.AdminUserMapper;
-import com.ligg.service.AdminUserService;
+import com.ligg.service.admin.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
