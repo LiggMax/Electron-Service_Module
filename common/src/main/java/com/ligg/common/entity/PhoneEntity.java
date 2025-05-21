@@ -24,4 +24,5 @@ public class PhoneEntity {
     private Integer usageStatus;//使用状态 1.可用、0.不可用
     private Integer regionId;//归属地id，修改名称与新表匹配
     private Long adminUserId;//管理员用户id
+    private Float money;//号码价格
 }

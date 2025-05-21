@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.awt.datatransfer.FlavorEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,10 +145,12 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             if (isPhoneExist(phoneNumber)) {
                 continue;
             }
-            
+
+            //TODO 号码价格暂时默认0.20元
+            Float money = 0.20f;
             // 添加到有效列表
             validPhoneNumbers.add(phoneNumber);
-            phonesToInsert.add(createPhoneEntity(phoneNumber, regionId,now, adminUserId));
+            phonesToInsert.add(createPhoneEntity(phoneNumber, regionId,now, adminUserId,money));
         }
         
         // 如果没有有效的手机号，直接返回
@@ -155,7 +158,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             log.info("没有有效的手机号可添加");
             return 0;
         }
-        
+
+
         // 执行插入操作
         return insertPhones(phonesToInsert, validPhoneNumbers, projectIds);
     }
@@ -190,7 +194,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 创建手机号实体对象
      */
-    private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, LocalDateTime now, Long adminUserId) {
+    private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, LocalDateTime now, Long adminUserId, Float money) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
         phone.setRegionId(regionId);
@@ -198,6 +202,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         phone.setUsageStatus(1);
         phone.setRegistrationTime(now);
         phone.setAdminUserId(adminUserId);
+        phone.setMoney(money);
         return phone;
     }
     

@@ -137,8 +137,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             UserEntity userInfo = userMapper.selectById(userId);
             //获取项目价格
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
+            //TODO 暂时的号码价格
+            Float phoneMoney = 0.20f;
             Double projectMoney = projectEntity.getProjectPrice();
-            if (userInfo.getMoney() < projectMoney) {
+            if (userInfo.getMoney() < projectMoney + phoneMoney) {
                 return "您的余额不足";
             }
 
@@ -146,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                使用事务来确保操作的原子性
                添加号码订单
              */
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney);
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney + phoneMoney);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
@@ -156,7 +158,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                 // 更新用户余额
                 userMapper.update(new LambdaUpdateWrapper<UserEntity>()
                         .eq(UserEntity::getUserId, userId)
-                        .set(UserEntity::getMoney, userInfo.getMoney() - projectEntity.getProjectPrice()));
+                        .set(UserEntity::getMoney, userInfo.getMoney() - projectEntity.getProjectPrice() -  phoneMoney ));
 
                 // 删除phone_project_relation表中的关联数据
                 phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);

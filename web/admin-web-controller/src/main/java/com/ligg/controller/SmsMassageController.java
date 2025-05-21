@@ -25,7 +25,7 @@ public class SmsMassageController {
     public Result<String> getCode(String sms) {
         //提取短信中的验证码和短信号码
         List<Map<String, String>> maps = smsMassageService.extractCodeAndSms(sms);
-        //保存短信和验证码
+        //保存短信和验证码，更新订单状态
         smsMassageService.saveSmsAndCode(maps);
         return Result.success();
     }

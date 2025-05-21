@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ligg.mapper.AdminWeb.OrderMapper">
+    <!-- 获取所有订单 -->
+    <select id="getAllOrder" resultType="com.ligg.common.vo.OrderVo">
+        select uo.user_project_id as id,
+               uo.phone_number,
+               uo.money,
+               uo.code,
+               uo.state,
+               uo.created_at,
+               u.user_id,
+               u.nick_name        as user_nick_name,
+               u.user_avatar,
+               au.nick_name       as admin_nick_name,
+               au.user_id         as admin_id,
+               au.user_avatar     as admin_avatar
+        from user_order uo
+                 left join users u on uo.user_id = u.user_id
+                 left join phone p on uo.phone_number = p.phone_number
+                 left join admin_users au on p.admin_user_id = au.user_id
+        order by uo.created_at desc
+    </select>
+</mapper>

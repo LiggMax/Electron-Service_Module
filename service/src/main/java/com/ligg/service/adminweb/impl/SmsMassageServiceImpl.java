@@ -61,17 +61,18 @@ public class SmsMassageServiceImpl implements SmsMassageService {
         for (Map<String, String> map : maps) {
             String phoneNumber = map.get("phoneNumber");
             String verificationCode = map.get("verificationCode");
-//            redisTemplate.opsForValue()
-//                    .set("Massage：" + phoneNumber + " - " + verificationCode, "验证码:" + verificationCode);
-            //查询订单state是否等于1，如果等于1，则更不更新
-            if (userOrderMapper.selectOne(new LambdaQueryWrapper<UserOrderEntity>()
-                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
-                    .eq(UserOrderEntity::getState, 1)) != null) {
-                continue;
+
+            //查询订单
+            List<UserOrderEntity> orders = userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
+                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber));
+            //订单不存在或者订单状态为0，则更新
+            if (orders.isEmpty() || orders.get(0).getState() == 0){
+                userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
+                        .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
+                        .set(UserOrderEntity::getCode, verificationCode)
+                        .set(UserOrderEntity::getState, 1));
             }
-            userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
-                    .set(UserOrderEntity::getCode, verificationCode));
+
         }
     }
 }

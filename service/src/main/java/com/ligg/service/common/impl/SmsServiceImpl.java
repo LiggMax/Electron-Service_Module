@@ -32,14 +32,14 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public List<CodeVo> getCodeList(Long userId) {
         List<CodeVo> codeList = smsMapper.getCodeList(userId);
-
+        //TODO 查询定制订单状态
         //更新订单状态
-        for (CodeVo codeVo : codeList) {
-            userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                    .eq(UserOrderEntity::getUserId,  userId)
-                    .and(wrapper -> wrapper.eq(UserOrderEntity::getPhoneNumber,codeVo.getPhoneNumber()))
-                    .set(UserOrderEntity::getState, 1));
-        }
+//        for (CodeVo codeVo : codeList) {
+//            userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
+//                    .eq(UserOrderEntity::getUserId,  userId)
+//                    .and(wrapper -> wrapper.eq(UserOrderEntity::getPhoneNumber,codeVo.getPhoneNumber()))
+//                    .set(UserOrderEntity::getState, 1));
+//        }
         //过滤codeList中的空数据
         codeList.removeIf(codeVo -> codeVo.getCode() == null);
         return  codeList;

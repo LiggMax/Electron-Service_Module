@@ -40,7 +40,7 @@ public class SmsController {
     }
 
     /**
-     * 获取用户验证码列表
+     * 获取用户定订单验证码
      */
     @GetMapping("/code")
     public Result<List<CodeVo>> getCodeList() {
