@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.AnnouncementEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.AnnouncementService;
@@ -20,9 +21,9 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
     /**
-     * 发布公告
+     * 发布、编辑公告
      */
-    @PostMapping("/publish")
+    @PostMapping("/publishOrUpdate")
     public Result<String> publish(@RequestBody @Validated AnnouncementEntity announcementEntity) {
         announcementEntity.setCreateTime(LocalDateTime.now());
         announcementService.saveOrUpdate(announcementEntity);
@@ -34,6 +35,17 @@ public class AnnouncementController {
      */
     @GetMapping
     public Result<List<AnnouncementEntity>> getAnnouncement() {
-        return Result.success(200,announcementService.getBaseMapper().selectList(null));
+        return Result.success(200,announcementService.getBaseMapper()
+                .selectList(new LambdaQueryWrapper<AnnouncementEntity>()
+                        .orderByDesc(AnnouncementEntity::getCreateTime)));
+    }
+
+    /**
+     *删除公告
+     */
+    @DeleteMapping
+    public Result<String> deleteAnnouncement(@RequestParam Long id) {
+        announcementService.removeById(id);
+        return Result.success();
     }
 }
