@@ -26,4 +26,9 @@ public class OrderController {
     public Result<List<OrderVo>> getAllOrder(){
         return Result.success(200,orderService.getAllOrder());
     }
+
+    /**
+     * 结算订单
+     */
+
 }

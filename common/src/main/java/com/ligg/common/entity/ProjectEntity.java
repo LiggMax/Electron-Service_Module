@@ -19,7 +19,7 @@ public class ProjectEntity {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Integer projectId;
     private String projectName;
-    private Double projectPrice;// 项目价格
+    private Float projectPrice;// 项目价格
     private LocalDateTime projectCreatedAt;// 创建时间
     private LocalDateTime projectUpdateAt;
 }

@@ -31,7 +31,7 @@ public class ProjectController {
      */
     @PostMapping("/add")
     public Result<String> addProject(@RequestParam String projectName,
-                                     @RequestParam Double projectPrice) {
+                                     @RequestParam Float projectPrice) {
         if(!projectService.nameFindProjectInfo(projectName)){
             return Result.error(400, "项目已存在");
         }

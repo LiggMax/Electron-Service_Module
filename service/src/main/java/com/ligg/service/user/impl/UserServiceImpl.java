@@ -139,7 +139,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
             //TODO 暂时的号码价格
             Float phoneMoney = 0.20f;
-            Double projectMoney = projectEntity.getProjectPrice();
+            Float projectMoney = projectEntity.getProjectPrice();
             if (userInfo.getMoney() < projectMoney + phoneMoney) {
                 return "您的余额不足";
             }
@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                使用事务来确保操作的原子性
                添加号码订单
              */
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney + phoneMoney);
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney , phoneMoney);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()

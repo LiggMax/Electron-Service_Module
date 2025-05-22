@@ -16,7 +16,8 @@ public class UserOrderEntity {
     private LocalDateTime createdAt;
     private Integer projectId;
     private Long phoneNumber;
-    private Float money;
+    private Float projectMoney;//项目金额
+    private Float phoneMoney;//号码金额
     private Integer state;//状态
     private Integer code;//验证码
 }
