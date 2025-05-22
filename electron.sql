@@ -11,11 +11,26 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 22/05/2025 11:12:06
+ Date: 22/05/2025 14:54:27
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for account_funds
+-- ----------------------------
+DROP TABLE IF EXISTS `account_funds`;
+CREATE TABLE `account_funds`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` bigint NULL DEFAULT NULL COMMENT '账户id',
+  `money` float NOT NULL DEFAULT 0 COMMENT '资金',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '账户资金' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of account_funds
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for admin_users
@@ -64,7 +79,7 @@ CREATE TABLE `admin_web_user`  (
 -- ----------------------------
 -- Records of admin_web_user
 -- ----------------------------
-INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-21 15:32:57', '127.0.0.1');
+INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-22 14:47:15', '127.0.0.1');
 
 -- ----------------------------
 -- Table structure for announcement
@@ -203,7 +218,7 @@ CREATE TABLE `project`  (
   `project_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `project_update_at` datetime NULL DEFAULT NULL COMMENT '跟新时间',
   PRIMARY KEY (`project_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '项目表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '项目表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of project
@@ -211,6 +226,8 @@ CREATE TABLE `project`  (
 INSERT INTO `project` VALUES (1, '测试项目1', 12.50, '2025-05-17 14:22:46', NULL);
 INSERT INTO `project` VALUES (2, '测试项目3', 2.00, '2025-05-17 14:22:46', '2025-05-19 17:32:32');
 INSERT INTO `project` VALUES (3, '测试项目', 2.50, '2025-05-17 14:22:46', '2025-05-19 17:59:58');
+INSERT INTO `project` VALUES (4, '123', 132.00, '2025-05-22 14:48:10', NULL);
+INSERT INTO `project` VALUES (5, '测试', 123.00, '2025-05-22 14:48:25', NULL);
 
 -- ----------------------------
 -- Table structure for region
@@ -276,7 +293,8 @@ CREATE TABLE `user_order`  (
   `state` int NOT NULL DEFAULT 0 COMMENT '订单状态  0=未使用   1=已使用',
   `code` int NULL DEFAULT NULL COMMENT '验证码',
   PRIMARY KEY (`user_project_id`) USING BTREE,
-  INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE
+  INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE,
+  INDEX `user_order_phone_number_index`(`phone_number` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 462 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -287,7 +305,7 @@ INSERT INTO `user_order` VALUES (453, 1924352187670147074, '2025-05-19 18:10:56'
 INSERT INTO `user_order` VALUES (454, 1924352187670147074, '2025-05-19 18:12:30', 2, 47548365, 0, 0, 1, 7216);
 INSERT INTO `user_order` VALUES (455, 1924352187670147074, '2025-05-19 18:15:41', 2, 47548177, 0, 0, 1, 8888);
 INSERT INTO `user_order` VALUES (456, 1924352187670147074, '2025-05-19 18:16:33', 3, 47567094, 2.5, 0, 1, 651229);
-INSERT INTO `user_order` VALUES (457, 1924730966280220673, '2025-05-20 15:46:38', 2, 12344441918, 2, 0, 0, NULL);
+INSERT INTO `user_order` VALUES (457, 1924730966280220673, '2025-05-20 15:46:38', 2, 12344441918, 2, 0, 2, 651229);
 INSERT INTO `user_order` VALUES (458, 1924352187670147074, '2025-05-21 18:07:46', 1, 12345345634, 12.5, 0, 0, NULL);
 INSERT INTO `user_order` VALUES (459, 1924352187670147074, '2025-05-21 18:15:10', 3, 1323124141, 2.5, 0, 0, NULL);
 INSERT INTO `user_order` VALUES (460, 1924352187670147074, '2025-05-21 18:18:10', 2, 19971539844, 2.2, 0, 0, NULL);
@@ -323,7 +341,7 @@ INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-0
 INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', '333333', '', '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '', 436.6);
 INSERT INTO `users` VALUES (1923688101231960065, '555555', '$2a$12$V9ZradzXvnpE2RYgC4t80eg.I7LNjSUVuWTu3JH1o1oYHPWffRUni', NULL, NULL, '2025-05-17 18:32:38', NULL, NULL, 1, '2025-05-17 18:33:02', 'd21f41168ed64208b28c', 0);
 INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpYAzdH7OfUOzcpUweh89bUG2TPDzpAmi26SK/dtt62', NULL, NULL, '2025-05-17 19:17:22', NULL, NULL, 0, NULL, '95e151202a4a4da4b586', 0);
-INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-22 11:05:01', 'c51ddeb799e845458a5a', 6.1);
+INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-22 14:32:39', 'c51ddeb799e845458a5a', 6.1);
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);

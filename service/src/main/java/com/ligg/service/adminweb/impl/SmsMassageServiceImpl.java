@@ -65,7 +65,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             //查询订单
             List<UserOrderEntity> orders = userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
                     .eq(UserOrderEntity::getPhoneNumber, phoneNumber));
-            //订单不存在或者订单状态为0，则更新
+            //订单存在或者订单状态为0，则更新
             if (orders.isEmpty() || orders.get(0).getState() == 0){
                 userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
                         .eq(UserOrderEntity::getPhoneNumber, phoneNumber)

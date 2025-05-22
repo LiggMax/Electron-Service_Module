@@ -10,8 +10,8 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into user_order(user_id, phone_number,project_id,project_money,phone_money,created_at)
-        values (#{userId}, #{phoneNumber},#{projectId},#{projectMoney},#{phoneMoney},NOW())
+        insert into user_order(user_id, phone_number,admin_id,project_id,project_money,phone_money,created_at)
+        values (#{userId}, #{phoneNumber},#{adminUserId},#{projectId},#{projectMoney},#{phoneMoney},NOW())
     </insert>
 
     <!--注册账号-->

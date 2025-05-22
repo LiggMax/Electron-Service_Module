@@ -1,23 +1,29 @@
 package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.AccountFundsEntity;
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.AdminUserMapper;
 import com.ligg.mapper.AdminWeb.AccountFundsMapper;
 import com.ligg.mapper.AdminWeb.OrderMapper;
+import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.adminweb.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -34,10 +40,14 @@ public class OrderServiceImpl implements OrderService {
     private AccountFundsMapper accountFundsMapper;
 
     @Autowired
+    private AdminWebUserMapper adminWebUserMapper;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Autowired
     private JWTUtil jwtUtil;
+
     /**
      * 获取所有订单
      */
@@ -46,31 +56,37 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.getAllOrder();
     }
 
+
+    @Override
+    public UserOrderEntity getOrderInfo(Integer orderId) {
+        return userOrderMapper.selectById(orderId);
+    }
+
     /**
      * 结算订单
      */
     @Override
-    public void settleOrder(Integer orderId) {
-        //获取订单数据
-        UserOrderEntity orderEntity = userOrderMapper.selectById(orderId);
-        //根据号码获取卡商数据
-        AdminUserEntity adminUser = adminUserMapper.selectByPhoneGetAdminUser(orderEntity.getPhoneNumber());
+    @Transactional
+    public void settleOrder(UserOrderEntity order) {
 
-        //结算卡商余额
-        adminUserMapper.update(new LambdaUpdateWrapper<AdminUserEntity>()
-                .eq(AdminUserEntity::getUserId,adminUser.getUserId())
-                .set(AdminUserEntity::getMoney,orderEntity.getPhoneMoney()));
+        // 结算卡商余额
+        log.info("结算订单，更新卡商余额：+{}元", order.getPhoneMoney());
+        adminUserMapper.update(new UpdateWrapper<AdminUserEntity>()
+                .eq("user_id", order.getAdminId())
+                .setSql("money=money+" + order.getPhoneMoney()));
 
         //结算平台余额
         Map<String, Object> AdminWebUserInfo = jwtUtil.parseToken(request.getHeader("Token"));
         Long adminWebUserId = (Long) AdminWebUserInfo.get("userId");
-        accountFundsMapper.update(new LambdaUpdateWrapper<AccountFundsEntity>()
-                .eq(AccountFundsEntity::getAccountId,adminWebUserId)
-                .set(AccountFundsEntity::getMoney,orderEntity.getProjectMoney()));
+        log.info("结算订单，更新平台余额：+{}元", order.getProjectMoney());
+        adminWebUserMapper.update(new UpdateWrapper<AdminWebUserEntity>()
+                .eq("admin_id", adminWebUserId)
+                .setSql("money=money+" + order.getProjectMoney()));
 
         //更新订单状态
+        log.info("结算订单，更新订单状态：{}", 2);
         userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                .eq(UserOrderEntity::getUserProjectId,orderId)
-                .set(UserOrderEntity::getState,3));
+                .eq(UserOrderEntity::getUserProjectId, order.getUserProjectId())
+                .set(UserOrderEntity::getState, 2));
     }
 }

@@ -32,9 +32,9 @@ public class ProjectController {
     @PostMapping("/add")
     public Result<String> addProject(@RequestParam String projectName,
                                      @RequestParam Float projectPrice) {
-        if(!projectService.nameFindProjectInfo(projectName)){
-            return Result.error(400, "项目已存在");
-        }
+//        if(projectService.nameFindProjectInfo(projectName)){
+//            return Result.error(400, "项目已存在");
+//        }
         projectService.saveProject(projectName, projectPrice);
         return Result.success(200, "添加成功");
     }

@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.service.adminweb.OrderService;
@@ -20,6 +21,7 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
     /**
      * 获取所有订单
      */
@@ -33,7 +35,19 @@ public class OrderController {
      */
     @PostMapping("/settle")
     public Result<String> settleOrder(Integer orderId){
-        orderService.settleOrder(orderId);
+        //获取订单数据
+        UserOrderEntity orderInfo = orderService.getOrderInfo(orderId);
+        if(orderInfo == null){
+            return Result.error(400,"订单不存在");
+        }
+        if (orderInfo.getState() == 0){
+            return Result.error(400,"订单还未使用，不可结算");
+        }
+        if (orderInfo.getState() == 2){
+            return Result.error(400,"订单已结算,请勿重复提交");
+        }
+        //结算订单
+        orderService.settleOrder(orderInfo);
         return Result.success(200,"结算成功");
     }
 }

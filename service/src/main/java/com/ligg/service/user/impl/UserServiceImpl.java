@@ -10,6 +10,7 @@ import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserMapper;
 import com.ligg.service.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -132,8 +131,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         if (!phoneEntities.isEmpty()) {
             int randomIndex = (int) (Math.random() * phoneEntities.size());
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
-
-            //获取用户信息
+            log.info("用户[{}]从[{}]中随机获取了手机号[{}],卡商id[{}]", userId, regionId, phoneEntity.getPhoneNumber(),phoneEntity.getAdminUserId());
+            //获取卡商id
+            Long adminUserId = phoneEntity.getAdminUserId();
+            //获取用户id
             UserEntity userInfo = userMapper.selectById(userId);
             //获取项目价格
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
@@ -148,7 +149,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                使用事务来确保操作的原子性
                添加号码订单
              */
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), projectId, projectMoney , phoneMoney);
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId,projectId, projectMoney , phoneMoney);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()

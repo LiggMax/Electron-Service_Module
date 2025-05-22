@@ -83,7 +83,7 @@
     </select>
     
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        select phone_id, phone_number
+        select phone_id, phone_number,admin_user_id
         from phone
         where region_id = #{regionId}
     </select>
