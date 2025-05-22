@@ -5,6 +5,7 @@ import com.ligg.common.vo.OrderVo;
 import com.ligg.service.adminweb.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,9 @@ public class OrderController {
     /**
      * 结算订单
      */
-
+    @PostMapping("/settle")
+    public Result<String> settleOrder(Integer orderId){
+        orderService.settleOrder(orderId);
+        return Result.success(200,"结算成功");
+    }
 }

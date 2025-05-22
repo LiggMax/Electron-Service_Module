@@ -5,7 +5,8 @@
     <select id="getAllOrder" resultType="com.ligg.common.vo.OrderVo">
         select uo.user_project_id as id,
                uo.phone_number,
-               uo.money,
+               uo.project_money,
+               uo.phone_money,
                uo.code,
                uo.state,
                uo.created_at,
