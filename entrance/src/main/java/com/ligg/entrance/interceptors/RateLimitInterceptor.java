@@ -21,7 +21,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     public RateLimitInterceptor() {
         RateLimiterConfig config = RateLimiterConfig.custom()
                 .limitForPeriod(10)// 最多访问次数
-                .limitRefreshPeriod(Duration.ofSeconds(3))// 限流时间间隔，单位为秒
+                .limitRefreshPeriod(Duration.ofSeconds(2))// 限流时间间隔，单位为秒
                 .timeoutDuration(Duration.ZERO)
                 .build();
         this.rateLimiter = RateLimiterRegistry.of(config).rateLimiter("api");
