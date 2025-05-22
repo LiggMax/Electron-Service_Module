@@ -23,20 +23,36 @@ public class SmsParserUtil {
         if (sms == null || sms.isEmpty()) {
             return new ArrayList<>();
         }
-        
         List<Map<String, String>> resultList = new ArrayList<>();
-        
-        // 分割多条短信内容
-        String[] smsArray = sms.split("COM", -1);
-        
-        for (int i = 1; i < smsArray.length; i++) { // 从1开始，因为第0个是空字符串
-            String smsContent = "COM" + smsArray[i];
+        // 优化分割逻辑，兼容多种短信开头
+        // 修正正则表达式，括号补全，兼容多条短信分割
+        String[] smsArray = sms.split("(?=COM\\d+,[0-9]{6,15},)");
+        for (String smsContent : smsArray) {
+            smsContent = smsContent.trim();
+            if (smsContent.isEmpty()) continue;
             Map<String, String> result = extractSingleSms(smsContent);
             if (result != null) {
                 resultList.add(result);
+            } else {
+                // 未能提取验证码时，返回整条短信内容和号码
+                Map<String, String> fallback = new HashMap<>();
+                // 尝试提取号码
+                Pattern phonePattern = Pattern.compile("(\\d{6,15})");
+                Matcher phoneMatcher = phonePattern.matcher(smsContent);
+                String phoneNumber = phoneMatcher.find() ? phoneMatcher.group(1) : "未知";
+                fallback.put("comCode", "未知");
+                fallback.put("phoneNumber", phoneNumber);
+                // 若号码成功但验证码未提取到，则将整条内容放入验证码字段
+                if (!"未知".equals(phoneNumber)) {
+                    fallback.put("verificationCode", smsContent);
+                } else {
+                    fallback.put("verificationCode", "未提取到验证码");
+                }
+                fallback.put("platform", "未知平台");
+                fallback.put("rawContent", smsContent);
+                resultList.add(fallback);
             }
         }
-        
         return resultList;
     }
     
@@ -47,35 +63,42 @@ public class SmsParserUtil {
      * @return 包含COM编码、手机号码、平台名称和验证码的Map
      */
     private static Map<String, String> extractSingleSms(String smsContent) {
-        // 首先提取COM编码和手机号码
-        Pattern comPattern = Pattern.compile("(COM\\d+),(\\d+),(.*)");
+        // 优化正则，兼容号码为8位及以上，允许逗号、空格等分隔
+        Pattern comPattern = Pattern.compile("(COM\\d+)[,，](\\d{6,15})[,，](.*)");
         Matcher comMatcher = comPattern.matcher(smsContent);
-        
         if (!comMatcher.find()) {
+            // 兼容部分短信格式如“新短信!(号码)号码为[xxx]内容[...]”
+            Pattern altPattern = Pattern.compile("新短信!\\((\\d{6,15})\\).*内容\\[(.*?)]");
+            Matcher altMatcher = altPattern.matcher(smsContent);
+            if (altMatcher.find()) {
+                String phoneNumber = altMatcher.group(1);
+                String content = altMatcher.group(2);
+                String verificationCode = extractVerificationCode(content);
+                if (verificationCode != null) {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("comCode", "未知");
+                    result.put("phoneNumber", phoneNumber);
+                    result.put("verificationCode", verificationCode);
+                    String platform = extractPlatform(content);
+                    result.put("platform", platform != null ? platform : "未知平台");
+                    return result;
+                }
+            }
             return null;
         }
-        
         String comCode = comMatcher.group(1);
         String phoneNumber = comMatcher.group(2);
         String content = comMatcher.group(3);
-        
-        // 提取验证码
         String verificationCode = extractVerificationCode(content);
-        
-        // 如果找到验证码，创建结果对象
         if (verificationCode != null) {
             Map<String, String> result = new HashMap<>();
             result.put("comCode", comCode);
             result.put("phoneNumber", phoneNumber);
             result.put("verificationCode", verificationCode);
-            
-            // 提取平台名称
             String platform = extractPlatform(content);
             result.put("platform", platform != null ? platform : "未知平台");
-            
             return result;
         }
-        
         return null;
     }
     
@@ -89,42 +112,20 @@ public class SmsParserUtil {
         if (content == null || content.isEmpty()) {
             return null;
         }
-
-        // 匹配模式1: 验证码：123456 或 验证码:123456
-        Pattern pattern1 = Pattern.compile("[驗證碼验证码][:：]\\s*(\\d{4,6})");
-        Matcher matcher1 = pattern1.matcher(content);
-        if (matcher1.find()) {
-            return matcher1.group(1);
+        // 优化验证码提取，兼容“验证码是xxxx”、“验证码为xxxx”、“code: xxxx”等
+        Pattern[] patterns = new Pattern[] {
+            Pattern.compile("[驗證碼验证码][是为:：\s]*([0-9]{4,8})"),
+            Pattern.compile("code[\s:=]+([0-9]{4,8})", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("([0-9]{4,8}) is your verification code", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("verification code is ([0-9]{4,8})", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\b([0-9]{4,8})\b")
+        };
+        for (Pattern pattern : patterns) {
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
         }
-        
-        // 匹配模式2: code is 123456
-        Pattern pattern2 = Pattern.compile("code is (\\d{4,6})");
-        Matcher matcher2 = pattern2.matcher(content);
-        if (matcher2.find()) {
-            return matcher2.group(1);
-        }
-        
-        // 匹配模式3: 直接匹配数字 (适用于 "1234 is your verification code")
-        Pattern pattern3 = Pattern.compile("(\\d{4,6}) is your verification code");
-        Matcher matcher3 = pattern3.matcher(content);
-        if (matcher3.find()) {
-            return matcher3.group(1);
-        }
-        
-        // 匹配模式4: 英文短信中的验证码
-        Pattern pattern4 = Pattern.compile("verification code is (\\d{4,6})");
-        Matcher matcher4 = pattern4.matcher(content);
-        if (matcher4.find()) {
-            return matcher4.group(1);
-        }
-        
-        // 如果以上都没匹配到，尝试匹配任何4-6位数字
-        Pattern pattern5 = Pattern.compile("\\b(\\d{4,6})\\b");
-        Matcher matcher5 = pattern5.matcher(content);
-        if (matcher5.find()) {
-            return matcher5.group(1);
-        }
-        
         return null;
     }
     
@@ -160,4 +161,4 @@ public class SmsParserUtil {
         
         return null;
     }
-} 
+}
