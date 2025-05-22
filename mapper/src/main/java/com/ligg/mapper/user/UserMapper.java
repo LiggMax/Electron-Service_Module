@@ -63,4 +63,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
 
     //更新订单状态和添加验证码
     void updateOrderAndAddCode(int i);
+
+    //更新用户余额
+    void updateUserMoney(Long userId, Float deduct);
 }

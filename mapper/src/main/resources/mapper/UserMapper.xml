@@ -52,6 +52,13 @@
 
     </update>
 
+    <!--修改用户余额-->
+    <update id="updateUserMoney">
+        update users
+        set money = money - #{deduct}
+        where user_id = #{userId}
+    </update>
+
     <!-- 根据账号密码查询用户信息-->
     <select id="findByAdminUser" resultType="com.ligg.common.entity.AdminUserEntity">
         select user_id, account, password, email, nick_name

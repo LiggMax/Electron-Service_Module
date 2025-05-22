@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CodeVo {
 
-    private Integer code;
+    private String code;
     private Long phoneNumber;
 }

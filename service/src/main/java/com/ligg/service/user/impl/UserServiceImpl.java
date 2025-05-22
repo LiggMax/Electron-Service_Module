@@ -157,9 +157,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                         .set(PhoneEntity::getUsageStatus, 0));
 
                 // 更新用户余额
-                userMapper.update(new LambdaUpdateWrapper<UserEntity>()
-                        .eq(UserEntity::getUserId, userId)
-                        .set(UserEntity::getMoney, userInfo.getMoney() - projectEntity.getProjectPrice() -  phoneMoney ));
+                userMapper.updateUserMoney(userId,projectEntity.getProjectPrice() + phoneMoney);
 
                 // 删除phone_project_relation表中的关联数据
                 phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);
