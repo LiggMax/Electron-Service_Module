@@ -67,5 +67,10 @@ public class OrderServiceImpl implements OrderService {
         accountFundsMapper.update(new LambdaUpdateWrapper<AccountFundsEntity>()
                 .eq(AccountFundsEntity::getAccountId,adminWebUserId)
                 .set(AccountFundsEntity::getMoney,orderEntity.getProjectMoney()));
+
+        //更新订单状态
+        userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
+                .eq(UserOrderEntity::getUserProjectId,orderId)
+                .set(UserOrderEntity::getState,3));
     }
 }
