@@ -5,31 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ligg</groupId>
-        <artifactId>Electron-Service-Module</artifactId>
+        <artifactId>web</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>web</artifactId>
+    <artifactId>FilerService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>web</name>
-    <description>web</description>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>user-controller</module>
-        <module>admin-controller</module>
-        <module>admin-web-controller</module>
-        <module>FilerService</module>
-        <!-- 新模块在这里添加 -->
-    </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.ligg</groupId>
-            <artifactId>service</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-    </dependencies>
+    <name>file-service</name>
+    <description>用户接口控制器</description>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>
