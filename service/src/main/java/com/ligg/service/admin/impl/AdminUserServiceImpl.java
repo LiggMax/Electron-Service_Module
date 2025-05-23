@@ -74,6 +74,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             orderVo.setPhoneNumber(orderEntity.getPhoneNumber());
             orderVo.setState(orderEntity.getState());
             orderVo.setCreatedAt(orderEntity.getCreatedAt());
+            orderVo.setPhoneMoney(orderEntity.getPhoneMoney());
 
             orderVoList.add(orderVo);
         }
