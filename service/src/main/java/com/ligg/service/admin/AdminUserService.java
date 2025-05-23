@@ -2,8 +2,11 @@ package com.ligg.service.admin;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.vo.OrderVo;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+
+import java.util.List;
 
 public interface AdminUserService extends IService<AdminUserEntity> {
     //重置密码
@@ -12,4 +15,6 @@ public interface AdminUserService extends IService<AdminUserEntity> {
     void saveCardUser(AdminUserEntity adminUserEntity);
     //更新登录时间
     void updateLoginTime(Long userId);
+    //获取订单
+    List<OrderVo> getOrder(Long AdminId);
 }

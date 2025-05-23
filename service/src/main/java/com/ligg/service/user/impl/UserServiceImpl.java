@@ -72,7 +72,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      */
     @Override
     public AdminUserEntity findByAdminUserInfo(Long userId) {
-
         return userMapper.findByAdminUserInfo(userId);
     }
 
