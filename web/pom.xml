@@ -19,7 +19,7 @@
         <module>user-controller</module>
         <module>admin-controller</module>
         <module>admin-web-controller</module>
-        <module>FilerService</module>
+        <module>Filer-Controller</module>
         <!-- 新模块在这里添加 -->
     </modules>
 

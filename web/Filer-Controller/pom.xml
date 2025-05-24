@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>FilerService</artifactId>
+    <artifactId>Filer-Controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>file-service</name>
     <description>用户接口控制器</description>

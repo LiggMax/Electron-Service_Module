@@ -135,6 +135,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             Long adminUserId = phoneEntity.getAdminUserId();
             //获取用户id
             UserEntity userInfo = userMapper.selectById(userId);
+            //地区id
             //获取项目价格
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
             //TODO 暂时的号码价格
@@ -148,7 +149,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                使用事务来确保操作的原子性
                添加号码订单
              */
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId,projectId, projectMoney , phoneMoney);
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId,projectId, projectMoney , phoneMoney,regionId);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()

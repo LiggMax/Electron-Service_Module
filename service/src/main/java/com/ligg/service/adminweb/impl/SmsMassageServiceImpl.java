@@ -38,7 +38,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
         }
 
         // 使用工具类提取验证码信息
-        List<Map<String, String>> resultList = SmsParserUtil.extractVerificationCodes(sms);
+        List<Map<String, String>> resultList = SmsParserUtil.extractSmsContent(sms);
 
         if (resultList.isEmpty()) {
             log.info("未匹配到任何验证码信息");
@@ -47,7 +47,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             for (Map<String, String> result : resultList) {
                 System.out.println("提取成功 - 平台: " + result.get("platform") +
                         ", 号码: " + result.get("phoneNumber") +
-                        ", 验证码: " + result.get("verificationCode"));
+                        ", 短信内容: " + result.get("messageContent"));
             }
         }
         return resultList;

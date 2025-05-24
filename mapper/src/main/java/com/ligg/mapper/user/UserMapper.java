@@ -43,7 +43,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     void addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //添加号码
-    int addPhoneNumber(Long userId, Long phoneNumber,Long adminUserId, Integer projectId,Float projectMoney,Float phoneMoney);
+    int addPhoneNumber(Long userId, Long phoneNumber,Long adminUserId, Integer projectId,Float projectMoney,Float phoneMoney,Integer regionId);
 
     //用户订单
     @MapKey("user_project_id")
@@ -56,7 +56,7 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     UserEntity findAccountAndPasswordByUser(String account);
 
     //注册账号
-    void registerAccount(String account, String password);
+//    void registerAccount(String account, String password);
 
     //根据账号密码查询后台管理用户信息
     AdminWebUserEntity findByAdminWebUser(String account);

@@ -13,5 +13,7 @@ public class SmsDto {
     private Integer userProjectId;
     private String projectName;
     private Long phoneNumber;
+    private Integer state;
+    private String regionName;
     private LocalDateTime createdAt;
 }
