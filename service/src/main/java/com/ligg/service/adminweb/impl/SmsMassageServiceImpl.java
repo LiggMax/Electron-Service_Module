@@ -20,11 +20,6 @@ import java.util.Map;
 public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
     private UserOrderMapper userOrderMapper;
 
     /**
@@ -60,7 +55,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     public void saveSmsAndCode(List<Map<String, String>> maps) {
         for (Map<String, String> map : maps) {
             String phoneNumber = map.get("phoneNumber");
-            String verificationCode = map.get("verificationCode");
+            String messageContent = map.get("messageContent");
 
             //查询订单
             List<UserOrderEntity> orders = userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
@@ -69,7 +64,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             if (orders.isEmpty() || orders.get(0).getState() == 0){
                 userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
                         .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
-                        .set(UserOrderEntity::getCode, verificationCode)
+                        .set(UserOrderEntity::getCode, messageContent)
                         .set(UserOrderEntity::getState, 1));
             }
 
