@@ -9,5 +9,5 @@ public class CodeVo {
     private Integer id;
     private String code;
     private Long phoneNumber;
-    private LocalDateTime createTime;
+    private LocalDateTime createdAt;
 }
