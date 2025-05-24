@@ -11,8 +11,9 @@
 
     <!--获取短信验证码信息-->
     <select id="getCodeList" resultType="com.ligg.common.vo.CodeVo">
-        select phone_number,code
+        select user_project_id as id, phone_number, code, created_at
         from user_order
         where user_id = #{userId}
+          and code IS NOT NULL
     </select>
 </mapper>
