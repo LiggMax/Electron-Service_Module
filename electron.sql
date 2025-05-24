@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 22/05/2025 19:03:10
+ Date: 24/05/2025 19:26:28
 */
 
 SET NAMES utf8mb4;
@@ -58,7 +58,7 @@ INSERT INTO `admin_users` VALUES (8259543156, 'ligg', 'lwz', '$2a$12$rRwG1eIEuCg
 INSERT INTO `admin_users` VALUES (8259512156, 'lwz', '啊我给发发发', '$2a$12$tTjN1uZIuPEGxQU27fdBR.aUfLDjPabq//15Dt3UNERaLfngl3Qgm', '1241415i@gmail.com', '2025-05-12 18:33:52', '2025-05-12 18:33:55', 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0);
 INSERT INTO `admin_users` VALUES (1922882817093738498, '123456', '123', '$2a$12$GRVcugbFnVC90rcZsLRpkeXSSja3ZVX.6CePwmK21OYH6s/LMMHxe', '', '2025-05-15 13:12:43', NULL, NULL, '2025-05-15 17:07:22', NULL, 0);
 INSERT INTO `admin_users` VALUES (1922883816214745090, '11111111', '123123', '$2a$12$RSUtwhQTyfDQR39NPNF97e.rjRQPC1X6QnTFZ9J4F0QoOVUAOGyxy', '2954494754@qq.com', '2025-05-15 13:16:41', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-17 18:19:08', 12312313, 0);
-INSERT INTO `admin_users` VALUES (1925129632954384386, '111111', '测试卡商', '$2a$12$YOTMwVVdHM/Cu.xUl9opHuxNogjZTLaaf3tgGgBECxifesi4p5AWm', '', '2025-05-21 18:00:46', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-22 18:33:14', NULL, 0.8);
+INSERT INTO `admin_users` VALUES (1925129632954384386, '111111', '测试卡商', '$2a$12$YOTMwVVdHM/Cu.xUl9opHuxNogjZTLaaf3tgGgBECxifesi4p5AWm', '', '2025-05-21 18:00:46', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-23 13:24:35', NULL, 1.2);
 
 -- ----------------------------
 -- Table structure for admin_web_user
@@ -80,7 +80,7 @@ CREATE TABLE `admin_web_user`  (
 -- ----------------------------
 -- Records of admin_web_user
 -- ----------------------------
-INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-22 16:20:58', '127.0.0.1', 33);
+INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-24 18:25:11', '127.0.0.1', 37.5);
 
 -- ----------------------------
 -- Table structure for announcement
@@ -103,7 +103,6 @@ INSERT INTO `announcement` VALUES (6, '11233131', '2025-05-10 18:36:10', '');
 INSERT INTO `announcement` VALUES (7, '1321', '2025-05-10 18:36:41', '');
 INSERT INTO `announcement` VALUES (8, '12313', '2025-05-10 18:37:04', '');
 INSERT INTO `announcement` VALUES (10, '软件更新啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦', '2025-05-14 18:58:40', '软件更新');
-INSERT INTO `announcement` VALUES (11, '大苏打的哇大大撒大网', '2025-05-21 16:04:11', '阿达伟大');
 
 -- ----------------------------
 -- Table structure for invitation_relations
@@ -147,7 +146,7 @@ CREATE TABLE `phone`  (
 -- ----------------------------
 INSERT INTO `phone` VALUES (26, 19971539844, 1, '2025-05-21 18:01:13', 0, 1, 1925129632954384386, 0.2);
 INSERT INTO `phone` VALUES (27, 19971485431, 1, '2025-05-21 18:01:13', 1, 1, 1925129632954384386, 0.2);
-INSERT INTO `phone` VALUES (28, 1348145965899, 1, '2025-05-21 18:01:13', 1, 1, 1925129632954384386, 0.2);
+INSERT INTO `phone` VALUES (28, 1348145965899, 1, '2025-05-21 18:01:13', 0, 1, 1925129632954384386, 0.2);
 INSERT INTO `phone` VALUES (29, 1323124141, 1, '2025-05-21 18:01:13', 0, 1, 1925129632954384386, 0.2);
 INSERT INTO `phone` VALUES (30, 11111111111, 1, '2025-05-21 18:01:13', 0, 1, 1925129632954384386, 0.2);
 INSERT INTO `phone` VALUES (31, 19954459331, 1, '2025-05-21 18:01:13', 0, 1, 1925129632954384386, 0.2);
@@ -177,7 +176,6 @@ INSERT INTO `phone_project_relation` VALUES (129, 27, 1, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (130, 27, 2, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (131, 27, 3, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (132, 28, 1, '2025-05-21 18:01:12');
-INSERT INTO `phone_project_relation` VALUES (133, 28, 2, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (134, 28, 3, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (135, 29, 1, '2025-05-21 18:01:12');
 INSERT INTO `phone_project_relation` VALUES (136, 29, 2, '2025-05-21 18:01:12');
@@ -255,7 +253,7 @@ CREATE TABLE `user_favorite`  (
   `created_at` datetime NULL DEFAULT NULL COMMENT '收藏时间',
   PRIMARY KEY (`favorite_id`) USING BTREE,
   INDEX `user_favorite_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '用户项目收藏' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_favorite
@@ -273,6 +271,7 @@ INSERT INTO `user_favorite` VALUES (10, 8259543159, 1, '2025-04-26 16:31:40');
 INSERT INTO `user_favorite` VALUES (11, 8259543159, 2, '2025-04-26 16:31:42');
 INSERT INTO `user_favorite` VALUES (12, 1924352187670147074, 3, '2025-05-19 15:43:10');
 INSERT INTO `user_favorite` VALUES (13, 1924352187670147074, 1, '2025-05-21 14:55:11');
+INSERT INTO `user_favorite` VALUES (14, 1924352187670147074, 4, '2025-05-23 11:51:19');
 
 -- ----------------------------
 -- Table structure for user_order
@@ -289,19 +288,25 @@ CREATE TABLE `user_order`  (
   `state` int NOT NULL DEFAULT 0 COMMENT '订单状态  0=未使用   1=已使用 2=已结算',
   `code` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '验证码',
   `admin_id` bigint NULL DEFAULT NULL COMMENT '卡商id',
+  `region_id` int NULL DEFAULT NULL COMMENT '地区id',
   PRIMARY KEY (`user_project_id`) USING BTREE,
-  INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 473 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
+  INDEX `user_order_user_project_id_index`(`user_project_id` ASC) USING BTREE,
+  INDEX `user_order_admin_id_index`(`admin_id` ASC) USING BTREE,
+  INDEX `user_order_user_id_index`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 476 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_order
 -- ----------------------------
-INSERT INTO `user_order` VALUES (467, 1924352187670147074, '2025-05-22 18:33:52', 4, 11111111111, 132, 0.2, 0, NULL, 1925129632954384386);
-INSERT INTO `user_order` VALUES (468, 1924352187670147074, '2025-05-22 18:34:00', 4, 19971539844, 132, 0.2, 0, NULL, 1925129632954384386);
-INSERT INTO `user_order` VALUES (469, 1924352187670147074, '2025-05-22 18:34:08', 4, 12345345634, 132, 0.2, 0, NULL, 1925129632954384386);
-INSERT INTO `user_order` VALUES (470, 1924352187670147074, '2025-05-22 18:34:14', 4, 12345445544, 132, 0.2, 0, NULL, 1925129632954384386);
-INSERT INTO `user_order` VALUES (471, 1924352187670147074, '2025-05-22 18:35:22', 5, 47564054, 123, 0.2, 1, '202595', 1925129632954384386);
-INSERT INTO `user_order` VALUES (472, 1924352187670147074, '2025-05-22 18:38:36', 1, 11111111111, 12.5, 0.2, 0, NULL, 1925129632954384386);
+INSERT INTO `user_order` VALUES (467, 1924352187670147074, '2025-05-22 18:33:52', 4, 11111111111, 132, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (468, 1924352187670147074, '2025-05-22 18:34:00', 4, 19971539844, 132, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (469, 1924352187670147074, '2025-05-22 18:34:08', 4, 12345345634, 132, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (470, 1924352187670147074, '2025-05-22 18:34:14', 4, 12345445544, 132, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (471, 1924352187670147074, '2025-05-22 18:35:22', 5, 47564054, 123, 0.2, 1, '202595', 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (472, 1924352187670147074, '2025-05-22 18:38:36', 1, 11111111111, 12.5, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (473, 1924352187670147074, '2025-05-23 11:51:21', 2, 1348145965899, 2, 0.2, 0, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (474, 1924352187670147074, '2025-05-23 13:25:15', 3, 19954459331, 2.5, 0.2, 2, NULL, 1925129632954384386, NULL);
+INSERT INTO `user_order` VALUES (475, 1924352187670147074, '2025-05-24 17:40:53', 2, 47567094, 2, 0.2, 2, '【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。', 1925129632954384386, 1);
 
 -- ----------------------------
 -- Table structure for users
@@ -333,7 +338,7 @@ INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-0
 INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', '333333', '', '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '', 436.6);
 INSERT INTO `users` VALUES (1923688101231960065, '555555', '$2a$12$V9ZradzXvnpE2RYgC4t80eg.I7LNjSUVuWTu3JH1o1oYHPWffRUni', NULL, NULL, '2025-05-17 18:32:38', NULL, NULL, 1, '2025-05-17 18:33:02', 'd21f41168ed64208b28c', 0);
 INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpYAzdH7OfUOzcpUweh89bUG2TPDzpAmi26SK/dtt62', NULL, NULL, '2025-05-17 19:17:22', NULL, NULL, 0, NULL, '95e151202a4a4da4b586', 0);
-INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-22 18:19:41', 'c51ddeb799e845458a5a', 9334.3);
+INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-24 17:46:57', 'c51ddeb799e845458a5a', 9327.2);
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);
