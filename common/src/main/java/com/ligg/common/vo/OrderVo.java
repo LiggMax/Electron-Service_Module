@@ -17,7 +17,7 @@ public class OrderVo {
     private String userAvatar;//客户头像
     private String adminNickName;//卡商名称
     private String adminAvatar;//卡商头像
-    private Integer code;//验证码
+    private String code;//验证码短信
     private Integer state;//订单状态
     private LocalDateTime createdAt;//订单时间
 }
