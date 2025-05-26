@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.awt.datatransfer.FlavorEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +29,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     @Autowired
     private PhoneNumberMapper phoneNumberMapper;
 
-    @Autowired
-    private JWTUtil jwtUtil;
 
-    @Autowired
-    HttpServletRequest request;
-    
     @Autowired
     private ProjectService projectService;
 
@@ -317,7 +311,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 if (projectsObj instanceof List) {
                     @SuppressWarnings("unchecked")
                     List<?> projectsList = (List<?>) projectsObj;
-                    
+
                     // 直接从每个项目对象中提取 projectId
                     for (Object project : projectsList) {
                         if (project instanceof Map) {

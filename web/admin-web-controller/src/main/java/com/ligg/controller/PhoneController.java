@@ -1,6 +1,5 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.PhoneVo;
 import com.ligg.service.common.PhoneNumberService;
