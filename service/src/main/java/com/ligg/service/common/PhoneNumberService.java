@@ -3,6 +3,7 @@ package com.ligg.service.common;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.vo.PhoneVo;
 
 import java.util.List;
 import java.util.Map;
@@ -80,4 +81,7 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      * @return 地区ID
      */
     Integer mapCountryToRegionId(String country);
+
+    // 获取手机号列表
+    List<PhoneVo> getPhoneList();
 }

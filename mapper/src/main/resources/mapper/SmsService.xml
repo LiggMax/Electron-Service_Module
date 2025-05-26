@@ -146,7 +146,24 @@
         AND line_status = 1
         LIMIT 100
     </select>
-    
+
+    <!-- 获取号码列表 -->
+    <select id="getPhoneList" resultType="com.ligg.common.vo.PhoneVo">
+        select p.phone_id,
+               p.phone_number,
+               p.usage_status,
+               p.registration_time,
+               p.money,
+               r.region_name,
+               pj.project_name,
+               au.nick_name as admin_nick_name
+        from phone p
+                 left join region r on p.region_id = r.region_id
+                 left join admin_users au on p.admin_user_id = au.user_id
+                 left join phone_project_relation ppr on p.phone_id = ppr.phone_id
+                 left join project pj on ppr.project_id = pj.project_id
+    </select>
+
     <!-- 更新手机号状态 -->
     <update id="updatePhoneStatus">
         UPDATE phone

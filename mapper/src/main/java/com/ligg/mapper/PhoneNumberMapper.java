@@ -5,6 +5,7 @@ import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.dto.PhoneDetailDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
+import com.ligg.common.vo.PhoneVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -104,5 +105,10 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      * @return 受影响的行数
      */
     int deletePhoneProjectRelation(@Param("phoneId") Long phoneId, @Param("projectId") Integer projectId);
+
+    /**
+     * 获取所有手机号列表
+     */
+    List<PhoneVo> getPhoneList();
 }
 

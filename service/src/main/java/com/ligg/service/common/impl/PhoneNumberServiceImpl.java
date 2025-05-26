@@ -5,6 +5,7 @@ import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.JWTUtil;
+import com.ligg.common.vo.PhoneVo;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.common.PhoneNumberService;
 import com.ligg.service.common.ProjectService;
@@ -526,19 +527,14 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         } catch (Exception e) {
             log.warn("通过数据库查询地区ID失败: {}", e.getMessage());
         }
-
-        // 如果数据库查询失败，使用静态映射作为回退
-        if (regionId == null) {
-            Map<String, Integer> countryMap = new HashMap<>();
-            countryMap.put("中国", 1);
-            countryMap.put("美国", 2);
-            countryMap.put("英国", 3);
-            countryMap.put("日本", 4);
-            countryMap.put("韩国", 5);
-
-            regionId = countryMap.getOrDefault(country.trim(), null);
-        }
-
         return regionId;
+    }
+
+    /**
+     * 获取号码列表
+     */
+    @Override
+    public List<PhoneVo> getPhoneList() {
+        return phoneNumberMapper.getPhoneList();
     }
 }
