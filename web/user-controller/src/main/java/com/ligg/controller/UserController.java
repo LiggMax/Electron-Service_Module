@@ -139,17 +139,21 @@ public class UserController {
      * 上传头像
      */
     @PostMapping("/uploadAvatar")
-    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
-        if (file.getSize() > 1024 * 1024 * 5) {
+    public Result<String> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        if (avatar.getSize() > 1024 * 1024 * 5) {
             return Result.error(400, "文件大小不能超过5M");
         }
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
-        String avatarUrl = fileService.uploadAvatar(file);
+
+        // 上传头像
+        String avatarUrl = fileService.uploadAvatar(avatar);
         log.info("用户{}"+"上传头像{}"+"成功", userId, avatarUrl);
         if (avatarUrl == null) {
             return Result.error(400, "上传失败,请稍后再试");
         }
+
+        // 更新用户头像
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(userId);
         userEntity.setUserAvatar(avatarUrl);

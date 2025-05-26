@@ -28,7 +28,7 @@ public class FileServiceImpl implements FileService {
      * 上传头像
      */
     @Override
-    public String uploadAvatar(MultipartFile file) {
+    public String uploadAvatar(MultipartFile avatar) {
         try {
             boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(properties.getUserAvatar()).build());
             if (!bucketExists) {
@@ -45,11 +45,11 @@ public class FileServiceImpl implements FileService {
             }
             //上传文件
             String datePath = DatePathUtils.generateYearMonthDayPath();
-            String fileName = String.join("/",datePath + UUID.randomUUID() + "-" + file.getOriginalFilename());
+            String fileName = String.join("/",datePath + UUID.randomUUID() + "-" + avatar.getOriginalFilename());
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(properties.getUserAvatar())
-                    .stream(file.getInputStream(), file.getSize(), -1)
-                    .contentType(file.getContentType())
+                    .stream(avatar.getInputStream(), avatar.getSize(), -1)
+                    .contentType(avatar.getContentType())
                     .object(fileName)
                     .build());
             return String.join("/", properties.getEndpoint(), properties.getUserAvatar(), fileName);
