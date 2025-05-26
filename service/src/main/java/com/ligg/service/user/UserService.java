@@ -7,6 +7,7 @@ import com.ligg.common.entity.AdminWebUserEntity;
 import com.ligg.common.entity.UserEntity;
 import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -60,4 +61,7 @@ public interface UserService extends IService<UserEntity> {
 
     //更新登录时间
     void updateLoginTime(Long userId);
+
+    //上传用户头像头像
+    String uploadAvatar(MultipartFile file, Long userId);
 }

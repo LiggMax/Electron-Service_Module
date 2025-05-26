@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -236,5 +237,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                 .eq(UserEntity::getUserId, userId)
                 .set(UserEntity::getLoginTime, LocalDateTime.now());
         userMapper.update(null, wrapper);
+    }
+
+    /**
+     * 上传用户头像
+     */
+    @Override
+    public String uploadAvatar(MultipartFile file, Long userId) {
+        return "";
     }
 }

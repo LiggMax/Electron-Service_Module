@@ -15,6 +15,14 @@
     <description>用户接口控制器</description>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.ligg</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

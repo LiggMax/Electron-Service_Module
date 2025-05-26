@@ -26,3 +26,8 @@ logging:
     com.ligg.mapper: debug
 jwt:
   key: 78eb6db165974e7fa48a
+
+minio:
+  endpoint: http://123.51.208.249:9000
+  accessKey: L28ShZVy3uUyjy4snjXH
+  secretKey: Izbn99vWbdAHMx5qafSzB4NhTHc2mwMN7nYW3EkW

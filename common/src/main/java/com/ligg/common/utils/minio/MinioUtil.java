@@ -1,12 +1,9 @@
-package com.ligg.common.utils;
+package com.ligg.common.utils.minio;
 
 import io.minio.*;
-import io.minio.errors.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -16,10 +13,10 @@ import java.util.UUID;
 public class MinioUtil {
 
     public static void main(String[] args) {
-
-        String  endpoint = "http://129.204.224.233:19000";
-        String accessKey = "Jp0EfeRfThrT4ResuF0O";
-        String secretKey = "UMDeQycKFXHViS3LopjeOvDHJvN6IVxBCixo5G5e";
+//        http://123.51.208.249/
+        String  endpoint = "http://123.51.208.249:9000";
+        String accessKey = "L28ShZVy3uUyjy4snjXH";
+        String secretKey = "Izbn99vWbdAHMx5qafSzB4NhTHc2mwMN7nYW3EkW";
         String bucketName = "image";
         String file = "C:\\Users\\Administrator\\Downloads\\爱心.svg";
 
@@ -34,7 +31,8 @@ public class MinioUtil {
             if(!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())){
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
-            String fileName = UUID.randomUUID() + file;
+            File file1 = new File(file);
+            String fileName = UUID.randomUUID() + file1.getCanonicalFile().getName();
             minioClient.uploadObject(UploadObjectArgs.builder().filename(file).bucket(bucketName).object(fileName).build());
             log.info("上传成功: bucketName={}, fileName={}", bucketName, fileName);
             log.info("访问路径 {}",  endpoint + "/" + bucketName + "/" + fileName );

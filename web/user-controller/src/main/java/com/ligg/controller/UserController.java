@@ -9,6 +9,7 @@ import com.ligg.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,17 @@ public class UserController {
         Long userId = (Long) map.get("userId");
         userService.logoutAccount(userId);
         userService.clearToken(userId);
+        return Result.success();
+    }
+
+    /**
+     * 上传头像
+     */
+    @PostMapping("/uploadAvatar")
+    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        Long userId = (Long) map.get("userId");
+        String avatarUrl = userService.uploadAvatar(file, userId);
         return Result.success();
     }
 }
