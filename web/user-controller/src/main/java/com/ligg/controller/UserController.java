@@ -8,6 +8,7 @@ import com.ligg.common.vo.UserDataVo;
 import com.ligg.service.file.FileService;
 import com.ligg.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.util.Map;
 /**
  * 客户控制器
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -144,6 +146,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         String avatarUrl = fileService.uploadAvatar(file);
+        log.info("用户{}"+"上传头像{}"+"成功", userId, avatarUrl);
         if (avatarUrl == null) {
             return Result.error(400, "上传失败,请稍后再试");
         }
