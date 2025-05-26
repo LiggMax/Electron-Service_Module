@@ -21,6 +21,7 @@ public class PhoneVo {
     private Integer usageStatus;//使用状态 1.可用、0.被购买
     private String regionName;//地区名称
     private String projectName;//项目名称
-    private String admin_nick_name;//卡商昵称
+    private String adminNickName;//卡商昵称
+    private String adminAvatar;
     private Float money;//号码价格
 }

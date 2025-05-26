@@ -156,7 +156,8 @@
                p.money,
                r.region_name,
                pj.project_name,
-               au.nick_name as admin_nick_name
+               au.nick_name as admin_nick_name,
+               au.user_avatar as admin_avatar
         from phone p
                  left join region r on p.region_id = r.region_id
                  left join admin_users au on p.admin_user_id = au.user_id
