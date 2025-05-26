@@ -144,6 +144,13 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         String avatarUrl = fileService.uploadAvatar(file);
+        if (avatarUrl == null) {
+            return Result.error(400, "上传失败,请稍后再试");
+        }
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserId(userId);
+        userEntity.setUserAvatar(avatarUrl);
+        userService.updateById(userEntity);
         return Result.success(200,avatarUrl);
     }
 }

@@ -4,17 +4,17 @@ import com.ligg.common.utils.DatePathUtils;
 import com.ligg.common.utils.minio.MinioProperties;
 import com.ligg.service.file.FileService;
 import io.minio.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
 /**
  * 文件上传业务类
  */
+@Slf4j
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -54,9 +54,9 @@ public class FileServiceImpl implements FileService {
                     .build());
             return String.join("/", properties.getEndpoint(), properties.getUserAvatar(), fileName);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("上传失败: bucketName={}, error={}", properties.getUserAvatar(), e.getMessage(), e);
         }
-        return "";
+        return null;
     }
 
     /**
