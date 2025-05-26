@@ -5,6 +5,7 @@ import com.ligg.common.entity.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;
+import com.ligg.service.file.FileService;
 import com.ligg.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 客户控制器
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
     private HttpServletRequest request;
+
     @Autowired
     private JWTUtil jwtUtil;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
 
     @GetMapping("/info")
     public Result<UserEntity> getUserInfo() {
@@ -129,9 +138,12 @@ public class UserController {
      */
     @PostMapping("/uploadAvatar")
     public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        if (file.getSize() > 1024 * 1024 * 5) {
+            return Result.error(400, "文件大小不能超过5M");
+        }
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
-        String avatarUrl = userService.uploadAvatar(file, userId);
-        return Result.success();
+        String avatarUrl = fileService.uploadAvatar(file);
+        return Result.success(200,avatarUrl);
     }
 }

@@ -36,6 +36,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     private PhoneNumberMapper phoneNumberMapper;
     @Autowired
     private ProjectMapper projectMapper;
+
     /**
      * 根据账号查询管理员用户信息
      */
@@ -131,7 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         if (!phoneEntities.isEmpty()) {
             int randomIndex = (int) (Math.random() * phoneEntities.size());
             PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
-            log.info("用户[{}]从[{}]中随机获取了手机号[{}],卡商id[{}]", userId, regionId, phoneEntity.getPhoneNumber(),phoneEntity.getAdminUserId());
+            log.info("用户[{}]从[{}]中随机获取了手机号[{}],卡商id[{}]", userId, regionId, phoneEntity.getPhoneNumber(), phoneEntity.getAdminUserId());
             //获取卡商id
             Long adminUserId = phoneEntity.getAdminUserId();
             //获取用户id
@@ -150,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                使用事务来确保操作的原子性
                添加号码订单
              */
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId,projectId, projectMoney , phoneMoney,regionId);
+            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId, projectId, projectMoney, phoneMoney, regionId);
             if (addResult > 0) {
                 // 只有在购买号码成功时才更新号码状态
                 phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
@@ -158,13 +159,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                         .set(PhoneEntity::getUsageStatus, 0));
 
                 // 更新用户余额
-                userMapper.updateUserMoney(userId,projectEntity.getProjectPrice() + phoneMoney);
+                userMapper.updateUserMoney(userId, projectEntity.getProjectPrice() + phoneMoney);
 
                 // 删除phone_project_relation表中的关联数据
                 phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);
-                
+
                 // 记录日志
-                log.info("用户[{}]成功购买项目[{}]的手机号[{}]，并从关联表中移除", 
+                log.info("用户[{}]成功购买项目[{}]的手机号[{}]，并从关联表中移除",
                         userId, projectId, phoneEntity.getPhoneNumber());
             }
             return null;
@@ -194,7 +195,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      */
     @Override
     public void logoutAccount(Long userId) {
-        userMapper.logoutAccount(userId,0);
+        userMapper.logoutAccount(userId, 0);
     }
 
     /**
@@ -237,13 +238,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
                 .eq(UserEntity::getUserId, userId)
                 .set(UserEntity::getLoginTime, LocalDateTime.now());
         userMapper.update(null, wrapper);
-    }
-
-    /**
-     * 上传用户头像
-     */
-    @Override
-    public String uploadAvatar(MultipartFile file, Long userId) {
-        return "";
     }
 }

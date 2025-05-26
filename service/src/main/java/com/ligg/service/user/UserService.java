@@ -61,7 +61,4 @@ public interface UserService extends IService<UserEntity> {
 
     //更新登录时间
     void updateLoginTime(Long userId);
-
-    //上传用户头像头像
-    String uploadAvatar(MultipartFile file, Long userId);
 }
