@@ -60,6 +60,11 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * 软件包上传
+     */
+
+
+    /**
      * 存储桶配置
      * "Principal": "*" 表示允许所有用户访问。
      * "Action": "s3:GetObject" 表示允许下载/读取对象

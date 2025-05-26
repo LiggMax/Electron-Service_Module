@@ -1,7 +1,7 @@
 package com.ligg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ligg.common.entity.AnnouncementEntity;
+import com.ligg.common.entity.adminweb.AnnouncementEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

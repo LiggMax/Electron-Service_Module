@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.UserEntity;
-import com.ligg.common.entity.UserFavoriteEntity;
+import com.ligg.common.entity.user.UserEntity;
+import com.ligg.common.entity.user.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;

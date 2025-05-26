@@ -60,14 +60,14 @@
     </update>
 
     <!-- 根据账号密码查询用户信息-->
-    <select id="findByAdminUser" resultType="com.ligg.common.entity.AdminUserEntity">
+    <select id="findByAdminUser" resultType="com.ligg.common.entity.admin.AdminUserEntity">
         select user_id, account, password, email, nick_name
         from admin_users
         where account = #{account}
     </select>
 
     <!-- 根据用户id查询用户信息-->
-    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.AdminUserEntity">
+    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.admin.AdminUserEntity">
         select user_id,
                account,
                nick_name,
@@ -81,7 +81,7 @@
         where user_id = #{userId}
     </select>
     <!-- 根据账号查询用户信息-->
-    <select id="findByUser" resultType="com.ligg.common.entity.UserEntity">
+    <select id="findByUser" resultType="com.ligg.common.entity.user.UserEntity">
         select user_id,
                account,
                password,
@@ -96,7 +96,7 @@
     </select>
 
     <!--根据id查询用户信息-->
-    <select id="findByUserInfo" resultType="com.ligg.common.entity.UserEntity">
+    <select id="findByUserInfo" resultType="com.ligg.common.entity.user.UserEntity">
         select user_id,
                account,
                password,
@@ -111,7 +111,7 @@
     </select>
 
     <!--根据用户id和项目id查询收藏数据-->
-    <select id="getUserFavorite" resultType="com.ligg.common.entity.UserFavoriteEntity">
+    <select id="getUserFavorite" resultType="com.ligg.common.entity.user.UserFavoriteEntity">
         select *
         from user_favorite
         where user_id = #{userId}
@@ -138,7 +138,7 @@
     </select>
 
     <!--根据账号密码查询用户信息-->
-    <select id="findAccountAndPasswordByUser" resultType="com.ligg.common.entity.UserEntity">
+    <select id="findAccountAndPasswordByUser" resultType="com.ligg.common.entity.user.UserEntity">
         select user_id,account,password,nick_name,email,user_avatar,user_status
         from users
         <!--区分大小写-->
@@ -146,7 +146,7 @@
     </select>
 
     <!--查询后台管理用户信息-->
-    <select id="findByAdminWebUser" resultType="com.ligg.common.entity.AdminWebUserEntity">
+    <select id="findByAdminWebUser" resultType="com.ligg.common.entity.adminweb.AdminWebUserEntity">
         select admin_id,account,password,email,nick_name
         from admin_web_user
         <!--区分大小写-->

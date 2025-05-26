@@ -1,10 +1,10 @@
 package com.ligg.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ligg.common.entity.AdminUserEntity;
-import com.ligg.common.entity.AdminWebUserEntity;
-import com.ligg.common.entity.UserEntity;
-import com.ligg.common.entity.UserFavoriteEntity;
+import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.adminweb.AdminWebUserEntity;
+import com.ligg.common.entity.user.UserEntity;
+import com.ligg.common.entity.user.UserFavoriteEntity;
 import com.ligg.common.vo.UserDataVo;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;

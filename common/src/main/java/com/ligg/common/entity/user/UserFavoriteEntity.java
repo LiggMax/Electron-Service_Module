@@ -1,4 +1,4 @@
-package com.ligg.common.entity;
+package com.ligg.common.entity.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

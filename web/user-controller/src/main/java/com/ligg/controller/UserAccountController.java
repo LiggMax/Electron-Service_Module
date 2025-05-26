@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.InvitationRelationsService;

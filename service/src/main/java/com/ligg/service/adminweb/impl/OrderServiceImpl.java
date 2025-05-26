@@ -2,9 +2,8 @@ package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.ligg.common.entity.AccountFundsEntity;
-import com.ligg.common.entity.AdminUserEntity;
-import com.ligg.common.entity.AdminWebUserEntity;
+import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;

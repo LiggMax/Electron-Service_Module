@@ -2,7 +2,7 @@ package com.ligg.service.admin.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.admin.AdminUserEntity;
 import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.vo.OrderVo;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service

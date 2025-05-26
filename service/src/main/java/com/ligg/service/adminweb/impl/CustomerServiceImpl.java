@@ -2,7 +2,7 @@ package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.CustomerMapper;
 import com.ligg.service.adminweb.CustomerService;

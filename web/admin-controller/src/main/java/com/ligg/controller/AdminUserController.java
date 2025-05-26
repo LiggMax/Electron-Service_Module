@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.AdminUserEntity;
+import com.ligg.common.entity.admin.AdminUserEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;

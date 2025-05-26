@@ -1,7 +1,7 @@
 package com.ligg.service.common;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ligg.common.entity.AnnouncementEntity;
+import com.ligg.common.entity.adminweb.AnnouncementEntity;
 
 import java.util.List;
 

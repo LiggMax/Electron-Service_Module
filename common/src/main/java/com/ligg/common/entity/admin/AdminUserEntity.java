@@ -1,4 +1,4 @@
-package com.ligg.common.entity;
+package com.ligg.common.entity.admin;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -6,33 +6,29 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName("users")
-public class UserEntity {
+@TableName("admin_users")
+public class AdminUserEntity {
     @TableId
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;
-    private String account;
-    @JsonIgnore
-    private String password;
-    //  昵称长度校验
-    @Pattern(regexp = "^.{1,20}$")
+    @Pattern(regexp = "^[a-zA-Z\\d]{6,20}$", message = "密码必须为6~20位的字母或数字")
+    private String account;//账号
     private String nickName;
+    @JsonIgnore
+    @Pattern(regexp = "^[a-zA-Z\\d]{6,20}$", message = "密码必须为6~20位的字母或数字")
+    private String password;
     @Email
     private String email;
     private String userAvatar;
-    private String invitationCode; //邀请码
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Long phoneNumber;
+    private Float money;//卡商余额
     private LocalDateTime loginTime;//登录时间
-    private Integer userStatus; // 1: 正常 0: 注销
-    private Double money; // 金额
+    private LocalDateTime createdAt;//创建时间
+    private LocalDateTime updatedAt;//更新时间
 }

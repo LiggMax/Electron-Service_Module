@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.AdminWebUserEntity;
+import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.adminweb.AdminWebUserService;

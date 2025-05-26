@@ -155,14 +155,16 @@
                p.registration_time,
                p.money,
                r.region_name,
-               pj.project_name,
+               GROUP_CONCAT(DISTINCT pj.project_name) as project_name,
                au.nick_name as admin_nick_name,
                au.user_avatar as admin_avatar
         from phone p
-                 left join region r on p.region_id = r.region_id
-                 left join admin_users au on p.admin_user_id = au.user_id
-                 left join phone_project_relation ppr on p.phone_id = ppr.phone_id
-                 left join project pj on ppr.project_id = pj.project_id
+                  join region r on p.region_id = r.region_id
+                  join admin_users au on p.admin_user_id = au.user_id
+                  join phone_project_relation ppr on p.phone_id = ppr.phone_id
+                  join project pj on ppr.project_id = pj.project_id
+        group by p.phone_id, p.phone_number, p.usage_status, p.registration_time,
+                 p.money, r.region_name, au.nick_name, au.user_avatar
     </select>
 
     <!-- 更新手机号状态 -->

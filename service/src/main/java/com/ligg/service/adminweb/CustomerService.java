@@ -1,7 +1,7 @@
 package com.ligg.service.adminweb;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ligg.common.entity.UserEntity;
+import com.ligg.common.entity.user.UserEntity;
 
 public interface CustomerService extends IService<UserEntity> {
     //用户状态

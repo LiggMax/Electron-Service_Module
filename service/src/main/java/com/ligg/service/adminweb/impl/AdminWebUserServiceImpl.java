@@ -2,7 +2,7 @@ package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.AdminWebUserEntity;
+import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.utils.GetClientIp;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.service.adminweb.AdminWebUserService;
@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.time.LocalDateTime;
 

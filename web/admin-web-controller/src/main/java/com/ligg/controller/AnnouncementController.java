@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.ligg.common.entity.AnnouncementEntity;
+import com.ligg.common.entity.adminweb.AnnouncementEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
