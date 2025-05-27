@@ -60,7 +60,9 @@ public class PhoneNumberController {
             @RequestParam(required = false) String countryCode,
             @RequestParam(required = false) Integer usageStatus) {
         try {
-            List<PhoneVo> phoneList = phoneNumberService.phoneList(countryCode, usageStatus, keyword);
+            Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+            Long adminUserId = (Long) map.get("userId");
+            List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId,countryCode, usageStatus, keyword);
             return Result.success(200, phoneList);
         } catch (Exception e) {
             log.error("查询卡号数据失败: {}", e.getMessage(), e);

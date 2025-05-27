@@ -15,7 +15,6 @@ public class PhoneAndProjectDto {
     @TableId(value = "phone_id",type = IdType.AUTO)
     private Long phoneId;//id
     private Long phoneNumber;//手机号
-    private Integer lineStatus;//线路状态 1.在线、2.离线
     private LocalDateTime registrationTime;//注册时间
     private Integer usageStatus;//状态
     private List<ProjectEntity> projects;//归属项目，使用嵌套结构

@@ -17,7 +17,7 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     /**
      * 条件查询卡号数据
      */
-    List<PhoneVo> phoneList(String countryCode, Integer usageStatus, String keyword);
+    List<PhoneVo> phoneList(Long adminUserId,String countryCode, Integer usageStatus, String keyword);
 
     /**
      * 根据手机号id查询详情

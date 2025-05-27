@@ -5,12 +5,11 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, line_status, registration_time, usage_status, admin_user_id, money)
+        (phone_number, registration_time, usage_status, admin_user_id, money)
         values
         <foreach collection="list" item="phone" separator=",">
             (
             #{phone.phoneNumber},
-            #{phone.lineStatus},
             #{phone.registrationTime},
             #{phone.usageStatus},
             #{phone.adminUserId},
@@ -45,10 +44,19 @@
 
     <!--卡商获取手机号列表 -->
     <select id="phoneList" resultType="com.ligg.common.vo.PhoneVo">
-        select p.*, r.region_name
-        from phone p
-        left join phone_project_relation ppr on p.phone_id = ppr.phone_id
-        left join region r on ppr.region_id = r.region_id
+        SELECT 
+            p.phone_id, 
+            p.phone_number, 
+            p.registration_time, 
+            p.usage_status, 
+            p.money,
+            r.region_name,
+            GROUP_CONCAT(DISTINCT pj.project_name SEPARATOR ', ') as projectName
+        FROM phone p
+        JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
+        JOIN region r ON ppr.region_id = r.region_id
+        LEFT JOIN admin_users au ON p.admin_user_id = au.user_id
+        LEFT JOIN project pj ON ppr.project_id = pj.project_id
         <where>
             <if test="countryCode != null and countryCode != '' ">
                 r.region_name like concat('%', #{countryCode}, '%')
@@ -61,7 +69,10 @@
                 or r.region_name like concat('%', #{keyword}, '%')
                 or p.usage_status like concat('%', #{keyword}, '%'))
             </if>
+            and p.admin_user_id = #{adminUserId}
         </where>
+        GROUP BY p.phone_id, p.phone_number, p.registration_time, p.usage_status, p.money, r.region_name, au.nick_name, au.user_avatar
+        ORDER BY p.phone_id DESC
     </select>
 
     <!-- 根据手机号ID查询手机详情 -->
@@ -70,7 +81,6 @@
             p.phone_id,
             p.phone_number,
             r.region_name as countryCode,
-            p.line_status,
             p.usage_status,
             p.registration_time,
             pj.project_name,
@@ -102,7 +112,6 @@
         <!-- 基本信息部分 -->
         <id property="phoneId" column="phone_id"/>
         <result property="phoneNumber" column="phone_number"/>
-        <result property="lineStatus" column="line_status"/>
         <result property="usageStatus" column="usage_status"/>
         <result property="registrationTime" column="registration_time"/>
         <result property="countryCode" column="country_code"/>
@@ -118,7 +127,6 @@
         SELECT 
             p.phone_id,
             p.phone_number,
-            p.line_status,
             p.usage_status,
             p.registration_time,
             r.region_name
@@ -145,7 +153,6 @@
         FROM phone
         WHERE region_id = #{regionId}
         AND usage_status = 1
-        AND line_status = 1
         LIMIT 100
     </select>
 
