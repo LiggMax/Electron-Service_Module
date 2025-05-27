@@ -56,7 +56,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             // 获取手机号基本信息
             PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
             if (phoneEntity == null) {
-                log.warn("未找到手机号: " + phoneNumber);
+                log.warn("未找到手机号: {}", phoneNumber);
                 return null;
             }
             
@@ -70,7 +70,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             return dto;
         } catch (Exception e) {
-            log.error("根据手机号查询详情失败: phoneNumber=" + phoneNumber + ", error=" + e.getMessage(), e);
+            log.error("根据手机号查询详情失败: phoneNumber={}, error={}", phoneNumber, e.getMessage(), e);
             return null;
         }
     }
@@ -201,15 +201,15 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                     try {
                     phoneNumberMapper.insertPhoneProject(phoneNumber, projectId, regionId);
                     } catch (Exception e) {
-                        log.error("插入手机号和项目关联失败: phoneNumber=" + phoneNumber + ", projectId=" + projectId + ", error=" + e.getMessage());
+                        log.error("插入手机号和项目关联失败: phoneNumber={}, projectId={}, error={}", phoneNumber, projectId, e.getMessage());
                     }
                 }
             }
             
-            log.info("成功添加手机号: " + totalAdded + ", 关联项目: " + projectIds);
+            log.info("成功添加手机号: {}, 关联项目: {}", totalAdded, projectIds);
             return totalAdded;
         } catch (Exception e) {
-            log.error("批量添加手机号失败: " + e.getMessage(), e);
+            log.error("批量添加手机号失败: {}", e.getMessage(), e);
             throw e; // 抛出异常以触发事务回滚
         }
     }

@@ -36,12 +36,6 @@
         WHERE p.phone_number = #{phoneNumber}
     </insert>
 
-    <!-- 删除手机号 -->
-    <delete id="deletePhone">
-        delete from phone
-        where phone_id = #{phoneId}
-    </delete>
-
     <!--卡商获取手机号列表 -->
     <select id="phoneList" resultType="com.ligg.common.vo.PhoneVo">
         SELECT 
@@ -71,35 +65,13 @@
         ORDER BY p.phone_id DESC
     </select>
 
-    <!-- 根据手机号ID查询手机详情 -->
-    <select id="queryByIdPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDto">
-        SELECT
-            p.phone_id,
-            p.phone_number,
-            r.region_name as countryCode,
-            p.usage_status,
-            p.registration_time,
-            pj.project_name,
-            uo.created_at as time_of_use
-        FROM phone p
-        LEFT JOIN region r ON p.region_id = r.region_id
-        LEFT JOIN user_order uo ON p.phone_number = uo.phone_number
-        LEFT JOIN project pj ON uo.project_id = pj.project_id
-        WHERE p.phone_id = #{phoneId}
-    </select>
-    
+
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
         select p.phone_id, p.phone_number,p.admin_user_id
         from phone_project_relation ppr
         left join phone p on ppr.phone_id = p.phone_id
         where ppr.region_id = #{regionId}
         limit 100
-    </select>
-
-    <select id="getPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDto">
-        select *
-        from phone
-        where phone_id = #{phoneId}
     </select>
 
 
@@ -118,19 +90,6 @@
                     column="phone_id" select="getPhoneProject"/>
     </resultMap>
     
-    <!-- 获取手机号和关联项目信息（使用DTO对象） -->
-    <select id="getPhoneAndProject" resultMap="PhoneAndProjectDtoMap">
-        SELECT 
-            p.phone_id,
-            p.phone_number,
-            p.usage_status,
-            p.registration_time,
-            r.region_name
-        FROM phone p
-        LEFT JOIN region r ON p.region_id = r.region_id
-        WHERE p.phone_id = #{phoneId} and p.admin_user_id = #{adminUserId}
-    </select>
-
     <!-- 根据手机号查询关联的项目 -->
     <select id="getProjectByPhoneNumber" resultType="com.ligg.common.entity.ProjectEntity">
         SELECT 
@@ -143,45 +102,41 @@
         WHERE ph.phone_number = #{phoneNumber}
     </select>
     
-    <!-- 根据地区ID获取可用的手机号 -->
-    <select id="getAvailablePhonesByRegion" resultType="com.ligg.common.entity.PhoneEntity">
-        SELECT *
-        FROM phone
-        WHERE region_id = #{regionId}
-        AND usage_status = 1
-        LIMIT 100
-    </select>
-
+    <!-- 获取号码列表的结果映射 -->
+    <resultMap id="PhoneVoResultMap" type="com.ligg.common.vo.PhoneVo">
+        <id property="phoneId" column="phone_id"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="registrationTime" column="registration_time"/>
+        <result property="usageStatus" column="usage_status"/>
+        <result property="regionName" column="region_name"/>
+        <result property="adminNickName" column="admin_nick_name"/>
+        <result property="adminAvatar" column="admin_avatar"/>
+        <result property="money" column="money"/>
+        <collection property="projects" ofType="com.ligg.common.vo.ProjectInfoVo">
+            <id property="projectId" column="project_id"/>
+            <result property="projectName" column="project_name"/>
+            <result property="projectPrice" column="project_price"/>
+        </collection>
+    </resultMap>
+    
     <!-- 获取号码列表 -->
-    <select id="getPhoneList" resultType="com.ligg.common.vo.PhoneVo">
+    <select id="getPhoneList" resultMap="PhoneVoResultMap">
         select p.phone_id,
                p.phone_number,
-               p.usage_status,
                p.registration_time,
                p.money,
                r.region_name,
-               GROUP_CONCAT(DISTINCT pj.project_name) as project_name,
                au.nick_name as admin_nick_name,
-               au.user_avatar as admin_avatar
+               au.user_avatar as admin_avatar,
+               pj.project_id,
+               pj.project_name,
+               pj.project_price
         from phone p
-                  join region r on p.region_id = r.region_id
-                  join admin_users au on p.admin_user_id = au.user_id
                   join phone_project_relation ppr on p.phone_id = ppr.phone_id
+                  join region r on ppr.region_id = r.region_id
+                  join admin_users au on p.admin_user_id = au.user_id
                   join project pj on ppr.project_id = pj.project_id
-        group by p.phone_id, p.phone_number, p.usage_status, p.registration_time,
-                 p.money, r.region_name, au.nick_name, au.user_avatar
+        order by p.phone_id desc
     </select>
 
-    <!-- 更新手机号状态 -->
-    <update id="updatePhoneStatus">
-        UPDATE phone
-        SET usage_status = #{status}
-        WHERE phone_id = #{phoneId}
-    </update>
-
-    <!-- 删除手机号与项目的关联关系 -->
-    <delete id="deletePhoneProjectRelation">
-        DELETE FROM phone_project_relation
-        WHERE phone_id = #{phoneId} AND project_id = #{projectId}
-    </delete>
 </mapper>

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class PhoneVo {
     private LocalDateTime registrationTime;//注册时间
     private Integer usageStatus;//使用状态 1.可用、0.被购买
     private String regionName;//地区名称
-    private String projectName;//项目名称
+    private List<ProjectInfoVo> projects;//项目列表
     private String adminNickName;//卡商昵称
     private String adminAvatar;
     private Float money;//号码价格
