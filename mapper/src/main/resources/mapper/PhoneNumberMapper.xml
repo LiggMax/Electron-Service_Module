@@ -83,9 +83,11 @@
     </select>
     
     <select id="getPhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        select phone_id, phone_number,admin_user_id
-        from phone
-        where region_id = #{regionId}
+        select p.phone_id, p.phone_number,p.admin_user_id
+        from phone_project_relation ppr
+        left join phone p on ppr.phone_id = p.phone_id
+        where ppr.region_id = #{regionId}
+        limit 100
     </select>
 
     <select id="getPhoneDetail" resultType="com.ligg.common.dto.PhoneDetailDto">

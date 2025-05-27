@@ -11,6 +11,7 @@ import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.UserDataVo;
 import com.ligg.mapper.PhoneNumberMapper;
+import com.ligg.mapper.PhoneProjectRelationMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserMapper;
 import com.ligg.service.user.UserService;
@@ -31,14 +32,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
 
     @Autowired
     private JWTUtil jwtUtil;
+
     @Autowired
     private StringRedisTemplate redisTemplate;
+
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
     private PhoneNumberMapper phoneNumberMapper;
+
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private PhoneProjectRelationMapper phoneProjectRelationMapper;
 
     /**
      * 根据账号查询管理员用户信息
@@ -130,6 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     @Override
     @Transactional
     public String buyProject(Long userId, Integer regionId, Integer projectId) {
+        // 从数据库中获取指定区域和项目ID对应的号码列表(只返回100条数据)
         List<PhoneEntity> phoneEntities = phoneNumberMapper.getPhonesByProject(regionId);
         // 从phoneEntities列表中随机获取一个号码
         if (!phoneEntities.isEmpty()) {
@@ -138,9 +147,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             log.info("用户[{}]从[{}]中随机获取了手机号[{}],卡商id[{}]", userId, regionId, phoneEntity.getPhoneNumber(), phoneEntity.getAdminUserId());
             //获取卡商id
             Long adminUserId = phoneEntity.getAdminUserId();
-            //获取用户id
+            //获取用户数据
             UserEntity userInfo = userMapper.selectById(userId);
-            //地区id
             //获取项目价格
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
             //TODO 暂时的号码价格
@@ -156,16 +164,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
              */
             int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(), adminUserId, projectId, projectMoney, phoneMoney, regionId);
             if (addResult > 0) {
-                // 只有在购买号码成功时才更新号码状态
-                phoneNumberMapper.update(new LambdaUpdateWrapper<PhoneEntity>()
-                        .eq(PhoneEntity::getPhoneNumber, phoneEntity.getPhoneNumber())
-                        .set(PhoneEntity::getUsageStatus, 0));
+                // 只有在购买号码成功时才更新号码项目关联表状态
+                phoneProjectRelationMapper.updateAvailableStatus(phoneEntity.getPhoneId(),projectId);
 
                 // 更新用户余额
                 userMapper.updateUserMoney(userId, projectEntity.getProjectPrice() + phoneMoney);
-
-                // 删除phone_project_relation表中的关联数据
-                phoneNumberMapper.deletePhoneProjectRelation(phoneEntity.getPhoneId(), projectId);
 
                 // 记录日志
                 log.info("用户[{}]成功购买项目[{}]的手机号[{}]，并从关联表中移除",
