@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
-import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.PhoneVo;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.common.PhoneNumberService;
 import com.ligg.service.common.ProjectService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +32,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     private ProjectService projectService;
 
     @Override
-    public List<PhoneEntity> phoneList(String countryCode, Integer usageStatus, String keyword) {
+    public List<PhoneVo> phoneList(String countryCode, Integer usageStatus, String keyword) {
         return phoneNumberMapper.phoneList(countryCode, usageStatus, keyword);
     }
 
@@ -55,24 +53,14 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             // 获取手机号基本信息
             PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
             if (phoneEntity == null) {
-                log.warn("未找到手机号: {}", phoneNumber);
+                log.warn("未找到手机号: " + phoneNumber);
                 return null;
             }
             
             // 设置基本信息
             dto.setPhoneNumber(phoneNumber);
-            dto.setLineStatus(phoneEntity.getLineStatus());
             dto.setUsageStatus(phoneEntity.getUsageStatus());
             dto.setRegistrationTime(phoneEntity.getRegistrationTime());
-            
-            // 获取地区信息
-            Integer regionId = phoneEntity.getRegionId();
-            if (regionId != null) {
-                // 这里可以添加获取地区信息的逻辑
-                // 例如: RegionEntity region = regionMapper.selectById(regionId);
-                // dto.setRegionName(region.getRegionName());
-                // dto.setCountryCode(region.getRegionCode());
-            }
             
             // 获取项目列表
             List<ProjectEntity> projects = phoneNumberMapper.getProjectByPhoneNumber(phoneNumber);
@@ -80,7 +68,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             return dto;
         } catch (Exception e) {
-            log.error("根据手机号查询详情失败: phoneNumber={}, error={}", phoneNumber, e.getMessage(), e);
+            log.error("根据手机号查询详情失败: phoneNumber=" + phoneNumber + ", error=" + e.getMessage(), e);
             return null;
         }
     }
@@ -145,7 +133,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             Float money = 0.20f;
             // 添加到有效列表
             validPhoneNumbers.add(phoneNumber);
-            phonesToInsert.add(createPhoneEntity(phoneNumber, regionId,now, adminUserId,money));
+            phonesToInsert.add(createPhoneEntity(phoneNumber, now, adminUserId, money));
         }
         
         // 如果没有有效的手机号，直接返回
@@ -154,9 +142,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             return 0;
         }
 
-
         // 执行插入操作
-        return insertPhones(phonesToInsert, validPhoneNumbers, projectIds);
+        return insertPhones(phonesToInsert, validPhoneNumbers, projectIds, regionId);
     }
     
     /**
@@ -189,11 +176,9 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 创建手机号实体对象
      */
-    private PhoneEntity createPhoneEntity(Long phoneNumber, Integer regionId, LocalDateTime now, Long adminUserId, Float money) {
+    private PhoneEntity createPhoneEntity(Long phoneNumber, LocalDateTime now, Long adminUserId, Float money) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
-        phone.setRegionId(regionId);
-        phone.setLineStatus(1);
         phone.setUsageStatus(1);
         phone.setRegistrationTime(now);
         phone.setAdminUserId(adminUserId);
@@ -204,7 +189,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 执行批量插入手机号及关联
      */
-    private int insertPhones(List<PhoneEntity> phonesToInsert, List<Long> validPhoneNumbers, List<Long> projectIds) {
+    private int insertPhones(List<PhoneEntity> phonesToInsert, List<Long> validPhoneNumbers, List<Long> projectIds, Integer regionId) {
         try {
             // 批量插入手机号
             int totalAdded = phoneNumberMapper.batchInsertPhones(phonesToInsert);
@@ -213,18 +198,17 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             for (Long phoneNumber : validPhoneNumbers) {
                 for (Long projectId : projectIds) {
                     try {
-                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId);
+                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId, regionId);
                     } catch (Exception e) {
-                        log.error("插入手机号和项目关联失败: phoneNumber={}, projectId={}, error={}", 
-                                phoneNumber, projectId, e.getMessage());
+                        log.error("插入手机号和项目关联失败: phoneNumber=" + phoneNumber + ", projectId=" + projectId + ", error=" + e.getMessage());
                     }
                 }
             }
             
-            log.info("成功添加手机号: {}, 关联项目: {}", totalAdded, projectIds);
+            log.info("成功添加手机号: " + totalAdded + ", 关联项目: " + projectIds);
             return totalAdded;
         } catch (Exception e) {
-            log.error("批量添加手机号失败: {}", e.getMessage(), e);
+            log.error("批量添加手机号失败: " + e.getMessage(), e);
             throw e; // 抛出异常以触发事务回滚
         }
     }
@@ -308,9 +292,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             // 处理projects字段，可能是对象数组或字符串数组
             try {
                 Object projectsObj = uploadData.get("projects");
-                if (projectsObj instanceof List) {
-                    @SuppressWarnings("unchecked")
-                    List<?> projectsList = (List<?>) projectsObj;
+                if (projectsObj instanceof List<?> projectsList) {
 
                     // 直接从每个项目对象中提取 projectId
                     for (Object project : projectsList) {
@@ -331,9 +313,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                             
                             // 如果没有有效的 projectId，尝试通过 projectName 查询
                             Object projectNameObj = projectMap.get("projectName");
-                            if (projectNameObj instanceof String) {
-                                String projectName = (String) projectNameObj;
-                                if (projectName != null && !projectName.trim().isEmpty()) {
+                            if (projectNameObj instanceof String projectName) {
+                                if (!projectName.trim().isEmpty()) {
                                     // 获取项目ID并转换为Long
                                     Integer projectIdInt = projectService.getProjectIdByName(projectName.trim());
                                     if (projectIdInt != null && projectIdInt > 0) {
@@ -341,10 +322,9 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                                     }
                                 }
                             }
-                        } else if (project instanceof String) {
+                        } else if (project instanceof String projectName) {
                             // 处理字符串类型的项目名称
-                            String projectName = (String) project;
-                            if (projectName != null && !projectName.trim().isEmpty()) {
+                            if (!projectName.trim().isEmpty()) {
                                 // 获取项目ID并转换为Long
                                 Integer projectIdInt = projectService.getProjectIdByName(projectName.trim());
                                 if (projectIdInt != null && projectIdInt > 0) {

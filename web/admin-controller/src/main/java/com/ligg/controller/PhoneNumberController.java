@@ -4,6 +4,7 @@ import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
+import com.ligg.common.vo.PhoneVo;
 import com.ligg.service.common.PhoneNumberService;
 import com.ligg.service.common.ProjectService;
 import com.ligg.service.adminweb.PhoneProjectRelationService;
@@ -54,12 +55,12 @@ public class PhoneNumberController {
      * 条件查询卡号数据
      */
     @GetMapping("/list")
-    public Result<List<PhoneEntity>> phoneList(
+    public Result<List<PhoneVo>> phoneList(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String countryCode,
             @RequestParam(required = false) Integer usageStatus) {
         try {
-            List<PhoneEntity> phoneList = phoneNumberService.phoneList(countryCode, usageStatus, keyword);
+            List<PhoneVo> phoneList = phoneNumberService.phoneList(countryCode, usageStatus, keyword);
             return Result.success(200, phoneList);
         } catch (Exception e) {
             log.error("查询卡号数据失败: {}", e.getMessage(), e);
@@ -100,7 +101,6 @@ public class PhoneNumberController {
             }
             phoneDetailData.setPhoneId(phoneEntity.getPhoneId());
             phoneDetailData.setPhoneNumber(phoneEntity.getPhoneNumber());
-            phoneDetailData.setLineStatus(phoneEntity.getLineStatus());
             phoneDetailData.setUsageStatus(phoneEntity.getUsageStatus());
 
             return Result.success(200, phoneDetailData);
@@ -111,7 +111,7 @@ public class PhoneNumberController {
     }
 
     /**
-     * 批量上传手机号
+     * 批量导入手机号
      */
     @PostMapping("/upload")
     public Result<?> uploadPhoneNumbers(@RequestBody Map<String, Object> uploadData) {

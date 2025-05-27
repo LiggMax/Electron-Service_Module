@@ -17,7 +17,7 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     /**
      * 条件查询卡号数据
      */
-    List<PhoneEntity> phoneList(String countryCode, Integer usageStatus, String keyword);
+    List<PhoneVo> phoneList(String countryCode, Integer usageStatus, String keyword);
 
     /**
      * 根据手机号id查询详情
@@ -49,9 +49,10 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      * 插入手机号与项目关联
      * @param phoneNumber 手机号
      * @param projectId 项目ID
+     * @param regionId 地区ID
      * @return 插入结果
      */
-    int insertPhoneProject(@Param("phoneNumber") Long phoneNumber, @Param("projectId") Long projectId);
+    int insertPhoneProject(@Param("phoneNumber") Long phoneNumber, @Param("projectId") Long projectId, @Param("regionId") Integer regionId);
 
     /**
      * 根据项目id获取号码列表

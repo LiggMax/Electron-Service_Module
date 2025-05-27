@@ -15,4 +15,6 @@ public class PhoneProjectRelationEntity {
     private Long phoneId;
     private Long projectId;
     private LocalDateTime createdAt;
+    private Integer regionId; // 地区ID
+    private Integer isAvailable; // 0 = 未使用  1 = 被购买
 }

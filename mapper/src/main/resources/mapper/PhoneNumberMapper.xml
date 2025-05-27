@@ -5,7 +5,7 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, line_status, registration_time, usage_status, region_id, admin_user_id,money)
+        (phone_number, line_status, registration_time, usage_status, admin_user_id, money)
         values
         <foreach collection="list" item="phone" separator=",">
             (
@@ -13,7 +13,6 @@
             #{phone.lineStatus},
             #{phone.registrationTime},
             #{phone.usageStatus},
-            #{phone.regionId},
             #{phone.adminUserId},
             #{phone.money}
             )
@@ -32,8 +31,8 @@
 
     <!-- 插入手机号和项目关联信息到 phone_project_relation 表 -->
     <insert id="insertPhoneProject">
-        INSERT INTO phone_project_relation(phone_id, project_id, created_at)
-        SELECT p.phone_id, #{projectId}, NOW()
+        INSERT INTO phone_project_relation(phone_id, project_id, region_id, is_available, created_at)
+        SELECT p.phone_id, #{projectId}, #{regionId}, 0, NOW()
         FROM phone p 
         WHERE p.phone_number = #{phoneNumber}
     </insert>
@@ -44,11 +43,12 @@
         where phone_id = #{phoneId}
     </delete>
 
-
-    <select id="phoneList" resultType="com.ligg.common.entity.PhoneEntity">
-        select p.*, r.region_name as countryCode
+    <!--卡商获取手机号列表 -->
+    <select id="phoneList" resultType="com.ligg.common.vo.PhoneVo">
+        select p.*, r.region_name
         from phone p
-        left join region r on p.region_id = r.region_id
+        left join phone_project_relation ppr on p.phone_id = ppr.phone_id
+        left join region r on ppr.region_id = r.region_id
         <where>
             <if test="countryCode != null and countryCode != '' ">
                 r.region_name like concat('%', #{countryCode}, '%')

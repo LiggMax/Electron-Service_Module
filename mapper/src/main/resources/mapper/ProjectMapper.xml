@@ -4,15 +4,14 @@
 
     <!-- 查询项目列表 -->
     <select id="getAllProjectsList" resultType="com.ligg.common.dto.ProjectListDto">
-        SELECT 
-            project_id AS projectId,
-            project_name AS projectName,
-            project_price AS projectPrice,
-            phone_count AS phoneCount
-        FROM 
-            view_project_phone_count
-        ORDER BY 
-            phone_count DESC
+        SELECT p.project_id        AS projectId,
+               p.project_name      AS projectName,
+               p.project_price     AS projectPrice,
+               count(ppr.phone_id) AS phoneCount
+        FROM project p
+                 left join phone_project_relation ppr on p.project_id = ppr.project_id
+        GROUP BY p.project_id, p.project_name, p.project_price
+        ORDER BY phoneCount DESC
     </select>
 
 
@@ -38,17 +37,14 @@
             r.region_id as regionId,
             r.region_name as regionName,
             r.region_mark as regionMark,
-            pj.project_price as projectPrice,
-            COUNT(p.phone_id) as phoneCount
+            COUNT(ppr.phone_id) as phoneCount
         FROM 
-            project pj
-        LEFT JOIN phone_project_relation ppr ON pj.project_id = ppr.project_id
-        LEFT JOIN phone p ON ppr.phone_id = p.phone_id AND p.usage_status = 1 AND p.line_status = 1
-        LEFT JOIN region r ON p.region_id = r.region_id
+           phone_project_relation ppr
+        left join region r on ppr.region_id = r.region_id
         WHERE
-            pj.project_id = #{projectId} AND p.usage_status = 1
+            ppr.project_id = #{projectId} AND ppr.is_available = 0
         GROUP BY
-            r.region_id, r.region_name, r.region_mark, pj.project_price
+            r.region_id, r.region_name, r.region_mark
         ORDER BY 
             phoneCount DESC
     </select>
