@@ -13,7 +13,7 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
     /**
      * 条件查询卡号数据
      */
-    List<PhoneVo> phoneList(Long adminUserId,String countryCode, Integer usageStatus, String keyword);
+    List<PhoneVo> phoneList(Long adminUserId,String countryCode, String keyword);
 
 
     /**

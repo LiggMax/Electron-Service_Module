@@ -35,8 +35,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
      * 获取卡商号码列表
      */
     @Override
-    public List<PhoneVo> phoneList(Long adminUserId, String countryCode, Integer usageStatus, String keyword) {
-        return phoneNumberMapper.phoneList(adminUserId,countryCode, usageStatus, keyword);
+    public List<PhoneVo> phoneList(Long adminUserId, String countryCode, String keyword) {
+        return phoneNumberMapper.phoneList(adminUserId,countryCode, keyword);
     }
 
 

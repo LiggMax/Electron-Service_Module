@@ -57,12 +57,11 @@ public class PhoneNumberController {
     @GetMapping("/list")
     public Result<List<PhoneVo>> phoneList(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String countryCode,
-            @RequestParam(required = false) Integer usageStatus) {
+            @RequestParam(required = false) String countryCode) {
         try {
             Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
             Long adminUserId = (Long) map.get("userId");
-            List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId,countryCode, usageStatus, keyword);
+            List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId, countryCode, keyword);
             return Result.success(200, phoneList);
         } catch (Exception e) {
             log.error("查询卡号数据失败: {}", e.getMessage(), e);
@@ -85,7 +84,7 @@ public class PhoneNumberController {
             return Result.error(400, "请求参数错误");
         }
         Long adminUserId = (Long) userInfo.get("userId");
-        
+
         try {
             // 1. 获取手机号基本信息
             PhoneEntity phoneEntity = phoneNumberService.getById(phoneId);
@@ -93,10 +92,10 @@ public class PhoneNumberController {
                 log.warn("未找到ID为{}的手机号", phoneId);
                 return Result.error(404, "未找到手机号");
             }
-            
+
             // 2. 使用手机号查询详情和关联项目
             PhoneAndProjectDto phoneDetailData = phoneNumberService.phoneDetailByNumber(phoneEntity.getPhoneNumber(), adminUserId);
-            
+
             // 3. 填充手机号ID等基本信息
             if (phoneDetailData == null) {
                 phoneDetailData = new PhoneAndProjectDto();
@@ -131,7 +130,7 @@ public class PhoneNumberController {
             if (adminUserId == null) {
                 return Result.error(401, "未授权的操作，请先登录");
             }
-            
+
             // 1. 提取并验证地区ID
             Integer regionId = phoneNumberService.extractRegionId(uploadData);
             log.info("提取的地区ID: {}", regionId);
@@ -150,30 +149,30 @@ public class PhoneNumberController {
             }
 
             totalProcessed = allPhoneNumbers.size();
-            log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}, 管理员ID={}", 
+            log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}, 管理员ID={}",
                     totalProcessed, regionId, projectIds, adminUserId);
 
             // 4. 批量添加手机号到数据库
             totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds, adminUserId);
-            
+
             // 5. 建立手机号和项目的关联关系（直接使用手机号和项目ID）
             if (totalAdded > 0 && !projectIds.isEmpty()) {
                 log.info("开始建立手机号和项目的关联关系, 有效手机号数量: {}, 项目数量: {}", totalAdded, projectIds.size());
-                
+
                 // 处理每个有效的手机号
                 for (String phoneStr : allPhoneNumbers) {
                     try {
                         // 解析手机号
                         Long phoneNumber = phoneNumberService.convertToLong(phoneStr.trim().replaceAll("[\\s-]", ""), null);
                         if (phoneNumber == null) continue;
-                        
+
                         // 为每个项目建立关联
                         for (Long projectId : projectIds) {
                             try {
                                 phoneProjectRelationService.savePhoneNumberProjectRelation(phoneNumber, projectId);
                                 log.debug("成功建立关联: 手机号={}, 项目ID={}", phoneNumber, projectId);
                             } catch (Exception e) {
-                                log.warn("建立手机号与项目关联失败: phoneNumber={}, projectId={}, error={}", 
+                                log.warn("建立手机号与项目关联失败: phoneNumber={}, projectId={}, error={}",
                                         phoneNumber, projectId, e.getMessage());
                             }
                         }
