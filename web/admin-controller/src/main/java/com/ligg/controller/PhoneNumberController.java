@@ -103,7 +103,6 @@ public class PhoneNumberController {
             }
             phoneDetailData.setPhoneId(phoneEntity.getPhoneId());
             phoneDetailData.setPhoneNumber(phoneEntity.getPhoneNumber());
-            phoneDetailData.setUsageStatus(phoneEntity.getUsageStatus());
 
             return Result.success(200, phoneDetailData);
         } catch (Exception e) {

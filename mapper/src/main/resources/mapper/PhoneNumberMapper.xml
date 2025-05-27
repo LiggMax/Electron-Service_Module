@@ -48,7 +48,6 @@
             p.phone_id, 
             p.phone_number, 
             p.registration_time, 
-            p.usage_status, 
             p.money,
             r.region_name,
             GROUP_CONCAT(DISTINCT pj.project_name SEPARATOR ', ') as projectName
@@ -61,9 +60,6 @@
             <if test="countryCode != null and countryCode != '' ">
                 r.region_name like concat('%', #{countryCode}, '%')
             </if>
-            <if test="usageStatus != null">
-                and p.usage_status = #{usageStatus}
-            </if>
             <if test="keyword != null and keyword != ''">
                 and (p.phone_number like concat('%', #{keyword}, '%')
                 or r.region_name like concat('%', #{keyword}, '%')
@@ -71,7 +67,7 @@
             </if>
             and p.admin_user_id = #{adminUserId}
         </where>
-        GROUP BY p.phone_id, p.phone_number, p.registration_time, p.usage_status, p.money, r.region_name, au.nick_name, au.user_avatar
+        GROUP BY p.phone_id, p.phone_number, p.registration_time, p.money, r.region_name
         ORDER BY p.phone_id DESC
     </select>
 

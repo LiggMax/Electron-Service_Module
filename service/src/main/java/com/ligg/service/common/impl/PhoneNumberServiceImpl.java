@@ -62,7 +62,6 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             // 设置基本信息
             dto.setPhoneNumber(phoneNumber);
-            dto.setUsageStatus(phoneEntity.getUsageStatus());
             dto.setRegistrationTime(phoneEntity.getRegistrationTime());
             
             // 获取项目列表
@@ -182,7 +181,6 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     private PhoneEntity createPhoneEntity(Long phoneNumber, LocalDateTime now, Long adminUserId, Float money) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
-        phone.setUsageStatus(1);
         phone.setRegistrationTime(now);
         phone.setAdminUserId(adminUserId);
         phone.setMoney(money);

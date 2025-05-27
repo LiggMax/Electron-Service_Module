@@ -20,7 +20,6 @@ public class PhoneEntity {
     private Long phoneId;//id
     private Long phoneNumber;//手机号
     private LocalDateTime registrationTime;//注册时间
-    private Integer usageStatus;//使用状态 1.可用、0.不可用
     private Long adminUserId;//管理员用户id
     private Float money;//号码价格
 }
