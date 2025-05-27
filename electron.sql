@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 24/05/2025 19:26:28
+ Date: 27/05/2025 10:55:25
 */
 
 SET NAMES utf8mb4;
@@ -80,7 +80,7 @@ CREATE TABLE `admin_web_user`  (
 -- ----------------------------
 -- Records of admin_web_user
 -- ----------------------------
-INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-24 18:25:11', '127.0.0.1', 37.5);
+INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-26 18:27:33', '127.0.0.1', 37.5);
 
 -- ----------------------------
 -- Table structure for announcement
@@ -102,7 +102,6 @@ INSERT INTO `announcement` VALUES (5, '1', '2025-05-10 18:32:47', '');
 INSERT INTO `announcement` VALUES (6, '11233131', '2025-05-10 18:36:10', '');
 INSERT INTO `announcement` VALUES (7, '1321', '2025-05-10 18:36:41', '');
 INSERT INTO `announcement` VALUES (8, '12313', '2025-05-10 18:37:04', '');
-INSERT INTO `announcement` VALUES (10, '软件更新啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦', '2025-05-14 18:58:40', '软件更新');
 
 -- ----------------------------
 -- Table structure for invitation_relations
@@ -231,16 +230,17 @@ CREATE TABLE `region`  (
   `region_id` int NOT NULL AUTO_INCREMENT COMMENT '地区ID',
   `region_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '地区名称',
   `region_mark` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL COMMENT '地区标识',
+  `region_created_at` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`region_id`) USING BTREE,
   UNIQUE INDEX `uk_region_name`(`region_name` ASC) USING BTREE COMMENT '地区名称唯一索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '地区表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '地区表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of region
 -- ----------------------------
-INSERT INTO `region` VALUES (1, '北京', '京');
-INSERT INTO `region` VALUES (2, '上海', '沪');
-INSERT INTO `region` VALUES (3, '广州', '粤');
+INSERT INTO `region` VALUES (1, '北京', '京', '2025-05-26 11:59:50');
+INSERT INTO `region` VALUES (2, '上海', '沪', '2025-05-26 11:59:47');
+INSERT INTO `region` VALUES (3, '广州市', '粤', '2025-05-26 11:59:58');
 
 -- ----------------------------
 -- Table structure for user_favorite
@@ -338,7 +338,7 @@ INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-0
 INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', '333333', '', '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '', 436.6);
 INSERT INTO `users` VALUES (1923688101231960065, '555555', '$2a$12$V9ZradzXvnpE2RYgC4t80eg.I7LNjSUVuWTu3JH1o1oYHPWffRUni', NULL, NULL, '2025-05-17 18:32:38', NULL, NULL, 1, '2025-05-17 18:33:02', 'd21f41168ed64208b28c', 0);
 INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpYAzdH7OfUOzcpUweh89bUG2TPDzpAmi26SK/dtt62', NULL, NULL, '2025-05-17 19:17:22', NULL, NULL, 0, NULL, '95e151202a4a4da4b586', 0);
-INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, NULL, 1, '2025-05-24 17:46:57', 'c51ddeb799e845458a5a', 9327.2);
+INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, 'http://123.51.208.249:9000/useravatar/2025/05/262afd3f78-ce09-40a8-af9f-06c1a1148f06-1743390640179.jpg', 1, '2025-05-26 17:27:27', 'c51ddeb799e845458a5a', 9327.2);
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);
