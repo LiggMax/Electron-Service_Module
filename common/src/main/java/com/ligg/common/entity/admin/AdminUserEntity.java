@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -28,7 +30,8 @@ public class AdminUserEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long phoneNumber;
     private Float money;//卡商余额
-    @Pattern(regexp = "^[0-9]{1,2}$|^100$", message = "抽成比例必须是0到100之间的整数")
+    @Min(value = 0, message = "抽成比例不能小于0")
+    @Max(value = 100, message = "抽成比例不能大于100")
     private Integer divideInto; //抽成比例
     private LocalDateTime loginTime;//登录时间
     private LocalDateTime createdAt;//创建时间
