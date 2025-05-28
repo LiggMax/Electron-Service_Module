@@ -28,6 +28,7 @@ public class AdminUserEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long phoneNumber;
     private Float money;//卡商余额
+    private Integer divideInto; //抽成比例
     private LocalDateTime loginTime;//登录时间
     private LocalDateTime createdAt;//创建时间
     private LocalDateTime updatedAt;//更新时间
