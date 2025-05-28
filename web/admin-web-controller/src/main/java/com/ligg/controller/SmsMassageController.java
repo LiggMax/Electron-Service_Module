@@ -39,14 +39,14 @@ public class SmsMassageController {
         List<Map<String, String>> maps = smsMassageService.extractCodeAndSms(sms);
 
         //保存短信和验证码到缓存
-        for (Map<String, String> map : maps) {
-
-            String phoneNumber = map.get("phoneNumber");
-            String messageContent = map.get("messageContent");
-
-            redisTemplate.opsForValue()
-                    .set(phoneNumber, "短信验证码:" + messageContent, 10, TimeUnit.MINUTES);
-        }
+//        for (Map<String, String> map : maps) {
+//
+//            String phoneNumber = map.get("phoneNumber");
+//            String messageContent = map.get("messageContent");
+//
+//            redisTemplate.opsForValue()
+//                    .set(phoneNumber, "短信验证码:" + messageContent, 10, TimeUnit.MINUTES);
+//        }
         //保存短信和验证码，更新订单状态
         smsMassageService.saveSmsAndCode(maps);
         return Result.success();

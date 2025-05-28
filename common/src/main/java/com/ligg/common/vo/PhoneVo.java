@@ -14,6 +14,7 @@ import java.util.List;
 public class PhoneVo {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long phoneId;//id
+    private Integer projectId;
     private Long phoneNumber;//手机号
     private LocalDateTime registrationTime;//注册时间
     private String regionName;//地区名称

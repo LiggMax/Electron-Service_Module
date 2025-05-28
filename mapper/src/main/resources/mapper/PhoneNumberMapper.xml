@@ -5,13 +5,12 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, registration_time, usage_status, admin_user_id, money)
+        (phone_number, registration_time, admin_user_id, money)
         values
         <foreach collection="list" item="phone" separator=",">
             (
             #{phone.phoneNumber},
             #{phone.registrationTime},
-            #{phone.usageStatus},
             #{phone.adminUserId},
             #{phone.money}
             )
@@ -80,7 +79,6 @@
         <!-- 基本信息部分 -->
         <id property="phoneId" column="phone_id"/>
         <result property="phoneNumber" column="phone_number"/>
-        <result property="usageStatus" column="usage_status"/>
         <result property="registrationTime" column="registration_time"/>
         <result property="countryCode" column="country_code"/>
         <result property="regionName" column="region_name"/>
@@ -107,7 +105,6 @@
         <id property="phoneId" column="phone_id"/>
         <result property="phoneNumber" column="phone_number"/>
         <result property="registrationTime" column="registration_time"/>
-        <result property="usageStatus" column="usage_status"/>
         <result property="regionName" column="region_name"/>
         <result property="adminNickName" column="admin_nick_name"/>
         <result property="adminAvatar" column="admin_avatar"/>
