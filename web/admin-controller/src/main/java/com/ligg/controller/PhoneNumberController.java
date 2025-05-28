@@ -22,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/api/admin/phone")
 public class PhoneNumberController {
 
+
     @Autowired
     private PhoneNumberService phoneNumberService;
 
@@ -120,7 +121,8 @@ public class PhoneNumberController {
         // 用于记录处理结果
         int totalProcessed = 0; // 总处理数量
         int totalAdded = 0;     // 成功添加数量
-        int totalDuplicate = 0; // 重复数量
+        int totalExisting = 0;  // 已存在数量
+        int totalRelationAdded = 0; // 新增关联数量
         int totalInvalid = 0;   // 无效数量
 
         try {
@@ -152,42 +154,18 @@ public class PhoneNumberController {
             log.info("处理手机号: 数量={}, 地区ID={}, 项目IDs={}, 管理员ID={}",
                     totalProcessed, regionId, projectIds, adminUserId);
 
-            // 4. 批量添加手机号到数据库
-            totalAdded = phoneNumberService.batchAddPhoneNumbers(allPhoneNumbers, regionId, projectIds, adminUserId);
+            // 4. 批量处理手机号和项目关联（新逻辑）
+            Map<String, Integer> result = phoneNumberService.batchProcessPhoneAndProjects(
+                    allPhoneNumbers, regionId, projectIds, adminUserId);
+            
+            totalAdded = result.get("newPhones");
+            totalExisting = result.get("existingPhones");
+            totalRelationAdded = result.get("newRelations");
+            totalInvalid = result.get("invalidPhones");
 
-            // 5. 建立手机号和项目的关联关系（直接使用手机号和项目ID）
-            if (totalAdded > 0 && !projectIds.isEmpty()) {
-                log.info("开始建立手机号和项目的关联关系, 有效手机号数量: {}, 项目数量: {}", totalAdded, projectIds.size());
-
-                // 处理每个有效的手机号
-                for (String phoneStr : allPhoneNumbers) {
-                    try {
-                        // 解析手机号
-                        Long phoneNumber = phoneNumberService.convertToLong(phoneStr.trim().replaceAll("[\\s-]", ""), null);
-                        if (phoneNumber == null) continue;
-
-                        // 为每个项目建立关联
-                        for (Long projectId : projectIds) {
-                            try {
-                                phoneProjectRelationService.savePhoneNumberProjectRelation(phoneNumber, projectId);
-                                log.debug("成功建立关联: 手机号={}, 项目ID={}", phoneNumber, projectId);
-                            } catch (Exception e) {
-                                log.warn("建立手机号与项目关联失败: phoneNumber={}, projectId={}, error={}",
-                                        phoneNumber, projectId, e.getMessage());
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.warn("手机号格式错误，无法建立关联: {}", phoneStr);
-                    }
-                }
-                log.info("手机号和项目关联关系建立完成");
-            }
-
-            // 6. 计算重复和无效数量
-            totalDuplicate = totalProcessed - totalAdded;
-
-            // 7. 构建响应结果
-            Map<String, Object> resultData = phoneNumberService.buildResultData(totalProcessed, totalAdded, totalDuplicate, totalInvalid);
+            // 5. 构建响应结果
+            Map<String, Object> resultData = phoneNumberService.buildUploadResultData(
+                    totalProcessed, totalAdded, totalExisting, totalRelationAdded, totalInvalid);
 
             // 返回成功结果和详细信息
             return Result.success(200, resultData);

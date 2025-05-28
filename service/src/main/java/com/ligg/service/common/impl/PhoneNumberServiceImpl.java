@@ -56,7 +56,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             // 获取手机号基本信息
             PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
             if (phoneEntity == null) {
-                log.warn("未找到手机号: {}", phoneNumber);
+                System.out.println("未找到手机号: " + phoneNumber);
                 return null;
             }
             
@@ -70,7 +70,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             
             return dto;
         } catch (Exception e) {
-            log.error("根据手机号查询详情失败: phoneNumber={}, error={}", phoneNumber, e.getMessage(), e);
+            System.out.println("根据手机号查询详情失败: phoneNumber=" + phoneNumber + ", error=" + e.getMessage());
             return null;
         }
     }
@@ -405,6 +405,140 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         }
 
         return allPhoneNumbers;
+    }
+
+    /**
+     * 批量处理手机号和项目关联（新逻辑）
+     * 如果号码已存在，只添加项目关联；如果号码不存在，先添加号码再添加关联
+     */
+    @Override
+    @Transactional
+    public Map<String, Integer> batchProcessPhoneAndProjects(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId) {
+        Map<String, Integer> result = new HashMap<>();
+        result.put("newPhones", 0);
+        result.put("existingPhones", 0);
+        result.put("newRelations", 0);
+        result.put("invalidPhones", 0);
+        
+        // 参数校验
+        if (CollectionUtils.isEmpty(phoneNumbers) || CollectionUtils.isEmpty(projectIds) || regionId == null) {
+            System.out.println("批量处理手机号参数无效: phoneNumbers=" + phoneNumbers + ", regionId=" + regionId + ", projectIds=" + projectIds);
+            return result;
+        }
+        
+        // 确保regionId不是默认值
+        if (regionId <= 0) {
+            System.out.println("地区ID无效，已设置为默认值1: " + regionId);
+            regionId = 1;
+        }
+        
+        LocalDateTime now = LocalDateTime.now();
+        int newPhones = 0;
+        int existingPhones = 0;
+        int newRelations = 0;
+        int invalidPhones = 0;
+        
+        // 处理每个手机号
+        for (String phoneStr : phoneNumbers) {
+            // 解析手机号
+            Long phoneNumber = parsePhoneNumber(phoneStr);
+            if (phoneNumber == null) {
+                invalidPhones++;
+                continue;
+            }
+            
+            // 检查手机号是否已存在
+            boolean phoneExists = isPhoneExist(phoneNumber);
+            
+            if (!phoneExists) {
+                // 手机号不存在，先添加手机号
+                try {
+                    PhoneEntity phone = createPhoneEntity(phoneNumber, now, adminUserId, 0.20f);
+                    List<PhoneEntity> phonesToInsert = new ArrayList<>();
+                    phonesToInsert.add(phone);
+                    int inserted = phoneNumberMapper.batchInsertPhones(phonesToInsert);
+                    if (inserted > 0) {
+                        newPhones++;
+                        System.out.println("成功添加新手机号: " + phoneNumber);
+                    }
+                } catch (Exception e) {
+                    System.out.println("添加手机号失败: phoneNumber=" + phoneNumber + ", error=" + e.getMessage());
+                    invalidPhones++;
+                    continue;
+                }
+            } else {
+                existingPhones++;
+                System.out.println("手机号已存在: " + phoneNumber);
+            }
+            
+            // 为每个项目添加关联关系（如果不存在）
+            for (Long projectId : projectIds) {
+                try {
+                    // 检查关联是否已存在
+                    if (!checkPhoneProjectRelationExists(phoneNumber, projectId)) {
+                        // 添加关联关系
+                        int relationInserted = phoneNumberMapper.insertPhoneProject(phoneNumber, projectId, regionId);
+                        if (relationInserted > 0) {
+                            newRelations++;
+                            System.out.println("成功添加手机号项目关联: phoneNumber=" + phoneNumber + ", projectId=" + projectId);
+                        }
+                    } else {
+                        System.out.println("手机号项目关联已存在: phoneNumber=" + phoneNumber + ", projectId=" + projectId);
+                    }
+                } catch (Exception e) {
+                    System.out.println("添加手机号项目关联失败: phoneNumber=" + phoneNumber + ", projectId=" + projectId + ", error=" + e.getMessage());
+                }
+            }
+        }
+        
+        result.put("newPhones", newPhones);
+        result.put("existingPhones", existingPhones);
+        result.put("newRelations", newRelations);
+        result.put("invalidPhones", invalidPhones);
+        
+        System.out.println("批量处理完成 - 新增手机号: " + newPhones + ", 已存在手机号: " + existingPhones + ", 新增关联: " + newRelations + ", 无效手机号: " + invalidPhones);
+        
+        return result;
+    }
+
+    /**
+     * 检查手机号和项目的关联是否已存在
+     */
+    @Override
+    public boolean checkPhoneProjectRelationExists(Long phoneNumber, Long projectId) {
+        try {
+            return phoneNumberMapper.checkPhoneProjectRelationExists(phoneNumber, projectId) > 0;
+        } catch (Exception e) {
+            log.error("检查手机号项目关联失败: phoneNumber={}, projectId={}, error={}", 
+                    phoneNumber, projectId, e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 构建新的上传结果数据
+     */
+    @Override
+    public Map<String, Object> buildUploadResultData(int totalProcessed, int totalAdded, int totalExisting, int totalRelationAdded, int totalInvalid) {
+        Map<String, Object> resultData = new HashMap<>();
+        resultData.put("totalProcessed", totalProcessed);
+        resultData.put("totalAdded", totalAdded);
+        resultData.put("totalExisting", totalExisting);
+        resultData.put("totalRelationAdded", totalRelationAdded);
+        resultData.put("totalInvalid", totalInvalid);
+        
+        // 构建详细信息
+        String message = "处理完成！" +
+                "总计处理: " + totalProcessed + "个号码，" +
+                "新增号码: " + totalAdded + "个，" +
+                "已存在号码: " + totalExisting + "个，" +
+                "新增项目关联: " + totalRelationAdded + "个，" +
+                "无效号码: " + totalInvalid + "个";
+        
+        resultData.put("message", message);
+        resultData.put("success", true);
+        
+        return resultData;
     }
 
     /**

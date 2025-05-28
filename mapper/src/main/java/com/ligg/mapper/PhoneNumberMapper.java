@@ -39,6 +39,14 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     int checkPhoneExists(@Param("phoneNumber") Long phoneNumber);
 
     /**
+     * 检查手机号和项目的关联是否已存在
+     * @param phoneNumber 手机号
+     * @param projectId 项目ID
+     * @return 存在返回1，不存在返回0
+     */
+    int checkPhoneProjectRelationExists(@Param("phoneNumber") Long phoneNumber, @Param("projectId") Long projectId);
+
+    /**
      * 插入手机号与项目关联
      * @param phoneNumber 手机号
      * @param projectId 项目ID

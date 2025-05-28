@@ -27,6 +27,14 @@
         SELECT COUNT(1) FROM phone WHERE phone_number = #{phoneNumber}
     </select>
 
+    <!-- 检查手机号和项目的关联是否已存在 -->
+    <select id="checkPhoneProjectRelationExists" resultType="java.lang.Integer">
+        SELECT COUNT(1) 
+        FROM phone_project_relation ppr
+        JOIN phone p ON ppr.phone_id = p.phone_id
+        WHERE p.phone_number = #{phoneNumber} AND ppr.project_id = #{projectId}
+    </select>
+
     <!-- 插入手机号和项目关联信息到 phone_project_relation 表 -->
     <insert id="insertPhoneProject">
         INSERT INTO phone_project_relation(phone_id, project_id, region_id, is_available, created_at)

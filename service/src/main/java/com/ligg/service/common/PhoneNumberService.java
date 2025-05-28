@@ -36,6 +36,27 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
     int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
 
     /**
+     * 批量处理手机号和项目关联（新逻辑）
+     * 如果号码已存在，只添加项目关联；如果号码不存在，先添加号码再添加关联
+     * 
+     * @param phoneNumbers 手机号列表
+     * @param regionId 地区ID
+     * @param projectIds 项目ID列表
+     * @param adminUserId 管理员用户ID
+     * @return 处理结果统计
+     */
+    Map<String, Integer> batchProcessPhoneAndProjects(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
+
+    /**
+     * 检查手机号和项目的关联是否已存在
+     * 
+     * @param phoneNumber 手机号
+     * @param projectId 项目ID
+     * @return 是否已存在关联
+     */
+    boolean checkPhoneProjectRelationExists(Long phoneNumber, Long projectId);
+
+    /**
      * 从请求数据中提取地区ID
      *
      * @param uploadData 上传数据
@@ -63,6 +84,11 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      * 构建上传结果数据
      */
     Map<String, Object> buildResultData(int totalProcessed, int totalAdded, int totalDuplicate, int totalInvalid);
+
+    /**
+     * 构建新的上传结果数据
+     */
+    Map<String, Object> buildUploadResultData(int totalProcessed, int totalAdded, int totalExisting, int totalRelationAdded, int totalInvalid);
 
     /**
      * 将各种类型转换为Integer
