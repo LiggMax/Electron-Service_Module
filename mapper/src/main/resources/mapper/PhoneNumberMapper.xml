@@ -45,13 +45,13 @@
 
     <!--卡商获取手机号列表 -->
     <select id="phoneList" resultType="com.ligg.common.vo.PhoneVo">
-        SELECT 
-            p.phone_id, 
-            p.phone_number, 
-            p.registration_time, 
-            p.money,
-            r.region_name,
-            GROUP_CONCAT(DISTINCT pj.project_name SEPARATOR ', ') as projectName
+        SELECT
+        p.phone_id,
+        p.phone_number,
+        p.registration_time,
+        p.money,
+        r.region_name,
+        GROUP_CONCAT(DISTINCT pj.project_name SEPARATOR ', ') as projectName
         FROM phone p
         JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
         JOIN region r ON ppr.region_id = r.region_id
@@ -63,8 +63,7 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (p.phone_number like concat('%', #{keyword}, '%')
-                or r.region_name like concat('%', #{keyword}, '%')
-                or p.usage_status like concat('%', #{keyword}, '%'))
+                or r.region_name like concat('%', #{keyword}, '%'))
             </if>
             and p.admin_user_id = #{adminUserId}
         </where>

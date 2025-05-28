@@ -35,9 +35,6 @@ public class PhoneNumberController {
     @Autowired
     private HttpServletRequest request;
 
-    @Autowired
-    private PhoneProjectRelationService phoneProjectRelationService;
-
     /**
      * 获取项目和地区数据
      */
