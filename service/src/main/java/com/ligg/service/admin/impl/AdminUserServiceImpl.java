@@ -3,7 +3,7 @@ package com.ligg.service.admin.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.admin.AdminUserEntity;
-import com.ligg.common.entity.UserOrderEntity;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.AdminUserMapper;
@@ -61,13 +61,13 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
      */
     @Override
     public List<OrderVo> getOrder(Long AdminId) {
-        List<UserOrderEntity> orderEntities = userOrderMapper.selectList(new LambdaUpdateWrapper<UserOrderEntity>()
-                .eq(UserOrderEntity::getAdminId, AdminId));
+        List<OrderEntity> orderEntities = userOrderMapper.selectList(new LambdaUpdateWrapper<OrderEntity>()
+                .eq(OrderEntity::getAdminId, AdminId));
 
         ArrayList<OrderVo> orderVoList = new ArrayList<>();
-        for (UserOrderEntity orderEntity : orderEntities){
+        for (OrderEntity orderEntity : orderEntities){
             OrderVo orderVo = new OrderVo();
-            orderVo.setId(orderEntity.getUserProjectId());
+            orderVo.setId(orderEntity.getOrderId());
             orderVo.setAdminId(orderEntity.getAdminId());
             orderVo.setUserId(orderEntity.getUserId());
             orderVo.setPhoneNumber(orderEntity.getPhoneNumber());

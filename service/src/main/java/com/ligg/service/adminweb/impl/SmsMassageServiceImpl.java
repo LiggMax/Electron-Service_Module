@@ -1,15 +1,14 @@
 package com.ligg.service.adminweb.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.ligg.common.entity.UserOrderEntity;
+import com.ligg.common.dto.OrdersDto;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.SmsParserUtil;
-import com.ligg.mapper.user.UserMapper;
+import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.adminweb.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +20,9 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
     private UserOrderMapper userOrderMapper;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
     /**
      * 提取验证码和短信
@@ -54,20 +56,26 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     @Override
     public void saveSmsAndCode(List<Map<String, String>> maps) {
         for (Map<String, String> map : maps) {
+            //手机号码
             String phoneNumber = map.get("phoneNumber");
+            //短信内容
             String messageContent = map.get("messageContent");
 
             //查询订单
-            List<UserOrderEntity> orders = userOrderMapper.selectList(new LambdaQueryWrapper<UserOrderEntity>()
-                    .eq(UserOrderEntity::getPhoneNumber, phoneNumber));
-            //订单存在或者订单状态为0，则更新
-            if (orders.isEmpty() || orders.get(0).getState() == 0){
-                userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                        .eq(UserOrderEntity::getPhoneNumber, phoneNumber)
-                        .set(UserOrderEntity::getCode, messageContent)
-                        .set(UserOrderEntity::getState, 1));
-            }
+            List<OrdersDto> orders = orderMapper.selectByPhoneNumber(phoneNumber);
 
+            for (OrdersDto orderDto : orders) {
+                //判断短信内容包含订单项目名称
+                if (messageContent.contains(orderDto.getProjectName())) {
+                    //订单存在或者订单状态为0，则更新
+                    if (orderDto.getState() == 0) {
+                        userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
+                                .eq(OrderEntity::getPhoneNumber, phoneNumber)
+                                .set(OrderEntity::getCode, messageContent)
+                                .set(OrderEntity::getState, 1));
+                    }
+                }
+            }
         }
     }
 }

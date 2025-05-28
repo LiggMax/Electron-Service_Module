@@ -10,7 +10,7 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into user_order(user_id, phone_number,admin_id,project_id,project_money,phone_money,region_id,created_at)
+        insert into orders(user_id, phone_number,admin_id,project_id,project_money,phone_money,region_id,created_at)
         values (#{userId}, #{phoneNumber},#{adminUserId},#{projectId},#{projectMoney},#{phoneMoney},#{regionId},NOW())
     </insert>
 
@@ -131,8 +131,8 @@
 
     <!--获取用户订单-->
     <select id="getUserOrder" resultType="java.util.Map">
-        select user_project_id, phone_number, created_at,project_money,phone_money
-        from user_order
+        select orders_id, phone_number, created_at,project_money,phone_money
+        from orders
         where user_id = #{userId}
         order by created_at desc
     </select>

@@ -8,7 +8,7 @@
                au.nick_name,
                au.user_avatar,
                au.phone_number
-        from user_order uo
+        from orders uo
                  left join phone p on uo.phone_number = p.phone_number
                  left join admin_users au on p.admin_user_id = au.user_id
         where uo.phone_number = #{phoneNumber}

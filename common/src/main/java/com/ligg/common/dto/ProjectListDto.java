@@ -1,6 +1,5 @@
 package com.ligg.common.dto;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 

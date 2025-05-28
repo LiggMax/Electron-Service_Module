@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class PhoneDetailDto {
+public class PhoneDateDto {
     private Integer phoneId;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long phoneNumber;

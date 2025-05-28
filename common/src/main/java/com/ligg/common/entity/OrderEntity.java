@@ -8,10 +8,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("user_order")
-public class UserOrderEntity {
+@TableName("orders")
+public class OrderEntity {
     @TableId(type = IdType.AUTO)
-    private Integer userProjectId;
+    private Integer orderId;
     private Long userId;
     private LocalDateTime createdAt;
     private Integer projectId;

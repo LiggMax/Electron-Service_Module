@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.UserOrderEntity;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.service.adminweb.OrderService;
@@ -36,7 +36,7 @@ public class OrderController {
     @PostMapping("/settle")
     public Result<String> settleOrder(Integer orderId){
         //获取订单数据
-        UserOrderEntity orderInfo = orderService.getOrderInfo(orderId);
+        OrderEntity orderInfo = orderService.getOrderInfo(orderId);
         if(orderInfo == null){
             return Result.error(400,"订单不存在");
         }

@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.admin.AdminUserEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
-import com.ligg.common.entity.UserOrderEntity;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.AdminUserMapper;
-import com.ligg.mapper.AdminWeb.AccountFundsMapper;
 import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
@@ -36,9 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private AdminUserMapper adminUserMapper;
 
     @Autowired
-    private AccountFundsMapper accountFundsMapper;
-
-    @Autowired
     private AdminWebUserMapper adminWebUserMapper;
 
     @Autowired
@@ -57,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public UserOrderEntity getOrderInfo(Integer orderId) {
+    public OrderEntity getOrderInfo(Integer orderId) {
         return userOrderMapper.selectById(orderId);
     }
 
@@ -66,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void settleOrder(UserOrderEntity order) {
+    public void settleOrder(OrderEntity order) {
 
         // 结算卡商余额
         log.info("结算订单，更新卡商余额：+{}元", order.getPhoneMoney());
@@ -84,8 +80,8 @@ public class OrderServiceImpl implements OrderService {
 
         //更新订单状态
         log.info("结算订单，更新订单状态：{}", 2);
-        userOrderMapper.update(new LambdaUpdateWrapper<UserOrderEntity>()
-                .eq(UserOrderEntity::getUserProjectId, order.getUserProjectId())
-                .set(UserOrderEntity::getState, 2));
+        userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
+                .eq(OrderEntity::getOrderId, order.getOrderId())
+                .set(OrderEntity::getState, 2));
     }
 }

@@ -15,6 +15,14 @@
     <description>admin-web-controller</description>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.ligg</groupId>
+            <artifactId>user-controller</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

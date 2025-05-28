@@ -1,8 +1,6 @@
 package com.ligg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ligg.common.dto.PhoneAndProjectDto;
-import com.ligg.common.dto.PhoneDetailDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.vo.PhoneVo;

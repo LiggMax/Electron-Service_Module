@@ -1,9 +1,9 @@
 package com.ligg.service.common.impl;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.dto.SmsDto;
-import com.ligg.common.entity.UserOrderEntity;
 import com.ligg.common.vo.CodeVo;
+import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.SmsMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.common.SmsService;
@@ -21,6 +21,9 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private UserOrderMapper userOrderMapper;
 
+    @Autowired
+    private OrderMapper  orderMapper;
+
     @Override
     public List<SmsDto> getSmsList(Long userId) {
         return smsMapper.getSmsList(userId);
@@ -35,5 +38,10 @@ public class SmsServiceImpl implements SmsService {
         //过滤codeList中的空数据
         codeList.removeIf(codeVo -> codeVo.getCode() == null);
         return  codeList;
+    }
+
+    @Override
+    public List<OrdersDto> getOrdersList(Long userId) {
+        return orderMapper.selectByUserId(userId);
     }
 }

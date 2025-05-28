@@ -16,7 +16,6 @@ public class PhoneVo {
     private Long phoneId;//id
     private Long phoneNumber;//手机号
     private LocalDateTime registrationTime;//注册时间
-    private Integer usageStatus;//使用状态 1.可用、0.被购买
     private String regionName;//地区名称
     private List<ProjectInfoVo> projects;//项目列表
     private String adminNickName;//卡商昵称
