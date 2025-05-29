@@ -79,7 +79,7 @@ public class CustomerController {
         userEntity.setPassword(password);
         userEntity.setNickName(nickName);
         userEntity.setEmail(email);
-        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 20));
+        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
         customerService.saveUser(userEntity);
         return Result.success(200, "添加成功");
     }

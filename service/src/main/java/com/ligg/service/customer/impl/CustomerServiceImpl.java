@@ -223,7 +223,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
         userEntity.setPassword(BCryptUtil.encrypt(password));
 
         //生成20位数的UUID用户邀请码
-        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 20));
+        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 10));
         userMapper.insert(userEntity);
     }
 
