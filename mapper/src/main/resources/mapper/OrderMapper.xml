@@ -19,7 +19,7 @@
         from orders uo
                  left join users u on uo.user_id = u.user_id
                  left join phone p on uo.phone_number = p.phone_number
-                 left join admin_users au on p.admin_user_id = au.user_id
+                 left join merchant au on p.admin_user_id = au.user_id
         order by uo.created_at desc
     </select>
 

@@ -2,7 +2,7 @@ package com.ligg.service.admin.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.vo.OrderVo;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUserEntity> implements AdminUserService {
+public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, MerchantEntity> implements AdminUserService {
 
     @Autowired
     private AdminUserMapper adminUserMapper;
@@ -29,9 +29,9 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
      */
     @Override
     public void resetPassword(Long userId, String password) {
-        LambdaUpdateWrapper<AdminUserEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(AdminUserEntity::getUserId, userId)
-                .set(AdminUserEntity::getPassword, BCryptUtil.encrypt(password));
+        LambdaUpdateWrapper<MerchantEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(MerchantEntity::getUserId, userId)
+                .set(MerchantEntity::getPassword, BCryptUtil.encrypt(password));
         adminUserMapper.update(null, updateWrapper);
     }
 
@@ -39,10 +39,10 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
      * 添加卡商
      */
     @Override
-    public void saveCardUser(AdminUserEntity adminUserEntity) {
-        adminUserEntity.setCreatedAt(LocalDateTime.now());
-        adminUserEntity.setPassword(BCryptUtil.encrypt(adminUserEntity.getPassword()));
-        adminUserMapper.insert(adminUserEntity);
+    public void saveCardUser(MerchantEntity merchantEntity) {
+        merchantEntity.setCreatedAt(LocalDateTime.now());
+        merchantEntity.setPassword(BCryptUtil.encrypt(merchantEntity.getPassword()));
+        adminUserMapper.insert(merchantEntity);
     }
 
     /**
@@ -50,9 +50,9 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
      */
     @Override
     public void updateLoginTime(Long userId) {
-        LambdaUpdateWrapper<AdminUserEntity> updateWrapper = new LambdaUpdateWrapper<AdminUserEntity>()
-                .eq(AdminUserEntity::getUserId, userId)
-                .set(AdminUserEntity::getLoginTime, LocalDateTime.now());
+        LambdaUpdateWrapper<MerchantEntity> updateWrapper = new LambdaUpdateWrapper<MerchantEntity>()
+                .eq(MerchantEntity::getUserId, userId)
+                .set(MerchantEntity::getLoginTime, LocalDateTime.now());
         adminUserMapper.update(null, updateWrapper);
     }
 

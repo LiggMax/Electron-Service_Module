@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.admin.AdminUserService;
@@ -28,7 +28,7 @@ public class AdminAccountController {
     @PostMapping("/login")
     public Result<?> login(@RequestParam String account,
                            @RequestParam String password){
-        AdminUserEntity userInfo = userService.findByAdminUser(account);
+        MerchantEntity userInfo = userService.findByAdminUser(account);
         if (userInfo == null){
             return Result.error(400,"账号或密码错误");
         }

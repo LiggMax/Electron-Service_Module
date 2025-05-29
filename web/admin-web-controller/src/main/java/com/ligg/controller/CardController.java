@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.admin.AdminUserService;
 import jakarta.validation.constraints.*;
@@ -24,7 +24,7 @@ public class CardController {
      * 获取卡商列表
      */
     @GetMapping
-    public Result<List<AdminUserEntity>> getCardList() {
+    public Result<List<MerchantEntity>> getCardList() {
         return Result.success(200,adminUserService.getBaseMapper().selectList(null));
     }
 
@@ -32,8 +32,8 @@ public class CardController {
      * 编辑卡商信息
      */
     @PutMapping("/edit")
-    public Result<String> updateCardInfo(@Validated @RequestBody AdminUserEntity adminUserEntity) {
-        adminUserService.updateById(adminUserEntity);
+    public Result<String> updateCardInfo(@Validated @RequestBody MerchantEntity merchantEntity) {
+        adminUserService.updateById(merchantEntity);
         return Result.success(200,"修改成功");
     }
 
@@ -45,12 +45,12 @@ public class CardController {
                                       @Pattern(regexp = "^[a-zA-Z\\d]{6,20}$") String password,
                                       @Pattern(regexp = "^[a-zA-Z\\d]{1,20}$") String nickName,
                                       @Email String email) {
-        AdminUserEntity adminUserEntity = new AdminUserEntity();
-        adminUserEntity.setAccount(account);
-        adminUserEntity.setPassword(password);
-        adminUserEntity.setNickName(nickName);
-        adminUserEntity.setEmail(email);
-        adminUserService.saveCardUser(adminUserEntity);
+        MerchantEntity merchantEntity = new MerchantEntity();
+        merchantEntity.setAccount(account);
+        merchantEntity.setPassword(password);
+        merchantEntity.setNickName(nickName);
+        merchantEntity.setEmail(email);
+        adminUserService.saveCardUser(merchantEntity);
         return Result.success(200,"添加成功");
     }
 

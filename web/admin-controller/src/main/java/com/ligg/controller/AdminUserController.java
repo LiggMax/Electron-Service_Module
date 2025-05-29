@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
@@ -44,13 +44,13 @@ public class AdminUserController {
      * 获取用户信息
      */
     @GetMapping("/info")
-    public Result<AdminUserEntity> getUserInfo() {
+    public Result<MerchantEntity> getUserInfo() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         if (map == null){
             return Result.error(401, "请重新登录");
         }
         Long userId = (Long) map.get("userId");
-        AdminUserEntity AdminUserInfo = userService.findByAdminUserInfo(userId);
+        MerchantEntity AdminUserInfo = userService.findByAdminUserInfo(userId);
         return Result.success(200, AdminUserInfo);
     }
 

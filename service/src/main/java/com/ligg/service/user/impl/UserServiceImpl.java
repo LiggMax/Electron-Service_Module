@@ -3,7 +3,7 @@ package com.ligg.service.user.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.*;
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;
@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      * 根据账号查询管理员用户信息
      */
     @Override
-    public AdminUserEntity findByAdminUser(String account) {
+    public MerchantEntity findByAdminUser(String account) {
         return userMapper.findByAdminUser(account);
     }
 
@@ -84,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      * 根据id获取用户信息
      */
     @Override
-    public AdminUserEntity findByAdminUserInfo(Long userId) {
+    public MerchantEntity findByAdminUserInfo(Long userId) {
         return userMapper.findByAdminUserInfo(userId);
     }
 

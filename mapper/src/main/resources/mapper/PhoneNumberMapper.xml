@@ -55,7 +55,7 @@
         FROM phone p
         JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
         JOIN region r ON ppr.region_id = r.region_id
-        LEFT JOIN admin_users au ON p.admin_user_id = au.user_id
+        LEFT JOIN merchant au ON p.admin_user_id = au.user_id
         LEFT JOIN project pj ON ppr.project_id = pj.project_id
         <where>
             <if test="countryCode != null and countryCode != '' ">
@@ -138,7 +138,7 @@
         from phone p
                   join phone_project_relation ppr on p.phone_id = ppr.phone_id
                   join region r on ppr.region_id = r.region_id
-                  join admin_users au on p.admin_user_id = au.user_id
+                  join merchant au on p.admin_user_id = au.user_id
                   join project pj on ppr.project_id = pj.project_id
         order by p.phone_id desc
     </select>

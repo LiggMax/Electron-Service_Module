@@ -11,55 +11,11 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 28/05/2025 19:25:02
+ Date: 29/05/2025 13:50:15
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for account_funds
--- ----------------------------
-DROP TABLE IF EXISTS `account_funds`;
-CREATE TABLE `account_funds`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `account_id` bigint NULL DEFAULT NULL COMMENT '账户id',
-  `money` float NOT NULL DEFAULT 0 COMMENT '资金',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '账户资金' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of account_funds
--- ----------------------------
-
--- ----------------------------
--- Table structure for admin_users
--- ----------------------------
-DROP TABLE IF EXISTS `admin_users`;
-CREATE TABLE `admin_users`  (
-  `user_id` bigint NOT NULL,
-  `account` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL COMMENT '账号',
-  `nick_name` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '昵称',
-  `password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL COMMENT '密码',
-  `email` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '邮箱',
-  `created_at` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `user_avatar` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL,
-  `login_time` datetime NULL DEFAULT NULL COMMENT '登录时间',
-  `phone_number` bigint UNSIGNED NULL DEFAULT NULL COMMENT '号码',
-  `money` float NULL DEFAULT NULL COMMENT '卡商资金',
-  `divide_into` int NOT NULL DEFAULT 10 COMMENT '分成',
-  INDEX `admin_users_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_bin ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of admin_users
--- ----------------------------
-INSERT INTO `admin_users` VALUES (8259543156, 'ligg', 'lwz', '$2a$12$rRwG1eIEuCgLeIQyArWWz.wwsLozNFWNfR0Rfy8hPlwR/v1kKbzX6', '29544@qq.com', '2025-03-25 16:55:12', '2025-03-25 16:55:08', 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 80);
-INSERT INTO `admin_users` VALUES (8259512156, 'lwz', '啊我给发发发', '$2a$12$tTjN1uZIuPEGxQU27fdBR.aUfLDjPabq//15Dt3UNERaLfngl3Qgm', '1241415i@gmail.com', '2025-05-12 18:33:52', '2025-05-12 18:33:55', 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 53);
-INSERT INTO `admin_users` VALUES (1922882817093738498, '123456', '123', '$2a$12$GRVcugbFnVC90rcZsLRpkeXSSja3ZVX.6CePwmK21OYH6s/LMMHxe', '', '2025-05-15 13:12:43', NULL, NULL, '2025-05-15 17:07:22', NULL, 0, 10);
-INSERT INTO `admin_users` VALUES (1922883816214745090, '11111111', '123123', '$2a$12$RSUtwhQTyfDQR39NPNF97e.rjRQPC1X6QnTFZ9J4F0QoOVUAOGyxy', '2954494754@qq.com', '2025-05-15 13:16:41', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-17 18:19:08', 12312313, 0, 10);
-INSERT INTO `admin_users` VALUES (1925129632954384386, '111111', '测试卡商', '$2a$12$YOTMwVVdHM/Cu.xUl9opHuxNogjZTLaaf3tgGgBECxifesi4p5AWm', '', '2025-05-21 18:00:46', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-28 17:49:24', NULL, 1.2, 10);
 
 -- ----------------------------
 -- Table structure for admin_web_user
@@ -81,7 +37,10 @@ CREATE TABLE `admin_web_user`  (
 -- ----------------------------
 -- Records of admin_web_user
 -- ----------------------------
-INSERT INTO `admin_web_user` VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com', '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-28 18:45:58', '127.0.0.1', 37.5);
+INSERT INTO `admin_web_user`
+VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com',
+        '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-29 13:38:29', '127.0.0.1',
+        37.5);
 
 -- ----------------------------
 -- Table structure for announcement
@@ -105,6 +64,29 @@ INSERT INTO `announcement` VALUES (7, '1321', '2025-05-10 18:36:41', '');
 INSERT INTO `announcement` VALUES (8, '12313', '2025-05-10 18:37:04', '');
 
 -- ----------------------------
+-- Table structure for bill
+-- ----------------------------
+DROP TABLE IF EXISTS `bill`;
+CREATE TABLE `bill`
+(
+    `id`          varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '账单编辑号',
+    `bill_type`   tinyint                                                      NOT NULL COMMENT '账单类型(1:收入,2:支出)',
+    `account_id`  bigint                                                       NULL DEFAULT NULL COMMENT '账户id',
+    `amount`      float                                                        NULL DEFAULT 0 COMMENT '账单金额',
+    `merchant_id` bigint                                                       NOT NULL COMMENT '商户ID',
+    `customer_id` bigint                                                       NOT NULL COMMENT '客户ID',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_as_ci COMMENT = '账单'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of bill
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for invitation_relations
 -- ----------------------------
 DROP TABLE IF EXISTS `invitation_relations`;
@@ -121,6 +103,54 @@ CREATE TABLE `invitation_relations`  (
 -- Records of invitation_relations
 -- ----------------------------
 INSERT INTO `invitation_relations` VALUES (1, 'qqqqqq', 'yyyyyy', '95e151202a4a4da4b586');
+
+-- ----------------------------
+-- Table structure for merchant
+-- ----------------------------
+DROP TABLE IF EXISTS `merchant`;
+CREATE TABLE `merchant`
+(
+    `user_id`      bigint                                                 NOT NULL,
+    `account`      varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin  NOT NULL COMMENT '账号',
+    `nick_name`    varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin  NULL     DEFAULT NULL COMMENT '昵称',
+    `password`     varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL COMMENT '密码',
+    `email`        varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin  NULL     DEFAULT NULL COMMENT '邮箱',
+    `created_at`   datetime                                               NULL     DEFAULT NULL COMMENT '创建时间',
+    `updated_at`   datetime                                               NULL     DEFAULT NULL COMMENT '更新时间',
+    `user_avatar`  varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL     DEFAULT NULL,
+    `login_time`   datetime                                               NULL     DEFAULT NULL COMMENT '登录时间',
+    `phone_number` bigint UNSIGNED                                        NULL     DEFAULT NULL COMMENT '号码',
+    `money`        float                                                  NULL     DEFAULT NULL COMMENT '卡商资金',
+    `divide_into`  int                                                    NOT NULL DEFAULT 10 COMMENT '分成',
+    INDEX `admin_users_user_id_index` (`user_id` ASC) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb3
+  COLLATE = utf8mb3_bin COMMENT = '卡商'
+  ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of merchant
+-- ----------------------------
+INSERT INTO `merchant`
+VALUES (8259543156, 'ligg', 'lwz', '$2a$12$rRwG1eIEuCgLeIQyArWWz.wwsLozNFWNfR0Rfy8hPlwR/v1kKbzX6', '29544@qq.com',
+        '2025-03-25 16:55:12', '2025-03-25 16:55:08',
+        'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 80);
+INSERT INTO `merchant`
+VALUES (8259512156, 'lwz', '啊我给发发发', '$2a$12$tTjN1uZIuPEGxQU27fdBR.aUfLDjPabq//15Dt3UNERaLfngl3Qgm',
+        '1241415i@gmail.com', '2025-05-12 18:33:52', '2025-05-12 18:33:55',
+        'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 53);
+INSERT INTO `merchant`
+VALUES (1922882817093738498, '123456', '123', '$2a$12$GRVcugbFnVC90rcZsLRpkeXSSja3ZVX.6CePwmK21OYH6s/LMMHxe', '',
+        '2025-05-15 13:12:43', NULL, NULL, '2025-05-15 17:07:22', NULL, 0, 50);
+INSERT INTO `merchant`
+VALUES (1922883816214745090, '11111111', '123123', '$2a$12$RSUtwhQTyfDQR39NPNF97e.rjRQPC1X6QnTFZ9J4F0QoOVUAOGyxy',
+        '2954494754@qq.com', '2025-05-15 13:16:41', NULL,
+        'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', '2025-05-17 18:19:08', 12312313, 0,
+        81);
+INSERT INTO `merchant`
+VALUES (1925129632954384386, '111111', '测试卡商', '$2a$12$YOTMwVVdHM/Cu.xUl9opHuxNogjZTLaaf3tgGgBECxifesi4p5AWm', '',
+        '2025-05-21 18:00:46', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1',
+        '2025-05-28 17:49:24', NULL, 1.2, 10);
 
 -- ----------------------------
 -- Table structure for orders
@@ -287,7 +317,10 @@ INSERT INTO `users` VALUES (8259543158, '222222', '111111', 'qwe', NULL, '2025-0
 INSERT INTO `users` VALUES (8259543159, '333333', '$2a$12$BzRCp4wFd7pTO6Xv0cdaB.C3BBpcJb4RR2Bm6kYk0ag0E0ixPjlg.', '333333', '', '2025-04-26 16:31:31', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-17 17:03:21', '', 436.6);
 INSERT INTO `users` VALUES (1923688101231960065, '555555', '$2a$12$V9ZradzXvnpE2RYgC4t80eg.I7LNjSUVuWTu3JH1o1oYHPWffRUni', NULL, NULL, '2025-05-17 18:32:38', NULL, NULL, 1, '2025-05-17 18:33:02', 'd21f41168ed64208b28c', 0);
 INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpYAzdH7OfUOzcpUweh89bUG2TPDzpAmi26SK/dtt62', NULL, NULL, '2025-05-17 19:17:22', NULL, NULL, 0, NULL, '95e151202a4a4da4b586', 0);
-INSERT INTO `users` VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL, '2025-05-19 14:31:29', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1, '2025-05-28 17:18:40', 'c51ddeb799e845458a5a', 9170.5);
+INSERT INTO `users`
+VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL,
+        '2025-05-19 14:31:29', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1,
+        '2025-05-29 13:37:13', 'c51ddeb799e845458a5a', 9170.5);
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);

@@ -60,14 +60,14 @@
     </update>
 
     <!-- 根据账号密码查询用户信息-->
-    <select id="findByAdminUser" resultType="com.ligg.common.entity.admin.AdminUserEntity">
+    <select id="findByAdminUser" resultType="com.ligg.common.entity.admin.MerchantEntity">
         select user_id, account, password, email, nick_name
-        from admin_users
+        from merchant
         where account = #{account}
     </select>
 
     <!-- 根据用户id查询用户信息-->
-    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.admin.AdminUserEntity">
+    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.admin.MerchantEntity">
         select user_id,
                account,
                nick_name,
@@ -77,7 +77,7 @@
                updated_at,
                user_avatar,
                money
-        from admin_users
+        from merchant
         where user_id = #{userId}
     </select>
     <!-- 根据账号查询用户信息-->

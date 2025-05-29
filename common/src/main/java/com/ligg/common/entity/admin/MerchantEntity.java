@@ -13,8 +13,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("admin_users")
-public class AdminUserEntity {
+@TableName("merchant")
+public class MerchantEntity {
     @TableId
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long userId;

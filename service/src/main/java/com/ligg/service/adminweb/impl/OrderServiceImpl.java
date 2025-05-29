@@ -2,7 +2,7 @@ package com.ligg.service.adminweb.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.JWTUtil;
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 结算卡商余额
         log.info("结算订单，更新卡商余额：+{}元", order.getPhoneMoney());
-        adminUserMapper.update(new UpdateWrapper<AdminUserEntity>()
+        adminUserMapper.update(new UpdateWrapper<MerchantEntity>()
                 .eq("user_id", order.getAdminId())
                 .setSql("money=money+" + order.getPhoneMoney()));
 

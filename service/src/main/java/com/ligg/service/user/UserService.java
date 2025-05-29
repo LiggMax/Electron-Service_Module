@@ -2,7 +2,7 @@ package com.ligg.service.user;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;
@@ -14,7 +14,7 @@ import java.util.Map;
 public interface UserService extends IService<UserEntity> {
 
     //根据账号和密码查询用户
-    AdminUserEntity findByAdminUser(String account);
+    MerchantEntity findByAdminUser(String account);
 
     //生成token
     String createToken(Long userId, String account);
@@ -23,7 +23,7 @@ public interface UserService extends IService<UserEntity> {
     void clearToken(Long userId);
 
     //根据用户id查询管理员用户信息
-    AdminUserEntity findByAdminUserInfo(Long userId);
+    MerchantEntity findByAdminUserInfo(Long userId);
 
      //根据账号查询用户
     UserEntity findByUser(String account);

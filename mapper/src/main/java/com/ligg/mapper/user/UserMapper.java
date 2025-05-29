@@ -1,7 +1,7 @@
 package com.ligg.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ligg.common.entity.admin.AdminUserEntity;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;
@@ -16,10 +16,10 @@ import java.util.Map;
 public interface UserMapper extends BaseMapper<UserEntity> {
 
     //根据账号密码查询用户信息
-    AdminUserEntity findByAdminUser(String account);
+    MerchantEntity findByAdminUser(String account);
 
     //根据id查询用户信息
-    AdminUserEntity findByAdminUserInfo(Long userId);
+    MerchantEntity findByAdminUserInfo(Long userId);
 
     //根据账号查询用户信息
     UserEntity findByUser(String account);
