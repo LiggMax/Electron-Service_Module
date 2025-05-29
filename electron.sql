@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 29/05/2025 13:50:15
+ Date: 29/05/2025 15:51:01
 */
 
 SET NAMES utf8mb4;
@@ -40,7 +40,7 @@ CREATE TABLE `admin_web_user`  (
 INSERT INTO `admin_web_user`
 VALUES (11825954456, 'admin', 'lwz', '1241415i@gmail.com',
         '$2a$12$E5akMSyHVijdiACdBBTZ4.QHv6w3og8Bz5.DCKnozHzc.U.ZEDVwC', 1231513151, '2025-05-29 13:38:29', '127.0.0.1',
-        37.5);
+        62.95);
 
 -- ----------------------------
 -- Table structure for announcement
@@ -138,7 +138,7 @@ VALUES (8259543156, 'ligg', 'lwz', '$2a$12$rRwG1eIEuCgLeIQyArWWz.wwsLozNFWNfR0Rf
 INSERT INTO `merchant`
 VALUES (8259512156, 'lwz', '啊我给发发发', '$2a$12$tTjN1uZIuPEGxQU27fdBR.aUfLDjPabq//15Dt3UNERaLfngl3Qgm',
         '1241415i@gmail.com', '2025-05-12 18:33:52', '2025-05-12 18:33:55',
-        'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 53);
+        'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', NULL, NULL, 0, 75);
 INSERT INTO `merchant`
 VALUES (1922882817093738498, '123456', '123', '$2a$12$GRVcugbFnVC90rcZsLRpkeXSSja3ZVX.6CePwmK21OYH6s/LMMHxe', '',
         '2025-05-15 13:12:43', NULL, NULL, '2025-05-15 17:07:22', NULL, 0, 50);
@@ -150,7 +150,7 @@ VALUES (1922883816214745090, '11111111', '123123', '$2a$12$RSUtwhQTyfDQR39NPNF97
 INSERT INTO `merchant`
 VALUES (1925129632954384386, '111111', '测试卡商', '$2a$12$YOTMwVVdHM/Cu.xUl9opHuxNogjZTLaaf3tgGgBECxifesi4p5AWm', '',
         '2025-05-21 18:00:46', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1',
-        '2025-05-28 17:49:24', NULL, 1.2, 10);
+        '2025-05-29 15:32:47', NULL, 62.95, 50);
 
 -- ----------------------------
 -- Table structure for orders
@@ -166,18 +166,30 @@ CREATE TABLE `orders`  (
   `phone_money` float NOT NULL COMMENT '号码价格',
   `state` int NOT NULL DEFAULT 0 COMMENT '订单状态  0=未使用   1=已使用 2=已结算',
   `code` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '验证码',
-  `admin_id` bigint NULL DEFAULT NULL COMMENT '卡商id',
+  `merchant_id` bigint NULL DEFAULT NULL COMMENT '卡商id',
   `region_id` int NULL DEFAULT NULL COMMENT '地区id',
   PRIMARY KEY (`orders_id`) USING BTREE,
   INDEX `user_order_user_project_id_index`(`orders_id` ASC) USING BTREE,
-  INDEX `user_order_admin_id_index`(`admin_id` ASC) USING BTREE,
+  INDEX `user_order_admin_id_index` (`merchant_id` ASC) USING BTREE,
   INDEX `user_order_user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 482 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 484
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购买的订单'
+  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES (481, 1924352187670147074, '2025-05-28 17:42:40', 5, 47567094, 123, 0.2, 1, '【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。', 1925129632954384386, 1);
+INSERT INTO `orders`
+VALUES (481, 1924352187670147074, '2025-05-28 17:42:40', 5, 47567094, 123, 0.2, 2,
+        '【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。', 1925129632954384386, 1);
+INSERT INTO `orders`
+VALUES (482, 1924352187670147074, '2025-05-29 15:43:21', 3, 47564054, 2.5, 0.2, 2,
+        '【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。', 1925129632954384386, 1);
+INSERT INTO `orders`
+VALUES (483, 1924352187670147074, '2025-05-29 15:43:36', 5, 47564054, 123, 0.2, 1,
+        '【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。', 1925129632954384386, 1);
 
 -- ----------------------------
 -- Table structure for phone
@@ -191,13 +203,21 @@ CREATE TABLE `phone`  (
   `money` double NULL DEFAULT NULL COMMENT '号码价格',
   PRIMARY KEY (`phone_id`) USING BTREE,
   UNIQUE INDEX `uk_phone_number`(`phone_number` ASC) USING BTREE COMMENT '手机号码唯一索引'
-) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 67
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号表'
+  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of phone
 -- ----------------------------
 INSERT INTO `phone` VALUES (63, 47567094, '2025-05-28 17:42:11', 1925129632954384386, 0.2);
 INSERT INTO `phone` VALUES (64, 47564054, '2025-05-28 18:13:10', 1925129632954384386, 0.2);
+INSERT INTO `phone`
+VALUES (65, 47564034, '2025-05-29 15:33:44', 1925129632954384386, 0.2);
+INSERT INTO `phone`
+VALUES (66, 475884054, '2025-05-29 15:33:44', 1925129632954384386, 0.2);
 
 -- ----------------------------
 -- Table structure for phone_project_relation
@@ -212,7 +232,11 @@ CREATE TABLE `phone_project_relation`  (
   `is_available` tinyint(1) NOT NULL COMMENT '0 = 未使用  1 = 被购买',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_relation_project`(`project_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 301 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号与项目关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 311
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_as_ci COMMENT = '手机号与项目关联表'
+  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of phone_project_relation
@@ -222,11 +246,33 @@ INSERT INTO `phone_project_relation` VALUES (292, 63, 5, '2025-05-28 17:42:11', 
 INSERT INTO `phone_project_relation` VALUES (293, 63, 2, '2025-05-28 18:08:44', 1, 0);
 INSERT INTO `phone_project_relation` VALUES (294, 64, 1, '2025-05-28 18:13:10', 1, 0);
 INSERT INTO `phone_project_relation` VALUES (295, 64, 2, '2025-05-28 18:13:10', 1, 0);
-INSERT INTO `phone_project_relation` VALUES (296, 64, 3, '2025-05-28 18:13:10', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (296, 64, 3, '2025-05-28 18:13:10', 1, 1);
 INSERT INTO `phone_project_relation` VALUES (297, 64, 4, '2025-05-28 18:13:10', 1, 0);
-INSERT INTO `phone_project_relation` VALUES (298, 64, 5, '2025-05-28 18:13:10', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (298, 64, 5, '2025-05-28 18:13:10', 1, 1);
 INSERT INTO `phone_project_relation` VALUES (299, 63, 3, '2025-05-28 18:14:12', 1, 0);
 INSERT INTO `phone_project_relation` VALUES (300, 63, 4, '2025-05-28 18:14:12', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (301, 65, 3, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (302, 65, 5, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (303, 65, 1, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (304, 66, 3, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (305, 66, 5, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (306, 66, 1, '2025-05-29 15:33:43', 1, 0);
+INSERT INTO `phone_project_relation`
+VALUES (307, 65, 2, '2025-05-29 15:33:57', 3, 0);
+INSERT INTO `phone_project_relation`
+VALUES (308, 65, 4, '2025-05-29 15:33:57', 3, 0);
+INSERT INTO `phone_project_relation`
+VALUES (309, 66, 2, '2025-05-29 15:33:57', 3, 0);
+INSERT INTO `phone_project_relation`
+VALUES (310, 66, 4, '2025-05-29 15:33:57', 3, 0);
 
 -- ----------------------------
 -- Table structure for project
@@ -320,7 +366,7 @@ INSERT INTO `users` VALUES (1923699357586264066, 'qqqqqq', '$2a$12$QsdkOKcJfEwpY
 INSERT INTO `users`
 VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61DjlxRtIHrWzvROKbNp/CW', 'ryryte', NULL,
         '2025-05-19 14:31:29', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 1,
-        '2025-05-29 13:37:13', 'c51ddeb799e845458a5a', 9170.5);
+        '2025-05-29 13:37:13', 'c51ddeb799e845458a5a', 9044.6);
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);
