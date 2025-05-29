@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 29/05/2025 15:51:01
+ Date: 29/05/2025 17:29:56
 */
 
 SET NAMES utf8mb4;
@@ -348,7 +348,7 @@ CREATE TABLE `users`  (
   `user_avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL,
   `user_status` int NOT NULL DEFAULT 1 COMMENT '用户状态(1=‘正常’   0=‘已注销’)',
   `login_time` datetime NULL DEFAULT NULL COMMENT '的登陆时间',
-  `invitation_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NOT NULL COMMENT '邀请码',
+  `invitation_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_ci NULL DEFAULT NULL COMMENT '邀请码',
   `money` float NULL DEFAULT 0 COMMENT '￥',
   PRIMARY KEY (`user_id`) USING BTREE,
   INDEX `users_user_id_index`(`user_id` ASC) USING BTREE
@@ -370,6 +370,12 @@ VALUES (1924352187670147074, '111111', '$2a$12$bxKVlDRSfxguYnUxjgs.f.EnUKREDk61D
 INSERT INTO `users` VALUES (1924727456943812610, 'rrrrrr', '$2a$12$zfKYHkFURAC0fyK0PrZZFeVRPc/7IK.sAppV4fISnwZqruxduVGzu', NULL, NULL, '2025-05-20 15:22:40', NULL, NULL, 1, NULL, '8ecc6bc50a704a31bba3', 0);
 INSERT INTO `users` VALUES (1924729756928159746, 'tttttt', '$2a$12$WoD5Qm4/623bWeyd8EIGKeQMz1nk7e23ElpGGSZYu1DNJNw4eRh7C', NULL, NULL, '2025-05-20 15:31:48', NULL, NULL, 1, NULL, 'dcadb9839c434e8fb883', 0);
 INSERT INTO `users` VALUES (1924730966280220673, 'yyyyyy', '$2a$12$hNlR.L4ZQXzpOJGUFwK51eU4WA8rcvHj5gkn5FzFqCysUSUBaWYv.', 'yyyyyy', NULL, '2025-05-20 15:36:36', NULL, 'https://lain.bgm.tv/pic/user/l/000/91/64/916400.jpg?r=1726915584&hd=1', 0, '2025-05-20 15:54:49', 'bdbc1730907e4a8fa484', 3);
+INSERT INTO `users`
+VALUES (1928019979556589569, '123456', '$2a$12$09.h7Qz9kalIXh7IYur/ZODccRcZv63FjQadkAnJurwgAnZBXDIIG', '123123', '',
+        '2025-05-29 17:25:59', NULL, NULL, 1, NULL, NULL, 0);
+INSERT INTO `users`
+VALUES (1928020674028474370, '123456', '$2a$12$i4a7UBy142IUMQmd3IuxJeMrBW5MEdrNXSQ/4ZIdNfR0kSgDihn3.', '123456', '',
+        '2025-05-29 17:28:44', NULL, NULL, 1, NULL, NULL, 0);
 
 -- ----------------------------
 -- View structure for view_project_phone_count

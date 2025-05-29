@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 客户管理
@@ -78,6 +79,7 @@ public class CustomerController {
         userEntity.setPassword(password);
         userEntity.setNickName(nickName);
         userEntity.setEmail(email);
+        userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 20));
         customerService.saveUser(userEntity);
         return Result.success(200, "添加成功");
     }

@@ -11,7 +11,7 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   profiles:
-    active: common,mapper,service,user-web,admin-web # 指定配置文件
+    active: common,mapper,service # 指定配置文件
   data:
     redis:
       port: 6379
