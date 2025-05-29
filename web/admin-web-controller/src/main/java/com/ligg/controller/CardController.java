@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.admin.AdminUserService;
+import com.ligg.service.merchant.MerchantUserService;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,14 +18,14 @@ import java.util.List;
 public class CardController {
 
     @Autowired
-    private AdminUserService adminUserService;
+    private MerchantUserService merchantUserService;
 
     /**
      * 获取卡商列表
      */
     @GetMapping
     public Result<List<MerchantEntity>> getCardList() {
-        return Result.success(200,adminUserService.getBaseMapper().selectList(null));
+        return Result.success(200, merchantUserService.getBaseMapper().selectList(null));
     }
 
     /**
@@ -33,7 +33,7 @@ public class CardController {
      */
     @PutMapping("/edit")
     public Result<String> updateCardInfo(@Validated @RequestBody MerchantEntity merchantEntity) {
-        adminUserService.updateById(merchantEntity);
+        merchantUserService.updateById(merchantEntity);
         return Result.success(200,"修改成功");
     }
 
@@ -50,7 +50,7 @@ public class CardController {
         merchantEntity.setPassword(password);
         merchantEntity.setNickName(nickName);
         merchantEntity.setEmail(email);
-        adminUserService.saveCardUser(merchantEntity);
+        merchantUserService.saveCardUser(merchantEntity);
         return Result.success(200,"添加成功");
     }
 
@@ -62,7 +62,7 @@ public class CardController {
                                         @Min(value = 6,message = "密码长度不能小于6位")
                                         @Max (value = 20,message = "密码长度不能大于20位")
                                         @RequestParam String password){
-        adminUserService.resetPassword(userId,password);
+        merchantUserService.resetPassword(userId, password);
         return Result.success(200,"重置成功");
     }
 
@@ -71,7 +71,7 @@ public class CardController {
      */
     @DeleteMapping("/deleteCard")
     public Result<String> deleteCardInfo(@RequestParam Long userId){
-        adminUserService.removeById(userId);
+        merchantUserService.removeById(userId);
         return Result.success(200,"删除成功");
     }
 }

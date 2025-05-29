@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.adminweb.CustomerService;
+import com.ligg.service.adminweb.UserService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -21,9 +21,9 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    private CustomerService userManagementService;
+    private UserService userManagementService;
     @Autowired
-    private CustomerService customerService;
+    private UserService customerService;
 
     /**
      * 客户列表

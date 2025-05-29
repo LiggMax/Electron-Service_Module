@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.OrderEntity;
+import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;
-import com.ligg.mapper.AdminUserMapper;
+import com.ligg.mapper.MerchantMapper;
 import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private UserOrderMapper userOrderMapper;
 
     @Autowired
-    private AdminUserMapper adminUserMapper;
+    private MerchantMapper merchantMapper;
 
     @Autowired
     private AdminWebUserMapper adminWebUserMapper;
@@ -64,24 +66,33 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void settleOrder(OrderEntity order) {
 
-        // 结算卡商余额
-        log.info("结算订单，更新卡商余额：+{}元", order.getPhoneMoney());
-        adminUserMapper.update(new UpdateWrapper<MerchantEntity>()
-                .eq("user_id", order.getAdminId())
-                .setSql("money=money+" + order.getPhoneMoney()));
+        //订单价格
+        Float orderMoney = order.getPhoneMoney() + order.getProjectMoney();
+
+        // 获取卡商抽成比例
+        MerchantEntity merchantInfo = merchantMapper.selectById(order.getMerchantId());
+        log.info("获取卡商抽成比例 {}%", merchantInfo.getDivideInto());
+
+        // 计算抽成金额和剩余金额
+        CommissionUtils.CommissionResult result = CommissionUtils.calculateCommission(merchantInfo.getDivideInto(), orderMoney);
+
+        BigDecimal remainingAmount = result.getRemainingAmount(); //剩余金额（卡商收益）
+        BigDecimal commissionAmount = result.getCommissionAmount(); //被抽成掉的金额（平台收益）
+
+        //结算卡商余额：+ 抽成后的金额
+        merchantMapper.amountSettlement(merchantInfo.getUserId(), remainingAmount);
+        log.info("结算订单，卡商金额：+{}", remainingAmount);
 
         //结算平台余额
         Map<String, Object> AdminWebUserInfo = jwtUtil.parseToken(request.getHeader("Token"));
-        Long adminWebUserId = (Long) AdminWebUserInfo.get("userId");
-        log.info("结算订单，更新平台余额：+{}元", order.getProjectMoney());
-        adminWebUserMapper.update(new UpdateWrapper<AdminWebUserEntity>()
-                .eq("admin_id", adminWebUserId)
-                .setSql("money=money+" + order.getProjectMoney()));
+        Long officialId = (Long) AdminWebUserInfo.get("userId");
+        adminWebUserMapper.officialAmountSettlement(officialId, commissionAmount);
+        log.info("结算订单，平台金额：+{}", commissionAmount);
 
         //更新订单状态
-        log.info("结算订单，更新订单状态：{}", 2);
         userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
-                .eq(OrderEntity::getOrderId, order.getOrderId())
+                .eq(OrderEntity::getOrdersId, order.getOrdersId())
                 .set(OrderEntity::getState, 2));
+        log.info("结算订单，更新订单状态为以结算");
     }
 }

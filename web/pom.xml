@@ -16,10 +16,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>user-controller</module>
-        <module>admin-controller</module>
+        <module>customer-controller</module>
+        <module>merchant-controller</module>
         <module>admin-web-controller</module>
-        <module>Filer-Controller</module>
+        <module>filer-controller</module>
         <!-- 新模块在这里添加 -->
     </modules>
 

@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @TableName("orders")
 public class OrderEntity {
     @TableId(type = IdType.AUTO)
-    private Integer orderId;
+    private Integer ordersId;
     private Long userId;
     private LocalDateTime createdAt;
     private Integer projectId;
     private Long phoneNumber;
-    private Long adminId;//卡商id
+    private Long merchantId;//卡商id
     private Float projectMoney;//项目金额
     private Float phoneMoney;//号码金额
     private Integer state;//状态

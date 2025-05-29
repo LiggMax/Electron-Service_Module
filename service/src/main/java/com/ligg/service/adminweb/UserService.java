@@ -1,0 +1,13 @@
+package com.ligg.service.adminweb;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.ligg.common.entity.user.UserEntity;
+
+public interface UserService extends IService<UserEntity> {
+    //用户状态
+    void updateUserStatus(Long userId, Boolean status);
+    // 重置密码
+    void updatePassword(Long userId, String password);
+    //添加客户
+    void saveUser(UserEntity userEntity);
+}

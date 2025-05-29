@@ -4,7 +4,7 @@ import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.adminweb.AdminWebUserService;
-import com.ligg.service.user.UserService;
+import com.ligg.service.customer.CustomerService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminWebAccountController {
 
     @Autowired
-    private UserService userService;
+    private CustomerService userService;
     @Autowired
     private AdminWebUserService adminWebUserService;
 
