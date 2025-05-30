@@ -178,10 +178,6 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
                     // 更新用户余额
                     userMapper.updateUserMoney(userId, projectEntity.getProjectPrice() + phoneMoney);
-
-                    // 记录日志
-                    log.info("用户[{}]成功购买项目[{}]的手机号[{}]，并从关联表中移除，释放线程锁",
-                            userId, projectId, phoneEntity.getPhoneNumber());
                 }
                 return null;
             }
