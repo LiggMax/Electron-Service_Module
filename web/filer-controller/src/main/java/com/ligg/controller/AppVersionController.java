@@ -80,11 +80,12 @@ public class AppVersionController {
                     String downloadUrl = fileService.uploadApp(result.getMergedFile());
 
                     if (downloadUrl != null) {
-                        // 设置下载地址
-                        result.setDownloadUrl(downloadUrl);
+
+                        // 保存版本信息
+                        appVersionService.saveVersion(version, releaseNotes, downloadUrl, chunk.getSize(), LocalDateTime.now());
 
                         // 完成分片上传的清理工作
-                        appVersionService.completeChunkUpload(identifier, downloadUrl);
+                        appVersionService.completeChunkUpload(identifier);
 
                         // 清除临时的MultipartFile引用
                         result.setMergedFile(null);

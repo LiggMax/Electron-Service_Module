@@ -13,7 +13,10 @@ import java.util.Map;
  * @Time 2025/5/30
  **/
 public interface AppVersionService extends IService<AppVersionEntity> {
-    // 保存版本信息
+
+    /**
+     * 保存版本信息
+     */
     void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, LocalDateTime updateTime);
 
     /**
@@ -25,7 +28,7 @@ public interface AppVersionService extends IService<AppVersionEntity> {
      * 完成分片上传后的清理工作
      * 此方法应在Controller层调用uploadApp成功后调用
      */
-    void completeChunkUpload(String identifier, String downloadUrl);
+    void completeChunkUpload(String identifier);
 
     /**
      * 获取上传进度

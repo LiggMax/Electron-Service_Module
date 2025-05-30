@@ -226,7 +226,7 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
      * 此方法应在Controller层调用uploadApp成功后调用
      */
     @Override
-    public void completeChunkUpload(String identifier, String downloadUrl) {
+    public void completeChunkUpload(String identifier) {
         ChunkUploadProgress progress = uploadProgressMap.get(identifier);
         if (progress != null) {
 
