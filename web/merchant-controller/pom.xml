@@ -10,7 +10,7 @@
 
     <artifactId>merchant-controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>admin-controller</name>
+    <name>merchant-controller</name>
     <description>管理后台接口控制器</description>
     <packaging>jar</packaging>
 

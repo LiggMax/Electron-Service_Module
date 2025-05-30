@@ -56,4 +56,9 @@ public interface ProjectMapper extends BaseMapper<ProjectEntity> {
      * @return 项目ID列表
      */
     List<Integer> getProjectIdsByNames(@Param("projectNames") List<String> projectNames);
+
+    /**
+     * 根据项目名称查询项目id
+     */
+    ProjectEntity selectByProjectName(String projectName);
 }

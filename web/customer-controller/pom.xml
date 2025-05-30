@@ -10,7 +10,7 @@
 
     <artifactId>customer-controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user-controller</name>
+    <name>customer-controller</name>
     <description>用户接口控制器</description>
     <packaging>jar</packaging>
 

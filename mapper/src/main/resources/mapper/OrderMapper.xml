@@ -26,6 +26,7 @@
     <!--根据手机号查询订单-->
     <select id="selectByPhoneNumber" resultType="com.ligg.common.dto.OrdersDto">
         select o.orders_id,o.phone_number,o.created_at,o.project_money,o.phone_money,o.state,
+               pj.project_name,
                pj.project_name
         from orders o
                  join project pj on o.project_id = pj.project_id

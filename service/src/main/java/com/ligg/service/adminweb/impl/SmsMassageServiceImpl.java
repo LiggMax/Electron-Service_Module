@@ -1,10 +1,13 @@
 package com.ligg.service.adminweb.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
+import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.SmsParserUtil;
 import com.ligg.mapper.AdminWeb.OrderMapper;
+import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.adminweb.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private ProjectMapper projectMapper;
 
     /**
      * 提取验证码和短信
@@ -67,10 +73,16 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             for (OrdersDto orderDto : orders) {
                 //判断短信内容包含订单项目名称
                 if (messageContent.contains(orderDto.getProjectName())) {
+                    /*
+                     * 如果短信中包含这个项目名称，说明这个短信数据该项目，则获取该项目ID
+                     */
+                    ProjectEntity projectId = projectMapper.selectByProjectName(orderDto.getProjectName());
+
                     //订单存在或者订单状态为0，则更新
                     if (orderDto.getState() == 0) {
                         userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
                                 .eq(OrderEntity::getPhoneNumber, phoneNumber)
+                                .eq(OrderEntity::getProjectId, projectId.getProjectId())
                                 .set(OrderEntity::getCode, messageContent)
                                 .set(OrderEntity::getState, 1));
                     }

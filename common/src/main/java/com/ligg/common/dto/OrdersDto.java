@@ -14,6 +14,7 @@ public class OrdersDto {
     private String adminName;
     private String projectName;
     private Long phoneNumber;
+    private Integer projectId;
     private String code;
     private Integer state;
     private Float projectMoney;

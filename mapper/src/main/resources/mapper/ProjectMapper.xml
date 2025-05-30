@@ -78,4 +78,11 @@
             #{name}
         </foreach>
     </select>
+
+    <!--根据项目名称查询项目id-->
+    <select id="selectByProjectName" resultType="com.ligg.common.entity.ProjectEntity">
+        select project_id
+        from project
+        where project_name = #{projectName}
+    </select>
 </mapper>
