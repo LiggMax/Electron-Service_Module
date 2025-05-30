@@ -11,8 +11,7 @@ public class UUIDTest {
     public void testUUID() {
         String substring = UUID.randomUUID()
                 .toString()
-                .replace("-", "")
-                .substring(0, 20);
+                .substring(0, 30);
         System.out.println(substring);
     }
 }
