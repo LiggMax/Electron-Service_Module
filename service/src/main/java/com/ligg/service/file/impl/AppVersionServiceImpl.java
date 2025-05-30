@@ -1,6 +1,6 @@
 package com.ligg.service.file.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.ChunkUploadDto;
@@ -8,7 +8,6 @@ import com.ligg.common.entity.AppVersionEntity;
 import com.ligg.common.vo.ChunkUploadVo;
 import com.ligg.mapper.AppVersionMapper;
 import com.ligg.service.file.AppVersionService;
-import com.ligg.service.file.FileService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +35,6 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
     @Autowired
     private AppVersionMapper appVersionMapper;
 
-    @Autowired
-    private FileService fileService;
 
     @Value("${file.upload.temp-path:./temp}")
     private String tempPath;
@@ -64,18 +61,8 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
     /**
      * 自定义的MultipartFile实现类
      */
-    private static class CustomMultipartFile implements MultipartFile {
-        private final String name;
-        private final String originalFilename;
-        private final String contentType;
-        private final byte[] content;
-
-        public CustomMultipartFile(String name, String originalFilename, String contentType, byte[] content) {
-            this.name = name;
-            this.originalFilename = originalFilename;
-            this.contentType = contentType;
-            this.content = content;
-        }
+    private record CustomMultipartFile(String name, String originalFilename, String contentType,
+                                       byte[] content) implements MultipartFile {
 
         @NotNull
         @Override
@@ -127,25 +114,13 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
      * 保存版本信息
      */
     @Override
-    public void saveVersion(String version, String releaseNotes, String downloadUrl) {
+    public void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, LocalDateTime updateTime) {
         AppVersionEntity appVersion = new AppVersionEntity();
         appVersion.setVersion(version);
         appVersion.setDownloadUrl(downloadUrl);
         appVersion.setReleaseNotes(releaseNotes);
-        appVersion.setUpdateTime(LocalDateTime.now());
-        appVersionMapper.insert(appVersion);
-    }
-
-    /**
-     * 保存版本信息（包含文件大小）
-     */
-    @Override
-    public void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize) {
-        AppVersionEntity appVersion = new AppVersionEntity();
-        appVersion.setVersion(version);
-        appVersion.setDownloadUrl(downloadUrl);
-        appVersion.setReleaseNotes(releaseNotes);
-        appVersion.setUpdateTime(LocalDateTime.now());
+        appVersion.setFileSize(fileSize);
+        appVersion.setUpdateTime(updateTime);
         appVersionMapper.insert(appVersion);
     }
 
@@ -176,27 +151,91 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
 
         // 检查是否所有分片都已上传完成
         if (progress.getUploadedChunks().size() == totalChunks) {
-            // 合并文件
-            String finalDownloadUrl = mergeChunks(identifier, progress);
-            if (finalDownloadUrl != null) {
-                progress.setFinalDownloadUrl(finalDownloadUrl);
+            // 合并文件并返回MultipartFile
+            MultipartFile mergedFile = mergeChunksToMultipartFile(identifier, progress);
+            // 返回需要上传的文件信息，让Controller层处理实际上传
+            ChunkUploadVo result = ChunkUploadVo.completed(identifier, null);
+            // 将合并后的文件信息传递给Controller
+            result.setMergedFile(mergedFile);
+            result.setVersion(progress.getVersion());
+            result.setReleaseNotes(progress.getReleaseNotes());
+            result.setTotalSize(progress.getTotalSize());
 
-                // 保存版本信息到数据库
-                if (progress.getVersion() != null && progress.getReleaseNotes() != null) {
-                    saveVersion(progress.getVersion(), progress.getReleaseNotes(),
-                            finalDownloadUrl, progress.getTotalSize());
-                }
-
-                // 清理临时文件和进度信息
-                cleanupTempFiles(identifier);
-                uploadProgressMap.remove(identifier);
-
-                return ChunkUploadVo.completed(identifier, finalDownloadUrl);
-            }
+            return result;
         }
 
         return ChunkUploadVo.success(chunkNumber, progress.getUploadedChunks().size(),
                 totalChunks, identifier);
+    }
+
+    /**
+     * 合并分片文件并返回MultipartFile
+     */
+    private MultipartFile mergeChunksToMultipartFile(String identifier, ChunkUploadProgress progress) throws Exception {
+        Path tempDir = Paths.get(tempPath, identifier);
+        String originalFilename = progress.getFilename();
+
+        // 创建合并后的临时文件
+        Path mergedFile = tempDir.resolve(originalFilename);
+
+        try (FileOutputStream mergedStream = new FileOutputStream(mergedFile.toFile())) {
+            // 按顺序合并分片
+            for (int i = 0; i < progress.getTotalChunks(); i++) {
+                Path chunkFile = tempDir.resolve("chunk_" + i);
+                if (Files.exists(chunkFile)) {
+                    try (FileInputStream chunkStream = new FileInputStream(chunkFile.toFile())) {
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = chunkStream.read(buffer)) != -1) {
+                            mergedStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    // 删除已合并的分片
+                    Files.deleteIfExists(chunkFile);
+                } else {
+                    throw new Exception("分片文件不存在: chunk_" + i);
+                }
+            }
+            mergedStream.flush();
+        }
+
+        // 验证文件完整性
+        if (validateMergedFile(mergedFile, progress.getTotalSize())) {
+            // 将合并后的文件转换为MultipartFile
+            return createMultipartFileFromPath(mergedFile, originalFilename);
+        } else {
+            throw new Exception("文件合并后大小不匹配");
+        }
+    }
+
+    /**
+     * 从文件路径创建MultipartFile
+     */
+    private MultipartFile createMultipartFileFromPath(Path filePath, String originalFilename) throws Exception {
+        byte[] content = Files.readAllBytes(filePath);
+        return new CustomMultipartFile(
+                "file",
+                originalFilename,
+                "application/octet-stream",
+                content
+        );
+    }
+
+    /**
+     * 完成分片上传后的清理工作
+     * 此方法应在Controller层调用uploadApp成功后调用
+     */
+    @Override
+    public void completeChunkUpload(String identifier, String downloadUrl) {
+        ChunkUploadProgress progress = uploadProgressMap.get(identifier);
+        if (progress != null) {
+
+            // 清理临时文件和进度信息
+            cleanupTempFiles(identifier);
+            uploadProgressMap.remove(identifier);
+
+            log.info("分片上传完成，清理资源: identifier={}", identifier);
+        }
     }
 
     /**
@@ -230,74 +269,11 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
     }
 
     /**
-     * 合并分片文件
-     */
-    private String mergeChunks(String identifier, ChunkUploadProgress progress) throws Exception {
-        Path tempDir = Paths.get(tempPath, identifier);
-        String originalFilename = progress.getFilename();
-
-        // 创建合并后的临时文件
-        Path mergedFile = tempDir.resolve(originalFilename);
-
-        try (FileOutputStream mergedStream = new FileOutputStream(mergedFile.toFile())) {
-            // 按顺序合并分片
-            for (int i = 0; i < progress.getTotalChunks(); i++) {
-                Path chunkFile = tempDir.resolve("chunk_" + i);
-                if (Files.exists(chunkFile)) {
-                    try (FileInputStream chunkStream = new FileInputStream(chunkFile.toFile())) {
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = chunkStream.read(buffer)) != -1) {
-                            mergedStream.write(buffer, 0, bytesRead);
-                        }
-                    }
-                    // 删除已合并的分片
-                    Files.deleteIfExists(chunkFile);
-                } else {
-                    throw new Exception("分片文件不存在: chunk_" + i);
-                }
-            }
-            mergedStream.flush();
-        }
-
-        // 验证文件完整性（可选）
-        if (validateMergedFile(mergedFile, progress.getTotalSize())) {
-            // 上传到最终存储位置
-            return uploadMergedFile(mergedFile.toFile(), originalFilename);
-        } else {
-            throw new Exception("文件合并后大小不匹配");
-        }
-    }
-
-    /**
      * 验证合并后的文件
      */
     private boolean validateMergedFile(Path mergedFile, Long expectedSize) throws Exception {
         long actualSize = Files.size(mergedFile);
         return actualSize == expectedSize;
-    }
-
-    /**
-     * 上传合并后的文件
-     */
-    private String uploadMergedFile(File mergedFile, String originalFilename) throws Exception {
-        // 将File转换为MultipartFile，然后调用现有的uploadApp方法
-        try (FileInputStream inputStream = new FileInputStream(mergedFile)) {
-            // 创建CustomMultipartFile
-            byte[] content = Files.readAllBytes(mergedFile.toPath());
-            CustomMultipartFile multipartFile = new CustomMultipartFile(
-                    "file",
-                    originalFilename,
-                    "application/octet-stream",
-                    content
-            );
-
-            // 调用现有的uploadApp方法
-            return fileService.uploadApp(multipartFile);
-        } catch (Exception e) {
-            log.error("上传合并文件失败: " + e.getMessage(), e);
-            throw new Exception("文件上传失败: " + e.getMessage());
-        }
     }
 
     /**
@@ -356,8 +332,8 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
     @Override
     public Map<String, Object> getVersionList(Integer page, Integer size) {
         Page<AppVersionEntity> pageInfo = new Page<>(page, size);
-        QueryWrapper<AppVersionEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("create_time");
+        LambdaQueryWrapper<AppVersionEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(AppVersionEntity::getUpdateTime);
 
         Page<AppVersionEntity> result = appVersionMapper.selectPage(pageInfo, queryWrapper);
 

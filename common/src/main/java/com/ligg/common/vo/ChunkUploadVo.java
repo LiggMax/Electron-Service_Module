@@ -3,6 +3,7 @@ package com.ligg.common.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 分片上传结果VO
@@ -56,6 +57,26 @@ public class ChunkUploadVo {
      * 消息
      */
     private String message;
+
+    /**
+     * 合并后的文件（仅在分片上传完成时有值）
+     */
+    private MultipartFile mergedFile;
+
+    /**
+     * 版本号（仅在分片上传完成时有值）
+     */
+    private String version;
+
+    /**
+     * 发布说明（仅在分片上传完成时有值）
+     */
+    private String releaseNotes;
+
+    /**
+     * 文件总大小（仅在分片上传完成时有值）
+     */
+    private Long totalSize;
 
     /**
      * 创建成功结果

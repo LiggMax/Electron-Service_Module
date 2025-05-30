@@ -7,25 +7,21 @@
 ## 🚀 **核心特性**
 
 ### 1. **分片上传**
-
 - 支持将大文件分割成小片段上传
 - 每个分片独立上传，提高上传成功率
 - 支持并行上传多个分片（客户端实现）
 
 ### 2. **断点续传**
-
 - 上传中断后可以继续上传未完成的分片
 - 服务端记录已上传分片信息
 - 避免重复上传已成功的分片
 
 ### 3. **进度跟踪**
-
 - 实时查询上传进度
 - 精确到分片级别的进度统计
 - 支持前端进度条显示
 
 ### 4. **文件完整性验证**
-
 - 合并后验证文件大小
 - 支持MD5校验（可扩展）
 - 确保上传文件的完整性
@@ -51,9 +47,7 @@ GET  /api/version/list             # 版本列表
 ## 📊 **核心类说明**
 
 ### 1. **ChunkUploadDto**
-
 分片上传数据传输对象
-
 ```java
 public class ChunkUploadDto {
     private MultipartFile chunk;        // 文件分片
@@ -69,9 +63,7 @@ public class ChunkUploadDto {
 ```
 
 ### 2. **ChunkUploadVo**
-
 分片上传结果对象
-
 ```java
 public class ChunkUploadVo {
     private Boolean success;             // 是否成功
@@ -87,9 +79,7 @@ public class ChunkUploadVo {
 ```
 
 ### 3. **AppVersionEntity**
-
 版本信息实体
-
 ```java
 public class AppVersionEntity {
     private Long id;                     // 主键
@@ -107,7 +97,6 @@ public class AppVersionEntity {
 ## 🔧 **实现细节**
 
 ### 1. **分片存储机制**
-
 ```java
 // 临时目录结构
 /temp/{identifier}/
@@ -118,14 +107,12 @@ public class AppVersionEntity {
 ```
 
 ### 2. **进度管理**
-
 ```java
 // 内存中维护上传进度
 ConcurrentHashMap<String, ChunkUploadProgress> uploadProgressMap
 ```
 
 ### 3. **文件合并流程**
-
 1. 检查所有分片是否上传完成
 2. 按序号顺序合并分片
 3. 验证合并后文件大小
@@ -136,7 +123,6 @@ ConcurrentHashMap<String, ChunkUploadProgress> uploadProgressMap
 ## 📝 **API使用示例**
 
 ### 分片上传
-
 ```bash
 curl -X POST "http://localhost:8080/api/version/chunk-upload" \
   -H "Authorization: your-upload-key" \
@@ -152,14 +138,12 @@ curl -X POST "http://localhost:8080/api/version/chunk-upload" \
 ```
 
 ### 查询进度
-
 ```bash
 curl -X GET "http://localhost:8080/api/version/upload-progress/file_md5_hash" \
   -H "Authorization: your-upload-key"
 ```
 
 ### 取消上传
-
 ```bash
 curl -X DELETE "http://localhost:8080/api/version/cancel-upload/file_md5_hash" \
   -H "Authorization: your-upload-key"
@@ -168,7 +152,6 @@ curl -X DELETE "http://localhost:8080/api/version/cancel-upload/file_md5_hash" \
 ## ⚙️ **配置说明**
 
 ### application.yml
-
 ```yaml
 # 文件上传配置
 file:
@@ -183,41 +166,34 @@ minio:
 ## 🛡️ **安全特性**
 
 ### 1. **权限验证**
-
 - 所有上传接口需要Authorization头验证
 - 防止未授权上传
 
 ### 2. **文件大小限制**
-
 - 分片上传最大支持2GB
 - 传统上传限制100MB
 
 ### 3. **文件类型验证**
-
 - 可扩展文件类型检查
 - 防止恶意文件上传
 
 ## 🚀 **性能优化**
 
 ### 1. **内存优化**
-
 - 流式读写，避免大文件内存占用
 - 及时清理临时文件
 
 ### 2. **并发支持**
-
 - 使用ConcurrentHashMap确保线程安全
 - 支持多文件同时上传
 
 ### 3. **存储优化**
-
 - 临时文件存储在本地磁盘
 - 最终文件上传到云存储
 
 ## 📈 **监控指标**
 
 ### 建议监控的指标
-
 1. **上传成功率**：分片上传和文件合并的成功率
 2. **上传耗时**：从开始到完成的总耗时
 3. **存储使用量**：临时文件和最终文件的存储占用
@@ -226,22 +202,18 @@ minio:
 ## 🔄 **扩展建议**
 
 ### 1. **Redis集群支持**
-
 - 将进度信息存储到Redis
 - 支持多实例部署
 
 ### 2. **文件压缩**
-
 - 上传前压缩文件
 - 减少传输时间
 
 ### 3. **CDN加速**
-
 - 使用CDN加速文件下载
 - 提升用户体验
 
 ### 4. **异步处理**
-
 - 文件合并异步处理
 - 提高接口响应速度
 
