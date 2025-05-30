@@ -31,7 +31,12 @@ public class WebConfig implements WebMvcConfigurer {
         //登录拦截器
         registry.addInterceptor(loginInterceptors)
                 .order(1)
-                .excludePathPatterns("/api/admin/account/**","/api/user/account/**","/api/sms/**","/api/adminWeb/account/**")//放行路径
+                //放行路径
+                .excludePathPatterns("/api/admin/account/**",
+                        "/api/user/account/**",
+                        "/api/sms/**",
+                        "/api/version/**",
+                        "/api/adminWeb/account/**")
                 .excludePathPatterns("/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico") // 放行静态资源
                 .excludePathPatterns("/error") // 放行错误页面
                 .excludePathPatterns("/ws/**", "/socket/**") // 放行WebSocket路径
@@ -57,7 +62,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true)// 是否允许发送cookie
                 .maxAge(3600);// 预检间隔时间
     }
-    
+
     /**
      * 配置CORS过滤器，确保在拦截器之前处理跨域
      */
@@ -70,11 +75,11 @@ public class WebConfig implements WebMvcConfigurer {
         config.addExposedHeader("*");
         config.addAllowedMethod("*");
         config.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         source.registerCorsConfiguration("/ws/**", config); // 特别为WebSocket注册CORS配置
-        
+
         return new CorsFilter(source);
     }
 }

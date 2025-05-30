@@ -37,15 +37,14 @@ public class FileServiceImpl implements FileService {
                         .bucket(properties.getUserAvatar())
                         .build());
                 //设置桶权限
-                minioClient.setBucketPolicy(SetBucketPolicyArgs
-                        .builder()
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
                         .bucket(properties.getUserAvatar())
                         .config(createBucketPolicyConfig(properties.getUserAvatar()))
                         .build());
             }
             //上传文件
             String datePath = DatePathUtils.generateYearMonthDayPath();
-            String fileName = String.join("/",datePath + UUID.randomUUID() + "-" + avatar.getOriginalFilename());
+            String fileName = String.join("/", datePath + UUID.randomUUID() + "-" + avatar.getOriginalFilename());
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(properties.getUserAvatar())
                     .stream(avatar.getInputStream(), avatar.getSize(), -1)
@@ -62,7 +61,37 @@ public class FileServiceImpl implements FileService {
     /**
      * 软件包上传
      */
+    @Override
+    public String uploadApp(MultipartFile appFile) {
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(properties.getDownloadApp()).build())) {
+                //创建存储桶
+                minioClient.makeBucket(MakeBucketArgs.builder()
+                        .bucket(properties.getDownloadApp())
+                        .build());
+                //设置权限
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                        .bucket(properties.getDownloadApp())
+                        .config(createBucketPolicyConfig(properties.getDownloadApp()))
+                        .build());
+            }
+            //上传文件
+            String datePath = DatePathUtils.generateYearMonthDayPath();
+            String fileName = String.join("/", datePath + appFile.getOriginalFilename());
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(properties.getDownloadApp())
+                    .stream(appFile.getInputStream(), appFile.getSize(), -1)
+                    .contentType(appFile.getContentType())
+                    .object(fileName)
+                    .build());
 
+            log.info("上传成功: bucketName={}, fileName={}", properties.getDownloadApp(), fileName);
+            return String.join("/", properties.getEndpoint(), properties.getDownloadApp(), fileName);
+        } catch (Exception e) {
+            log.error("上传失败: bucketName={}, error={}", properties.getDownloadApp(), e.getMessage(), e);
+        }
+        return null;
+    }
 
     /**
      * 存储桶配置
