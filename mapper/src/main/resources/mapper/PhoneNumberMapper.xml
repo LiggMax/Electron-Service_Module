@@ -143,4 +143,16 @@
         order by p.phone_id desc
     </select>
 
+    <!-- 获取指定地区和项目的可用号码列表 -->
+    <select id="getAvailablePhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
+        SELECT DISTINCT p.phone_id, p.phone_number, p.admin_user_id, p.registration_time, p.money
+        FROM phone p
+                 JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
+        WHERE ppr.region_id = #{regionId}
+          AND ppr.project_id = #{projectId}
+          AND ppr.is_available = 0
+        ORDER BY RAND()
+        LIMIT 100
+    </select>
+
 </mapper>

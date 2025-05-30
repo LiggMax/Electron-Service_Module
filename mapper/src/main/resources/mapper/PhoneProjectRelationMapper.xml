@@ -2,11 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ligg.mapper.PhoneProjectRelationMapper">
 
-    <!-- 更新可用状态 -->
+    <!-- 更新手机号项目关联状态为不可用 -->
     <update id="updateAvailableStatus">
-      update phone_project_relation
-      set is_available = 1
-      where phone_id = #{phoneId}
-      and project_id = #{projectId}
+        UPDATE phone_project_relation
+        SET is_available = 1
+        WHERE phone_id = #{phoneId}
+          AND project_id = #{projectId}
     </update>
+
+    <!-- 检查号码对指定项目是否可用 -->
+    <select id="checkPhoneProjectAvailable" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM phone_project_relation
+        WHERE phone_id = #{phoneId}
+          AND project_id = #{projectId}
+          AND is_available = 0
+    </select>
+
+    <!-- 有条件的更新号码项目关联状态（只有当前状态为可用时才更新） -->
+    <update id="updateAvailableStatusWithCondition">
+        UPDATE phone_project_relation
+        SET is_available = 1
+        WHERE phone_id = #{phoneId}
+          AND project_id = #{projectId}
+          AND is_available = 0
+    </update>
+
+    <!-- 回滚号码项目关联状态为可用 -->
+    <update id="rollbackAvailableStatus">
+        UPDATE phone_project_relation
+        SET is_available = 0
+        WHERE phone_id = #{phoneId}
+          AND project_id = #{projectId}
+    </update>
+
 </mapper>

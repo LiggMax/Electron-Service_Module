@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.vo.PhoneVo;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
@@ -71,5 +71,10 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
      * 获取所有手机号列表
      */
     List<PhoneVo> getPhoneList();
+
+    /**
+     * 获取指定地区和项目的可用号码列表
+     */
+    List<PhoneEntity> getAvailablePhonesByProject(@Param("regionId") Integer regionId, @Param("projectId") Integer projectId);
 }
 
