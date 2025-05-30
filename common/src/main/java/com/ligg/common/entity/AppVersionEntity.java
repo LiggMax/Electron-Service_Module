@@ -36,7 +36,6 @@ public class AppVersionEntity {
     /**
      * 文件大小（字节）
      */
-    @TableField(exist = false)
     private Long fileSize;
 
     /**
