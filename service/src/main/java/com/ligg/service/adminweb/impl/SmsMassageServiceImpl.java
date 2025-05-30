@@ -1,6 +1,5 @@
 package com.ligg.service.adminweb.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
