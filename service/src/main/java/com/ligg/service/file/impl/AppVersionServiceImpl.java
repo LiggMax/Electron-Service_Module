@@ -3,28 +3,18 @@ package com.ligg.service.file.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.dto.ChunkUploadDto;
 import com.ligg.common.entity.AppVersionEntity;
-import com.ligg.common.vo.ChunkUploadVo;
+import com.ligg.common.entity.version.AppVersion;
 import com.ligg.mapper.AppVersionMapper;
 import com.ligg.service.file.AppVersionService;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * 版本管理服务实现类
@@ -36,79 +26,106 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
     @Autowired
     private AppVersionMapper appVersionMapper;
 
-
-    @Value("${file.upload.temp-path:./temp}")
-    private String tempPath;
-
-    // 存储分片上传进度信息
-    private final ConcurrentHashMap<String, ChunkUploadProgress> uploadProgressMap = new ConcurrentHashMap<>();
-
     /**
-     * 分片上传进度信息
+     * 检查版本更新
      */
-    @Getter
-    @Setter
-    private static class ChunkUploadProgress {
-        private final Set<Integer> uploadedChunks = ConcurrentHashMap.newKeySet();
-        private Integer totalChunks;
-        private String filename;
-        private String version;
-        private String releaseNotes;
-        private Long totalSize;
-        private String finalDownloadUrl;
-        private final LocalDateTime createTime = LocalDateTime.now();
+    @Override
+    public List<AppVersion> getAppVersionList(String currentVersion) {
+        try {
+            // 查询所有版本，按更新时间倒序
+            LambdaQueryWrapper<AppVersionEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.orderByDesc(AppVersionEntity::getUploadTime);
+
+            List<AppVersionEntity> allVersions = appVersionMapper.selectList(queryWrapper);
+
+            // 如果当前版本为空，返回最新版本
+            if (currentVersion == null || currentVersion.trim().isEmpty()) {
+                if (!allVersions.isEmpty()) {
+                    AppVersion latestVersion = convertToAppVersion(allVersions.get(0));
+                    return Collections.singletonList(latestVersion);
+                }
+                return Collections.emptyList();
+            }
+
+            // 过滤出比当前版本更新的版本
+            List<AppVersionEntity> newerVersions = allVersions.stream()
+                    .filter(version -> compareVersion(version.getVersion(), currentVersion) > 0)
+                    .toList();
+
+            // 转换为AppVersion对象
+            return newerVersions.stream()
+                    .map(this::convertToAppVersion)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     /**
-     * 自定义的MultipartFile实现类
+     * 版本号比较
+     * 返回值：1表示version1 > version2，0表示相等，-1表示version1 < version2
      */
-    private record CustomMultipartFile(String name, String originalFilename, String contentType,
-                                       byte[] content) implements MultipartFile {
-
-        @NotNull
-        @Override
-        public String getName() {
-            return name;
+    private int compareVersion(String version1, String version2) {
+        if (version1 == null || version2 == null) {
+            return 0;
         }
 
-        @Override
-        public String getOriginalFilename() {
-            return originalFilename;
-        }
+        try {
+            // 去除可能的'v'前缀
+            version1 = version1.toLowerCase().replaceFirst("^v", "");
+            version2 = version2.toLowerCase().replaceFirst("^v", "");
 
-        @Override
-        public String getContentType() {
-            return contentType;
-        }
+            String[] v1Parts = version1.split("\\.");
+            String[] v2Parts = version2.split("\\.");
 
-        @Override
-        public boolean isEmpty() {
-            return content.length == 0;
-        }
+            int maxLength = Math.max(v1Parts.length, v2Parts.length);
 
-        @Override
-        public long getSize() {
-            return content.length;
-        }
+            for (int i = 0; i < maxLength; i++) {
+                int v1Part = i < v1Parts.length ? Integer.parseInt(v1Parts[i]) : 0;
+                int v2Part = i < v2Parts.length ? Integer.parseInt(v2Parts[i]) : 0;
 
-        @NotNull
-        @Override
-        public byte[] getBytes() {
-            return content;
-        }
-
-        @NotNull
-        @Override
-        public InputStream getInputStream() {
-            return new ByteArrayInputStream(content);
-        }
-
-        @Override
-        public void transferTo(@NotNull File dest) throws IOException {
-            try (FileOutputStream fos = new FileOutputStream(dest)) {
-                fos.write(content);
+                if (v1Part > v2Part) {
+                    return 1;
+                } else if (v1Part < v2Part) {
+                    return -1;
+                }
             }
+            return 0;
+        } catch (NumberFormatException e) {
+            return 0;
         }
+    }
+
+    /**
+     * 实体类转换为VO
+     */
+    private AppVersion convertToAppVersion(AppVersionEntity entity) {
+        AppVersion appVersion = new AppVersion();
+        BeanUtils.copyProperties(entity, appVersion);
+        appVersion.setId(String.valueOf(entity.getId()));
+        return appVersion;
+    }
+
+    /**
+     * 获取版本列表
+     */
+    @Override
+    public Map<String, Object> getVersionList(Integer page, Integer size) {
+        Page<AppVersionEntity> pageInfo = new Page<>(page, size);
+        LambdaQueryWrapper<AppVersionEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(AppVersionEntity::getUploadTime);
+
+        Page<AppVersionEntity> result = appVersionMapper.selectPage(pageInfo, queryWrapper);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", result.getRecords());
+        data.put("total", result.getTotal());
+        data.put("page", page);
+        data.put("size", size);
+        data.put("pages", result.getPages());
+
+        return data;
     }
 
     /**
@@ -121,235 +138,7 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
         appVersion.setDownloadUrl(downloadUrl);
         appVersion.setReleaseNotes(releaseNotes);
         appVersion.setFileSize(fileSize);
-        appVersion.setUpdateTime(updateTime);
+        appVersion.setUploadTime(updateTime);
         appVersionMapper.insert(appVersion);
-    }
-
-    /**
-     * 处理分片上传
-     */
-    @Override
-    public ChunkUploadVo handleChunkUpload(ChunkUploadDto uploadDto) throws Exception {
-        String identifier = uploadDto.getIdentifier();
-        Integer chunkNumber = uploadDto.getChunkNumber();
-        Integer totalChunks = uploadDto.getTotalChunks();
-
-        // 获取或创建进度信息
-        ChunkUploadProgress progress = uploadProgressMap.computeIfAbsent(identifier, k -> {
-            ChunkUploadProgress p = new ChunkUploadProgress();
-            p.setTotalChunks(totalChunks);
-            p.setFilename(uploadDto.getFilename());
-            p.setVersion(uploadDto.getVersion());
-            p.setReleaseNotes(uploadDto.getReleaseNotes());
-            p.setTotalSize(uploadDto.getTotalSize());
-            return p;
-        });
-
-        // 保存分片文件
-        String chunkFileName = saveChunkFile(uploadDto);
-        progress.getUploadedChunks().add(chunkNumber);
-        log.info("分片保存成功: {}/{}, 文件: {}", chunkNumber + 1, totalChunks, chunkFileName);
-
-        // 检查是否所有分片都已上传完成
-        if (progress.getUploadedChunks().size() == totalChunks) {
-            // 合并文件并返回MultipartFile
-            MultipartFile mergedFile = mergeChunksToMultipartFile(identifier, progress);
-            // 返回需要上传的文件信息，让Controller层处理实际上传
-            ChunkUploadVo result = ChunkUploadVo.completed(identifier, null);
-            // 将合并后的文件信息传递给Controller
-            result.setMergedFile(mergedFile);
-            result.setVersion(progress.getVersion());
-            result.setReleaseNotes(progress.getReleaseNotes());
-            result.setTotalSize(progress.getTotalSize());
-
-            return result;
-        }
-
-        return ChunkUploadVo.success(chunkNumber, progress.getUploadedChunks().size(),
-                totalChunks, identifier);
-    }
-
-    /**
-     * 合并分片文件并返回MultipartFile
-     */
-    private MultipartFile mergeChunksToMultipartFile(String identifier, ChunkUploadProgress progress) throws Exception {
-        Path tempDir = Paths.get(tempPath, identifier);
-        String originalFilename = progress.getFilename();
-
-        // 创建合并后的临时文件
-        Path mergedFile = tempDir.resolve(originalFilename);
-
-        try (FileOutputStream mergedStream = new FileOutputStream(mergedFile.toFile())) {
-            // 按顺序合并分片
-            for (int i = 0; i < progress.getTotalChunks(); i++) {
-                Path chunkFile = tempDir.resolve("chunk_" + i);
-                if (Files.exists(chunkFile)) {
-                    try (FileInputStream chunkStream = new FileInputStream(chunkFile.toFile())) {
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = chunkStream.read(buffer)) != -1) {
-                            mergedStream.write(buffer, 0, bytesRead);
-                        }
-                    }
-                    // 删除已合并的分片
-                    Files.deleteIfExists(chunkFile);
-                } else {
-                    throw new Exception("分片文件不存在: chunk_" + i);
-                }
-            }
-            mergedStream.flush();
-        }
-
-        // 验证文件完整性
-        if (validateMergedFile(mergedFile, progress.getTotalSize())) {
-            // 将合并后的文件转换为MultipartFile
-            return createMultipartFileFromPath(mergedFile, originalFilename);
-        } else {
-            throw new Exception("文件合并后大小不匹配");
-        }
-    }
-
-    /**
-     * 从文件路径创建MultipartFile
-     */
-    private MultipartFile createMultipartFileFromPath(Path filePath, String originalFilename) throws Exception {
-        byte[] content = Files.readAllBytes(filePath);
-        return new CustomMultipartFile(
-                "file",
-                originalFilename,
-                "application/octet-stream",
-                content
-        );
-    }
-
-    /**
-     * 完成分片上传后的清理工作
-     * 此方法应在Controller层调用uploadApp成功后调用
-     */
-    @Override
-    public void completeChunkUpload(String identifier) {
-        ChunkUploadProgress progress = uploadProgressMap.get(identifier);
-        if (progress != null) {
-
-            // 清理临时文件和进度信息
-            cleanupTempFiles(identifier);
-            uploadProgressMap.remove(identifier);
-
-            log.info("分片上传完成，清理资源: identifier={}", identifier);
-        }
-    }
-
-    /**
-     * 保存分片文件
-     */
-    private String saveChunkFile(ChunkUploadDto uploadDto) throws Exception {
-        String identifier = uploadDto.getIdentifier();
-        Integer chunkNumber = uploadDto.getChunkNumber();
-
-        // 创建临时目录
-        Path tempDir = Paths.get(tempPath, identifier);
-        Files.createDirectories(tempDir);
-
-        // 分片文件名
-        String chunkFileName = "chunk_" + chunkNumber;
-        Path chunkFilePath = tempDir.resolve(chunkFileName);
-
-        // 保存分片
-        try (InputStream inputStream = uploadDto.getChunk().getInputStream();
-             FileOutputStream outputStream = new FileOutputStream(chunkFilePath.toFile())) {
-
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            outputStream.flush();
-        }
-
-        return chunkFileName;
-    }
-
-    /**
-     * 验证合并后的文件
-     */
-    private boolean validateMergedFile(Path mergedFile, Long expectedSize) throws Exception {
-        long actualSize = Files.size(mergedFile);
-        return actualSize == expectedSize;
-    }
-
-    /**
-     * 清理临时文件
-     */
-    private void cleanupTempFiles(String identifier) {
-        Path tempDir = Paths.get(tempPath, identifier);
-        if (Files.exists(tempDir)) {
-            // 使用 try-with-resources 确保流正确关闭
-            try (Stream<Path> stream = Files.walk(tempDir)) {
-                stream.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(file -> {
-                            boolean deleted = file.delete();
-                            if (!deleted) {
-                                log.warn("无法删除临时文件: {}", file.getAbsolutePath());
-                            }
-                        });
-            } catch (Exception e) {
-                log.warn("清理临时文件失败: identifier={}, error={}", identifier, e.getMessage(), e);
-            }
-        }
-    }
-
-    /**
-     * 获取上传进度
-     */
-    @Override
-    public ChunkUploadVo getUploadProgress(String identifier) {
-        ChunkUploadProgress progress = uploadProgressMap.get(identifier);
-        if (progress == null) {
-            return ChunkUploadVo.error("未找到上传进度信息");
-        }
-
-        int uploadedCount = progress.getUploadedChunks().size();
-        int totalCount = progress.getTotalChunks();
-        boolean completed = uploadedCount == totalCount && progress.getFinalDownloadUrl() != null;
-
-        if (completed) {
-            return ChunkUploadVo.completed(identifier, progress.getFinalDownloadUrl());
-        } else {
-            return ChunkUploadVo.success(null, uploadedCount, totalCount, identifier);
-        }
-    }
-
-    /**
-     * 取消上传
-     */
-    @Override
-    public void cancelUpload(String identifier) {
-        // 清理临时文件
-        cleanupTempFiles(identifier);
-        // 移除进度信息
-        uploadProgressMap.remove(identifier);
-        log.info("取消上传并清理资源: identifier={}", identifier);
-    }
-
-    /**
-     * 获取版本列表
-     */
-    @Override
-    public Map<String, Object> getVersionList(Integer page, Integer size) {
-        Page<AppVersionEntity> pageInfo = new Page<>(page, size);
-        LambdaQueryWrapper<AppVersionEntity> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByDesc(AppVersionEntity::getUpdateTime);
-
-        Page<AppVersionEntity> result = appVersionMapper.selectPage(pageInfo, queryWrapper);
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("list", result.getRecords());
-        data.put("total", result.getTotal());
-        data.put("page", page);
-        data.put("size", size);
-        data.put("pages", result.getPages());
-
-        return data;
     }
 }

@@ -53,7 +53,7 @@ public class AppVersionEntity {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private LocalDateTime uploadTime;
 
     /**
      * 创建时间
