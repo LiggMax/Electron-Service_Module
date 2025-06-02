@@ -1,14 +1,14 @@
-package com.ligg.service.merchant.impl;
+package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.OrderEntity;
-import com.ligg.common.utils.BCryptUtil;
+import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.MerchantMapper;
 import com.ligg.mapper.user.UserOrderMapper;
-import com.ligg.service.merchant.MerchantUserService;
+import com.ligg.service.MerchantUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,29 +20,25 @@ import java.util.List;
 public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, MerchantEntity> implements MerchantUserService {
 
     @Autowired
-    private MerchantMapper adminUserMapper;
+    private MerchantMapper merchantMapper;
     @Autowired
     private UserOrderMapper userOrderMapper;
 
     /**
-     * 重置密码
+     * 账号获取卡商数据
      */
     @Override
-    public void resetPassword(Long userId, String password) {
-        LambdaUpdateWrapper<MerchantEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(MerchantEntity::getUserId, userId)
-                .set(MerchantEntity::getPassword, BCryptUtil.encrypt(password));
-        adminUserMapper.update(null, updateWrapper);
+    public MerchantEntity getUserByAccount(String account) {
+        return merchantMapper.selectOne(new LambdaQueryWrapper<MerchantEntity>()
+                .eq(MerchantEntity::getAccount, account));
     }
 
     /**
-     * 添加卡商
+     * 根据id获取卡商数据
      */
     @Override
-    public void saveCardUser(MerchantEntity merchantEntity) {
-        merchantEntity.setCreatedAt(LocalDateTime.now());
-        merchantEntity.setPassword(BCryptUtil.encrypt(merchantEntity.getPassword()));
-        adminUserMapper.insert(merchantEntity);
+    public MerchantEntity getUserById(Long userId) {
+        return merchantMapper.selectById(userId);
     }
 
     /**
@@ -53,7 +49,7 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
         LambdaUpdateWrapper<MerchantEntity> updateWrapper = new LambdaUpdateWrapper<MerchantEntity>()
                 .eq(MerchantEntity::getUserId, userId)
                 .set(MerchantEntity::getLoginTime, LocalDateTime.now());
-        adminUserMapper.update(null, updateWrapper);
+        merchantMapper.update(null, updateWrapper);
     }
 
     /**
@@ -65,7 +61,7 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
                 .eq(OrderEntity::getMerchantId, AdminId));
 
         ArrayList<OrderVo> orderVoList = new ArrayList<>();
-        for (OrderEntity orderEntity : orderEntities){
+        for (OrderEntity orderEntity : orderEntities) {
             OrderVo orderVo = new OrderVo();
             orderVo.setId(orderEntity.getOrdersId());
             orderVo.setAdminId(orderEntity.getMerchantId());

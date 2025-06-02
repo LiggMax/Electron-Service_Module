@@ -1,11 +1,11 @@
-package com.ligg.service.adminweb.impl;
+package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.PhoneProjectRelationEntity;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.PhoneProjectRelationMapper;
-import com.ligg.service.adminweb.PhoneProjectRelationService;
+import com.ligg.service.PhoneProjectRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;

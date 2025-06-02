@@ -3,8 +3,9 @@ package com.ligg.controller;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
-import com.ligg.service.adminweb.AdminWebUserService;
-import com.ligg.service.customer.CustomerService;
+import com.ligg.service.AdminWebUserService;
+import com.ligg.service.CustomerService;
+import com.ligg.service.common.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,12 @@ public class AdminWebAccountController {
 
     @Autowired
     private CustomerService userService;
+
     @Autowired
     private AdminWebUserService adminWebUserService;
+
+    @Autowired
+    private TokenService tokenService;
 
 
     /**
@@ -33,7 +38,7 @@ public class AdminWebAccountController {
        if (adminWebInfo != null){
            boolean verify = BCryptUtil.verify(adminWebUserEntity.getPassword(), adminWebInfo.getPassword());
            if (verify){
-               String token = userService.createToken(adminWebInfo.getAdminId(), adminWebInfo.getAccount());
+               String token = tokenService.createToken(adminWebInfo.getAdminId(), adminWebInfo.getAccount());
                 //更新最后登录时间和ip
                adminWebUserService.updateLoginTimeAndIp(adminWebInfo.getAdminId(),request);
                return Result.success(200,token);

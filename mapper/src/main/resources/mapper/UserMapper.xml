@@ -60,27 +60,6 @@
         where user_id = #{userId}
     </update>
 
-    <!-- 根据账号密码查询用户信息-->
-    <select id="findByAdminUser" resultType="com.ligg.common.entity.admin.MerchantEntity">
-        select user_id, account, password, email, nick_name
-        from merchant
-        where account = #{account}
-    </select>
-
-    <!-- 根据用户id查询用户信息-->
-    <select id="findByAdminUserInfo" resultType="com.ligg.common.entity.admin.MerchantEntity">
-        select user_id,
-               account,
-               nick_name,
-               password,
-               email,
-               created_at,
-               updated_at,
-               user_avatar,
-               money
-        from merchant
-        where user_id = #{userId}
-    </select>
     <!-- 根据账号查询用户信息-->
     <select id="findByUser" resultType="com.ligg.common.entity.user.UserEntity">
         select user_id,

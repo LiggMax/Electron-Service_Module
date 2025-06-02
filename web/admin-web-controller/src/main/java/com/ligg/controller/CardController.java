@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.merchant.MerchantUserService;
+import com.ligg.service.AdminMerchantUserService;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CardController {
 
     @Autowired
-    private MerchantUserService merchantUserService;
+    private AdminMerchantUserService merchantUserService;
 
     /**
      * 获取卡商列表

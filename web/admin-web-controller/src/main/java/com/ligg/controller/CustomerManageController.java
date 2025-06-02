@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.adminweb.UserService;
+import com.ligg.service.CustomerManageService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,19 +19,17 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/customer")
-public class CustomerController {
+public class CustomerManageController {
 
     @Autowired
-    private UserService userManagementService;
-    @Autowired
-    private UserService customerService;
+    private CustomerManageService userService;
 
     /**
      * 客户列表
      */
     @GetMapping("/user")
     public Result<List<UserEntity>> getUserList() {
-        List<UserEntity> userEntities = userManagementService.getBaseMapper().selectList(null);
+        List<UserEntity> userEntities = userService.getBaseMapper().selectList(null);
         return Result.success(200, userEntities);
     }
 
@@ -40,7 +38,7 @@ public class CustomerController {
      */
     @PutMapping("/status")
     public Result<String> updateUserStatus(@RequestParam Long userId, @RequestParam Boolean status) {
-        userManagementService.updateUserStatus(userId, status);
+        userService.updateUserStatus(userId, status);
         return Result.success(200, "更新成功");
     }
 
@@ -49,7 +47,7 @@ public class CustomerController {
      */
     @PutMapping("/edit")
     public Result<String> updateUserInfo(@Validated @RequestBody UserEntity userEntity) {
-        userManagementService.updateById(userEntity);
+        userService.updateById(userEntity);
         return Result.success(200, "更新成功");
     }
 
@@ -62,7 +60,7 @@ public class CustomerController {
                                         @Min(value = 6, message = "密码长度不能小于6位")
                                         @Max(value = 16, message = "密码长度不能超过16位")
                                         String password) {
-        userManagementService.updatePassword(userId, password);
+        userService.updatePassword(userId, password);
         return Result.success(200, "重置成功");
     }
 
@@ -80,7 +78,7 @@ public class CustomerController {
         userEntity.setNickName(nickName);
         userEntity.setEmail(email);
         userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
-        customerService.saveUser(userEntity);
+        userService.saveUser(userEntity);
         return Result.success(200, "添加成功");
     }
 
@@ -89,7 +87,7 @@ public class CustomerController {
      */
     @DeleteMapping("/deleteUser")
     public Result<String> deleteUser(@RequestParam Long userId){
-        customerService.removeById(userId);
+        userService.removeById(userId);
         return Result.success(200,"删除成功");
     }
 }

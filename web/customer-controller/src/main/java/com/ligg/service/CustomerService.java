@@ -1,8 +1,6 @@
-package com.ligg.service.customer;
-
+package com.ligg.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;
@@ -12,18 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface CustomerService extends IService<UserEntity> {
-
-    //根据账号和密码查询用户
-    MerchantEntity findByAdminUser(String account);
-
-    //生成token
-    String createToken(Long userId, String account);
-
-    //清理token
-    void clearToken(Long userId);
-
-    //根据用户id查询管理员用户信息
-    MerchantEntity findByAdminUserInfo(Long userId);
 
      //根据账号查询用户
     UserEntity findByUser(String account);

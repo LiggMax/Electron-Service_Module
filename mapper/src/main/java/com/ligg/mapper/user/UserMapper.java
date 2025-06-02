@@ -15,12 +15,6 @@ import java.util.Map;
 @Mapper
 public interface UserMapper extends BaseMapper<UserEntity> {
 
-    //根据账号密码查询用户信息
-    MerchantEntity findByAdminUser(String account);
-
-    //根据id查询用户信息
-    MerchantEntity findByAdminUserInfo(Long userId);
-
     //根据账号查询用户信息
     UserEntity findByUser(String account);
 

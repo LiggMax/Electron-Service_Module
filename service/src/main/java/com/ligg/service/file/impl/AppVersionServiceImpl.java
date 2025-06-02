@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * 版本管理服务实现类
@@ -280,16 +281,21 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
      * 清理临时文件
      */
     private void cleanupTempFiles(String identifier) {
-        try {
-            Path tempDir = Paths.get(tempPath, identifier);
-            if (Files.exists(tempDir)) {
-                Files.walk(tempDir)
-                        .sorted(Comparator.reverseOrder())
+        Path tempDir = Paths.get(tempPath, identifier);
+        if (Files.exists(tempDir)) {
+            // 使用 try-with-resources 确保流正确关闭
+            try (Stream<Path> stream = Files.walk(tempDir)) {
+                stream.sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
-                        .forEach(File::delete);
+                        .forEach(file -> {
+                            boolean deleted = file.delete();
+                            if (!deleted) {
+                                log.warn("无法删除临时文件: {}", file.getAbsolutePath());
+                            }
+                        });
+            } catch (Exception e) {
+                log.warn("清理临时文件失败: identifier={}, error={}", identifier, e.getMessage(), e);
             }
-        } catch (Exception e) {
-            log.warn("清理临时文件失败: identifier=" + identifier + ", error=" + e.getMessage());
         }
     }
 
@@ -323,7 +329,7 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
         cleanupTempFiles(identifier);
         // 移除进度信息
         uploadProgressMap.remove(identifier);
-        log.info("取消上传并清理资源: identifier=" + identifier);
+        log.info("取消上传并清理资源: identifier={}", identifier);
     }
 
     /**

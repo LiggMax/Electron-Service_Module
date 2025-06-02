@@ -5,7 +5,7 @@ import com.ligg.common.dto.SmsDto;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.CodeVo;
-import com.ligg.service.adminweb.SmsMassageService;
+import com.ligg.service.common.SmsMassageService;
 import com.ligg.service.common.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +37,6 @@ public class SmsController {
 
     @Autowired
     private SmsService smsService;
-
-    @Autowired
-    private SmsMassageService smsMassageService;
 
     /**
      * 获取用户号码列表

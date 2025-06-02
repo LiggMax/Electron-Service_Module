@@ -1,9 +1,7 @@
-package com.ligg.service.adminweb.impl;
+package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ligg.common.entity.admin.MerchantEntity;
-import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.utils.JWTUtil;
@@ -12,7 +10,7 @@ import com.ligg.mapper.MerchantMapper;
 import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
-import com.ligg.service.adminweb.OrderService;
+import com.ligg.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

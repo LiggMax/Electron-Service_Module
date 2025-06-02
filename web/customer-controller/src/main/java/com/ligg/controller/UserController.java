@@ -5,8 +5,9 @@ import com.ligg.common.entity.user.UserFavoriteEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;
+import com.ligg.service.CustomerService;
+import com.ligg.service.common.TokenService;
 import com.ligg.service.file.FileService;
-import com.ligg.service.customer.CustomerService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class UserController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @GetMapping("/info")
     public Result<UserEntity> getUserInfo() {
@@ -139,7 +143,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         userService.logoutAccount(userId);
-        userService.clearToken(userId);
+        tokenService.clearToken(userId);
         return Result.success();
     }
 

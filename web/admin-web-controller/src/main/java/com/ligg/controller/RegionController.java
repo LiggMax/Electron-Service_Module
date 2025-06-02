@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.RegionEntity;
 import com.ligg.common.utils.Result;
-import com.ligg.service.adminweb.RegionService;
+import com.ligg.service.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

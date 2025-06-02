@@ -1,8 +1,9 @@
-package com.ligg.service.customer.impl;
+package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ligg.common.entity.*;
+import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
@@ -14,7 +15,7 @@ import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.mapper.PhoneProjectRelationMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserMapper;
-import com.ligg.service.customer.CustomerService;
+import com.ligg.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -35,12 +36,6 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
     private final ConcurrentHashMap<String, ReentrantLock> phoneLocks = new ConcurrentHashMap<>();
 
     @Autowired
-    private JWTUtil jwtUtil;
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -51,46 +46,6 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
     @Autowired
     private PhoneProjectRelationMapper phoneProjectRelationMapper;
-
-    /**
-     * 根据账号查询管理员用户信息
-     */
-    @Override
-    public MerchantEntity findByAdminUser(String account) {
-        return userMapper.findByAdminUser(account);
-    }
-
-    /**
-     * 生成token
-     */
-    @Override
-    public String createToken(Long userId, String account) {
-
-        HashMap<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
-        claims.put("account", account);
-        String token = jwtUtil.createToken(claims);
-        redisTemplate.opsForValue()
-                .set("Token:" + userId, token,
-                        6, TimeUnit.HOURS);
-        return token;
-    }
-
-    /**
-     * 清除token
-     */
-    @Override
-    public void clearToken(Long userId) {
-        redisTemplate.delete("Token:" + userId);
-    }
-
-    /**
-     * 根据id获取用户信息
-     */
-    @Override
-    public MerchantEntity findByAdminUserInfo(Long userId) {
-        return userMapper.findByAdminUserInfo(userId);
-    }
 
     /**
      * 根据账号和密码查询用户信息

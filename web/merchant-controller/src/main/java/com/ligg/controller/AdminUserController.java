@@ -4,8 +4,8 @@ import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
-import com.ligg.service.merchant.MerchantUserService;
-import com.ligg.service.customer.CustomerService;
+import com.ligg.service.MerchantUserService;
+import com.ligg.service.common.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +21,16 @@ public class AdminUserController {
 
     @Autowired
     private HttpServletRequest request;
+
     @Autowired
     private JWTUtil jwtUtil;
-    @Autowired
-    private CustomerService userService;
+
+
     @Autowired
     private MerchantUserService merchantUserService;
 
+    @Autowired
+    private TokenService tokenService;
     /**
      * 退出
      */
@@ -36,7 +39,7 @@ public class AdminUserController {
         String token = request.getHeader("Token");
         Map<String, Object> map = jwtUtil.parseToken(token);
         Long userId = (Long) map.get("userId");
-        userService.clearToken(userId);
+        tokenService.clearToken(userId);
         return Result.success(200, "退出成功");
     }
 
@@ -50,7 +53,8 @@ public class AdminUserController {
             return Result.error(401, "请重新登录");
         }
         Long userId = (Long) map.get("userId");
-        MerchantEntity AdminUserInfo = userService.findByAdminUserInfo(userId);
+        //根据id获取用户信息
+        MerchantEntity AdminUserInfo = merchantUserService.getUserById(userId);
         return Result.success(200, AdminUserInfo);
     }
 

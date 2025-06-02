@@ -1,4 +1,4 @@
-package com.ligg.service.adminweb.impl;
+package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.dto.OrdersDto;
@@ -8,7 +8,7 @@ import com.ligg.common.utils.SmsParserUtil;
 import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserOrderMapper;
-import com.ligg.service.adminweb.SmsMassageService;
+import com.ligg.service.common.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

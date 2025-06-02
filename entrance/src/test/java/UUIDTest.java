@@ -1,17 +1,17 @@
-import com.ligg.entrance.EntranceApplication;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.UUID;
-
-@SpringBootTest(classes = EntranceApplication.class)
-public class UUIDTest {
-
-    @Test
-    public void testUUID() {
-        String substring = UUID.randomUUID()
-                .toString()
-                .substring(0, 30);
-        System.out.println(substring);
-    }
-}
+//import com.ligg.entrance.EntranceApplication;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//import java.util.UUID;
+//
+//@SpringBootTest(classes = EntranceApplication.class)
+//public class UUIDTest {
+//
+//    @Test
+//    public void testUUID() {
+//        String substring = UUID.randomUUID()
+//                .toString()
+//                .substring(0, 30);
+//        System.out.println(substring);
+//    }
+//}

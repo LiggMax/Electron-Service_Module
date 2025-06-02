@@ -3,7 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
-import com.ligg.service.adminweb.OrderService;
+import com.ligg.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

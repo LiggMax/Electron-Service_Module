@@ -1,11 +1,11 @@
-package com.ligg.service.adminweb.impl;
+package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.CustomerMapper;
-import com.ligg.service.adminweb.UserService;
+import com.ligg.service.CustomerManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<CustomerMapper, UserEntity> implements UserService {
+public class CustomerManageServiceImpl extends ServiceImpl<CustomerMapper, UserEntity> implements CustomerManageService {
 
     @Autowired
     private CustomerMapper customerMapper;

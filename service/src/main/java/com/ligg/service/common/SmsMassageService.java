@@ -1,4 +1,4 @@
-package com.ligg.service.adminweb;
+package com.ligg.service.common;
 
 import java.util.List;
 import java.util.Map;

@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
+import com.ligg.service.CustomerService;
 import com.ligg.service.common.InvitationRelationsService;
-import com.ligg.service.customer.CustomerService;
+import com.ligg.service.common.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class UserAccountController {
     @Autowired
     private InvitationRelationsService invitationRelationsService;
 
+    @Autowired
+    private TokenService tokenService;
     /**
      * 登录
      */
@@ -44,7 +47,7 @@ public class UserAccountController {
             return Result.error(400, "该账号已被注销");
         }
 
-        String token = userService.createToken(byAccount.getUserId(), byAccount.getAccount());
+        String token = tokenService.createToken(byAccount.getUserId(), byAccount.getAccount());
         //更新登录时间
         userService.updateLoginTime(byAccount.getUserId());
         return Result.success(200, token);
