@@ -1,7 +1,6 @@
 package com.ligg.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;

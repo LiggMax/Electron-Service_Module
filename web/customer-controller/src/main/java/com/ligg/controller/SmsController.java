@@ -1,11 +1,9 @@
 package com.ligg.controller;
 
-import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.CodeVo;
-import com.ligg.service.common.SmsMassageService;
 import com.ligg.service.common.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +23,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/user/sms")
 public class SmsController {
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private HttpServletRequest request;

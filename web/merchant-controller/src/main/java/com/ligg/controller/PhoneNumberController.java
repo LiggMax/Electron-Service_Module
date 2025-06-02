@@ -115,11 +115,11 @@ public class PhoneNumberController {
         log.info("接收到上传数据: {}", uploadData);
 
         // 用于记录处理结果
-        int totalProcessed = 0; // 总处理数量
-        int totalAdded = 0;     // 成功添加数量
-        int totalExisting = 0;  // 已存在数量
-        int totalRelationAdded = 0; // 新增关联数量
-        int totalInvalid = 0;   // 无效数量
+        int totalProcessed; // 总处理数量
+        int totalAdded;     // 成功添加数量
+        int totalExisting;  // 已存在数量
+        int totalRelationAdded; // 新增关联数量
+        int totalInvalid;   // 无效数量
 
         try {
             // 获取管理员ID

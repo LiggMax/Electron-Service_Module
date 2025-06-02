@@ -22,9 +22,6 @@ public class SmsMassageController {
     @Autowired
     private SmsMassageService smsMassageService;
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
 
     /**
      * 提取短信号码、验证码
