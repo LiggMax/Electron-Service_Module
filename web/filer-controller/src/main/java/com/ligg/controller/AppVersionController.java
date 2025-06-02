@@ -32,11 +32,11 @@ public class AppVersionController {
 
 
     /**
-     * 检查版本更新（无需权限验证）
+     * 检查版本更新（
      */
     @GetMapping("/check")
     @RequireAuth(required = false)
-    public Result<List<AppVersion>> checkVersion(@RequestParam(required = false) String version) {
+    public Result<List<AppVersion>> checkVersion(String version) {
         try {
             List<AppVersion> result = appVersionService.getAppVersionList(version);
             return Result.success(200, result);
