@@ -36,9 +36,9 @@ public class AppVersionController {
      */
     @GetMapping("/check")
     @RequireAuth(required = false)
-    public Result<List<AppVersion>> checkVersion(String version) {
+    public Result<List<AppVersion>> checkVersion(String version, Integer app) {
         try {
-            List<AppVersion> result = appVersionService.getAppVersionList(version);
+            List<AppVersion> result = appVersionService.getAppVersionList(version, app);
             return Result.success(200, result);
         } catch (Exception e) {
             return Result.error(500, "检查版本失败");
@@ -48,11 +48,11 @@ public class AppVersionController {
     /**
      * 版本上传接口
      */
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload")
     public Result<String> uploadVersion(@RequestPart("appFile") MultipartFile appFile,
-                                        @RequestPart("version") String version,
-                                        @RequestPart("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes,
-                                        @RequestPart("app") Integer app) {
+                                        @RequestParam("version") String version,
+                                        @RequestParam("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes,
+                                        Integer app) {
         // 文件大小检查（传统上传限制为500MB）
         if (appFile.getSize() > 200 * 1024 * 1024) {
             return Result.error(400, "文件过大");

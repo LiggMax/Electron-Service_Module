@@ -30,11 +30,11 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
      * 检查版本更新
      */
     @Override
-    public List<AppVersion> getAppVersionList(String currentVersion) {
+    public List<AppVersion> getAppVersionList(String currentVersion, Integer app) {
         try {
             // 查询所有版本，按更新时间倒序
             LambdaQueryWrapper<AppVersionEntity> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.orderByDesc(AppVersionEntity::getUploadTime);
+            queryWrapper.orderByDesc(AppVersionEntity::getUploadTime).eq(AppVersionEntity::getApp, app);
 
             List<AppVersionEntity> allVersions = appVersionMapper.selectList(queryWrapper);
 

@@ -27,5 +27,5 @@ public interface AppVersionService extends IService<AppVersionEntity> {
     /**
      * 检查版本更新
      */
-    List<AppVersion> getAppVersionList(String version);
+    List<AppVersion> getAppVersionList(String version, Integer app);
 }
