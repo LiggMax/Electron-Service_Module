@@ -58,7 +58,8 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
     @Override
     public List<OrderVo> getOrder(Long AdminId) {
         List<OrderEntity> orderEntities = userOrderMapper.selectList(new LambdaUpdateWrapper<OrderEntity>()
-                .eq(OrderEntity::getMerchantId, AdminId));
+                .eq(OrderEntity::getMerchantId, AdminId)
+                .orderByDesc(OrderEntity::getCreatedAt));
 
         ArrayList<OrderVo> orderVoList = new ArrayList<>();
         for (OrderEntity orderEntity : orderEntities) {

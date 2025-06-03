@@ -34,10 +34,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public List<CodeVo> getCodeList(Long userId) {
-        List<CodeVo> codeList = smsMapper.getCodeList(userId);
-        //过滤codeList中的空数据
-        codeList.removeIf(codeVo -> codeVo.getCode() == null);
-        return  codeList;
+        return smsMapper.getCodeList(userId);
     }
 
     @Override

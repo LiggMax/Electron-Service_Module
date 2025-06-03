@@ -23,6 +23,7 @@
         from orders
         where user_id = #{userId}
           and code IS NOT NULL
+          and code != ''
         order by created_at desc
     </select>
 </mapper>
