@@ -57,27 +57,16 @@ public class AppVersionController {
         if (appFile.getSize() > 200 * 1024 * 1024) {
             return Result.error(400, "文件过大");
         }
-
         try {
-            String downloadUrl;
-            switch (app) {
-                case 0:
-                    downloadUrl = fileService.uploadApp(appFile);
-                    break;
-                case 1:
-                    downloadUrl = fileService.uploadAvatar(appFile);
-                    break;
-                default:
-                    return Result.error(400, "不支持的应用类型");
-            }
-
+            String downloadUrl = fileService.uploadApp(appFile, app);
             if (downloadUrl != null) {
                 appVersionService.saveVersion(version, releaseNotes, downloadUrl, appFile.getSize(), app, LocalDateTime.now());
                 return Result.success(200, "上传成功");
             } else {
                 return Result.error(500, "上传失败");
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             log.error("文件上传失败: error={}", e.getMessage(), e);
             return Result.error(500, "上传失败: " + e.getMessage());
         }

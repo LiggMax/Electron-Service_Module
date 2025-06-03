@@ -7,5 +7,5 @@ public interface FileService {
     String uploadAvatar(MultipartFile avatar);
 
     //上传APP
-    String uploadApp(MultipartFile appFile);
+    String uploadApp(MultipartFile appFile, Integer app);
 }

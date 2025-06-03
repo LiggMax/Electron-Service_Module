@@ -62,7 +62,7 @@ public class FileServiceImpl implements FileService {
      * 软件包上传
      */
     @Override
-    public String uploadApp(MultipartFile appFile) {
+    public String uploadApp(MultipartFile appFile, Integer app) {
         try {
             if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(properties.getDownloadApp()).build())) {
                 //创建存储桶
@@ -76,8 +76,17 @@ public class FileServiceImpl implements FileService {
                         .build());
             }
             //上传文件
+            String folder;
+            if (app == 0) {
+                folder = "kehu";
+            } else if (app == 1) {
+                folder = "kashang";
+            } else {
+                log.warn("不支持的应用类型: {}", app);
+                return null;
+            }
             String datePath = DatePathUtils.generateYearMonthDayPath();
-            String fileName = String.join("/", datePath + appFile.getOriginalFilename());
+            String fileName = String.join("/", folder, datePath + appFile.getOriginalFilename());
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(properties.getDownloadApp())
                     .stream(appFile.getInputStream(), appFile.getSize(), -1)
