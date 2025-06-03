@@ -17,7 +17,7 @@ public interface AppVersionService extends IService<AppVersionEntity> {
     /**
      * 保存版本信息
      */
-    void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, LocalDateTime updateTime);
+    void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, Integer app, LocalDateTime updateTime);
 
     /**
      * 获取版本列表

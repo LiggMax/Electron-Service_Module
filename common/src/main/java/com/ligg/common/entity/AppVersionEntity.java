@@ -39,6 +39,11 @@ public class AppVersionEntity {
     private Long fileSize;
 
     /**
+     * 0=客户端 1=卡商端
+     */
+    private Integer app;
+
+    /**
      * 文件MD5
      */
     @TableField(exist = false)
@@ -55,9 +60,4 @@ public class AppVersionEntity {
      */
     private LocalDateTime uploadTime;
 
-    /**
-     * 创建时间
-     */
-    @TableField(exist = false)
-    private LocalDateTime createTime;
 }

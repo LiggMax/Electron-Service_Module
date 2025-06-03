@@ -51,26 +51,32 @@ public class AppVersionController {
     @PostMapping("/upload")
     public Result<String> uploadVersion(@RequestPart("appFile") MultipartFile appFile,
                                         @RequestPart("version") String version,
-                                        @RequestPart("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes) {
+                                        @RequestPart("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes,
+                                        @RequestPart("app") Integer app) {
         // 文件大小检查（传统上传限制为500MB）
         if (appFile.getSize() > 200 * 1024 * 1024) {
             return Result.error(400, "文件过大");
         }
 
-        long startTime = System.currentTimeMillis();
         try {
-            String downloadUrl = fileService.uploadApp(appFile);
-            long endTime = System.currentTimeMillis();
-            long duration = endTime - startTime;
-
-            log.info("文件上传完成: 大小={}, 耗时={}ms", appFile.getSize(), duration);
+            String downloadUrl;
+            switch (app) {
+                case 0:
+                    downloadUrl = fileService.uploadApp(appFile);
+                    break;
+                case 1:
+                    downloadUrl = fileService.uploadAvatar(appFile);
+                    break;
+                default:
+                    return Result.error(400, "不支持的应用类型");
+            }
 
             if (downloadUrl != null) {
-                // 保存版本信息
-                appVersionService.saveVersion(version, releaseNotes, downloadUrl, appFile.getSize(), LocalDateTime.now());
+                appVersionService.saveVersion(version, releaseNotes, downloadUrl, appFile.getSize(), app, LocalDateTime.now());
                 return Result.success(200, "上传成功");
+            } else {
+                return Result.error(500, "上传失败");
             }
-            return Result.error(500, "上传失败");
         } catch (Exception e) {
             log.error("文件上传失败: error={}", e.getMessage(), e);
             return Result.error(500, "上传失败: " + e.getMessage());

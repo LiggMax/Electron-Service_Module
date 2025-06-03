@@ -132,12 +132,13 @@ public class AppVersionServiceImpl extends ServiceImpl<AppVersionMapper, AppVers
      * 保存版本信息
      */
     @Override
-    public void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, LocalDateTime updateTime) {
+    public void saveVersion(String version, String releaseNotes, String downloadUrl, Long fileSize, Integer app, LocalDateTime updateTime) {
         AppVersionEntity appVersion = new AppVersionEntity();
         appVersion.setVersion(version);
         appVersion.setDownloadUrl(downloadUrl);
         appVersion.setReleaseNotes(releaseNotes);
         appVersion.setFileSize(fileSize);
+        appVersion.setApp(app);
         appVersion.setUploadTime(updateTime);
         appVersionMapper.insert(appVersion);
     }
