@@ -21,11 +21,6 @@ public @interface Bill {
     String operation() default "购买操作";
 
     /**
-     * 是否记录详细信息
-     */
-    boolean detailed() default true;
-
-    /**
      * 自定义业务标识
      */
     String businessType() default "PURCHASE";
