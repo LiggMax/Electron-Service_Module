@@ -29,4 +29,16 @@ public @interface Bill {
      * 自定义业务标识
      */
     String businessType() default "PURCHASE";
+
+    /**
+     * 用户类型
+     * 0: 客户, 1: 卡商
+     */
+    int isUserType() default 0;
+
+    /**
+     * 账单类型
+     * 1: 充值, 2: 消费
+     */
+    int billType() default 2;
 }

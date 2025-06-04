@@ -39,14 +39,14 @@ public class BillAspect {
         // 获取注解信息
         Bill billAnnotation = method.getAnnotation(Bill.class);
         String operation = billAnnotation.operation();
+        int isUserType = billAnnotation.isUserType();
+        int billType = billAnnotation.billType();
 
         // 记录购买时间
         LocalDateTime purchaseTime = LocalDateTime.now();
 
         // 提取userId（第一个参数）
         Long userId = args.length > 0 ? (Long) args[0] : null;
-
-        log.info("=== 📋 {} 开始 ===", operation);
 
         try {
             // 执行原方法
@@ -93,8 +93,8 @@ public class BillAspect {
                             BillEntity billEntity = new BillEntity();
                             billEntity.setUserId(userId);
                             billEntity.setAmount(unitPrice);
-                            billEntity.setIsUserType(0);
-                            billEntity.setBillType(1);
+                            billEntity.setIsUserType(isUserType);
+                            billEntity.setBillType(billType);
                             billEntity.setPurchaseTime(purchaseTime);
                             billMapper.insert(billEntity);
                         }

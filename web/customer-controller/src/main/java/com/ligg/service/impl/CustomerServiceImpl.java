@@ -94,7 +94,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
      */
     @Override
     @Transactional
-    @Bill(operation = "购买项目", businessType = "PHONE_PURCHASE", detailed = true)
+    @Bill(operation = "购买项目", businessType = "PHONE_PURCHASE", isUserType = 0, billType = 2)
     public Map<String, Object> buyProject(Long userId, Integer regionId, Integer projectId, Integer quantity) {
         log.info("用户[{}]开始购买项目[{}]，地区[{}]，数量[{}]", userId, projectId, regionId, quantity);
 
