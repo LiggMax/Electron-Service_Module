@@ -1,4 +1,4 @@
-package com.ligg.common.annotation;
+package com.ligg.service.annotation;
 
 import java.lang.annotation.*;
 

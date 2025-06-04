@@ -1,8 +1,8 @@
 package com.ligg.controller;
 
-import com.ligg.common.annotation.RequireAuth;
 import com.ligg.common.entity.version.AppVersion;
 import com.ligg.common.utils.Result;
+import com.ligg.service.annotation.RequireAuth;
 import com.ligg.service.file.AppVersionService;
 import com.ligg.service.file.FileService;
 import jakarta.validation.constraints.Pattern;

@@ -14,6 +14,7 @@ import com.ligg.mapper.PhoneProjectRelationMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserMapper;
 import com.ligg.service.CustomerService;
+import com.ligg.service.annotation.Bill;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
      */
     @Override
     @Transactional
+    @Bill(operation = "购买项目", businessType = "PHONE_PURCHASE", detailed = true)
     public Map<String, Object> buyProject(Long userId, Integer regionId, Integer projectId, Integer quantity) {
         log.info("用户[{}]开始购买项目[{}]，地区[{}]，数量[{}]", userId, projectId, regionId, quantity);
 
@@ -119,7 +121,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
         // 检查用户余额
         if (userInfo.getMoney() < totalPrice) {
-            result.put("error", String.format("余额不足，需要%.2f元，余额%.2f元", totalPrice, userInfo.getMoney()));
+            result.put("error", "余额不足");
             return result;
         }
 
@@ -148,7 +150,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
                 String lockKey = phone.getPhoneId() + "_" + projectId;
                 ReentrantLock phoneLock = phoneLocks.computeIfAbsent(lockKey, k -> new ReentrantLock());
 
-                boolean lockAcquired = false;
+                boolean lockAcquired;
                 try {
                     lockAcquired = phoneLock.tryLock(2, TimeUnit.SECONDS);
                     if (!lockAcquired) {
@@ -194,7 +196,8 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
                     }
 
                     // 添加用户订单
-                    int addResult = userMapper.addPhoneNumber(userId, phone.getPhoneNumber(),
+                    String ordersId = UUID.randomUUID().toString();
+                    int addResult = userMapper.addPhoneNumber(ordersId, userId, phone.getPhoneNumber(),
                             phone.getAdminUserId(), projectId, unitPrice, regionId);
 
                     if (addResult > 0) {

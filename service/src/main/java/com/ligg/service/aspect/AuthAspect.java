@@ -1,7 +1,7 @@
-package com.ligg.common.aspect;
+package com.ligg.service.aspect;
 
-import com.ligg.common.annotation.RequireAuth;
 import com.ligg.common.exception.AuthException;
+import com.ligg.service.annotation.RequireAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,7 +32,7 @@ public class AuthAspect {
     /**
      * 拦截带有@RequireAuth注解的方法
      */
-    @Around("@annotation(com.ligg.common.annotation.RequireAuth) || @within(com.ligg.common.annotation.RequireAuth)")
+    @Around("@annotation(com.ligg.service.annotation.RequireAuth) || @within(com.ligg.service.annotation.RequireAuth)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         // 获取方法签名
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Data
 @TableName("orders")
 public class OrderEntity {
-    @TableId(type = IdType.AUTO)
-    private Integer ordersId;
+    @TableId(type = IdType.NONE)
+    private String ordersId;
     private Long userId;
     private LocalDateTime createdAt;
     private Integer projectId;

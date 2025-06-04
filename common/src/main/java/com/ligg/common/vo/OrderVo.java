@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class OrderVo {
-    private Integer id;
+    private String id;
     private Long userId;//客户id
     private Long AdminId;//卡商id
     private String projectName;//项目名称

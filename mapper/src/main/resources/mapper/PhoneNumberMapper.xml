@@ -48,7 +48,6 @@
         p.phone_id,
         p.phone_number,
         p.registration_time,
-        p.money,
         GROUP_CONCAT(DISTINCT r.region_name SEPARATOR ', ') as regionName,
         GROUP_CONCAT(DISTINCT pj.project_name SEPARATOR ', ') as projectName
         FROM phone p
@@ -66,7 +65,7 @@
             </if>
             and p.admin_user_id = #{adminUserId}
         </where>
-        GROUP BY p.phone_id, p.phone_number, p.registration_time, p.money
+        GROUP BY p.phone_id, p.phone_number, p.registration_time
         ORDER BY p.phone_id DESC
     </select>
 

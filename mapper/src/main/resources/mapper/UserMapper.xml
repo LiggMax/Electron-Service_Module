@@ -10,16 +10,17 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into orders(user_id, phone_number, merchant_id, project_id, project_money, region_id,
+        insert into orders(orders_id, user_id, phone_number, merchant_id, project_id, project_money, region_id,
                            created_at)
-        values (#{userId}, #{phoneNumber}, #{adminUserId}, #{projectId}, #{projectMoney}, #{regionId}, NOW())
+        values (#{ordersId}, #{userId}, #{phoneNumber}, #{adminUserId}, #{projectId}, #{projectMoney}, #{regionId},
+                NOW())
     </insert>
 
     <!--注册账号-->
-<!--    <insert id="registerAccount">-->
-<!--        insert into users(account,password,created_at)-->
-<!--        values (#{account}, #{password}, NOW())-->
-<!--    </insert>-->
+    <!--    <insert id="registerAccount">-->
+    <!--        insert into users(account,password,created_at)-->
+    <!--        values (#{account}, #{password}, NOW())-->
+    <!--    </insert>-->
 
     <!--修改密码-->
     <update id="updateUserPassword">
