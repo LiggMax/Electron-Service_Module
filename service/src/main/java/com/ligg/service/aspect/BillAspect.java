@@ -104,9 +104,7 @@ public class BillAspect {
                     log.warn("❌ {} 失败 - 用户ID: {}, 原因: {}, 时间: {}", operation, userId, errorMessage, purchaseTime);
                 }
             }
-
             return result;
-
         } catch (Exception e) {
             log.error("💥 {} 异常 - 用户ID: {}, 错误: {}, 时间: {}", operation, userId, e.getMessage(), purchaseTime);
             throw e;
