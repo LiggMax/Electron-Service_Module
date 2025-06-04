@@ -134,12 +134,10 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
             UserEntity userInfo = userMapper.selectById(userId);
             ProjectEntity projectEntity = projectMapper.selectById(projectId);
 
-            // 计算费用
-            Float phoneMoney = 0.20f;
+            // 获取费用
             Float projectMoney = projectEntity.getProjectPrice();
-            Float totalMoney = projectMoney + phoneMoney;
 
-            if (userInfo.getMoney() < totalMoney) {
+            if (userInfo.getMoney() < projectMoney) {
                 return "您的余额不足";
             }
 
@@ -155,14 +153,14 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
             // 添加用户订单
             int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),
-                    phoneEntity.getAdminUserId(), projectId, projectMoney, phoneMoney, regionId);
+                    phoneEntity.getAdminUserId(), projectId, projectMoney, regionId);
 
             if (addResult > 0) {
                 // 更新用户余额
-                userMapper.updateUserMoney(userId, totalMoney);
+                userMapper.updateUserMoney(userId, projectMoney);
 
                 log.info("用户[{}]成功购买项目[{}]的手机号[{}]，花费{}元",
-                        userId, projectId, phoneEntity.getPhoneNumber(), totalMoney);
+                        userId, projectId, phoneEntity.getPhoneNumber(), projectMoney);
                 return null;
             } else {
                 // 如果订单创建失败，需要回滚号码状态

@@ -21,5 +21,4 @@ public class PhoneEntity {
     private Long phoneNumber;//手机号
     private LocalDateTime registrationTime;//注册时间
     private Long adminUserId;//管理员用户id
-    private Float money;//号码价格
 }

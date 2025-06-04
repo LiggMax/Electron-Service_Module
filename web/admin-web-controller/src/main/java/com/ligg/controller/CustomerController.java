@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/customer")
-public class CustomerManageController {
+public class CustomerController {
 
     @Autowired
     private CustomerManageService userService;

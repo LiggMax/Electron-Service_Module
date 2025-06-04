@@ -10,9 +10,9 @@
     </insert>
     <!--添加手机号码-->
     <insert id="addPhoneNumber">
-        insert into orders(user_id, phone_number, merchant_id, project_id, project_money, phone_money, region_id,
+        insert into orders(user_id, phone_number, merchant_id, project_id, project_money, region_id,
                            created_at)
-        values (#{userId}, #{phoneNumber},#{adminUserId},#{projectId},#{projectMoney},#{phoneMoney},#{regionId},NOW())
+        values (#{userId}, #{phoneNumber}, #{adminUserId}, #{projectId}, #{projectMoney}, #{regionId}, NOW())
     </insert>
 
     <!--注册账号-->
@@ -111,7 +111,7 @@
 
     <!--获取用户订单-->
     <select id="getUserOrder" resultType="java.util.Map">
-        select orders_id, phone_number, created_at,project_money,phone_money
+        select orders_id, phone_number, created_at, project_money
         from orders
         where user_id = #{userId}
         order by created_at desc

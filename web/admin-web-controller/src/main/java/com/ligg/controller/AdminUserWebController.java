@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 /**
- * 用户管理
+ * 平台管理
  */
 @RestController
 @RequestMapping("/api/adminUserWeb")

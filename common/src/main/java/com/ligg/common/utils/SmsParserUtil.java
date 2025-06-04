@@ -101,7 +101,7 @@ public class SmsParserUtil {
         }
         
         // 尝试匹配方括号中的内容 [抖音]
-        Pattern pattern1 = Pattern.compile("\\[(.*?)\\]");
+        Pattern pattern1 = Pattern.compile("\\[(.*?)]");
         Matcher matcher1 = pattern1.matcher(content);
         if (matcher1.find()) {
             return matcher1.group(1);

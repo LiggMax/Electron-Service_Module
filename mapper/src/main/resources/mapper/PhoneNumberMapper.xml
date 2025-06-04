@@ -5,14 +5,13 @@
     <!-- 批量插入手机号 -->
     <insert id="batchInsertPhones">
         INSERT INTO phone
-        (phone_number, registration_time, admin_user_id, money)
+        (phone_number, registration_time, admin_user_id)
         values
         <foreach collection="list" item="phone" separator=",">
             (
             #{phone.phoneNumber},
             #{phone.registrationTime},
             #{phone.adminUserId},
-            #{phone.money}
             )
         </foreach>
     </insert>
@@ -128,7 +127,6 @@
         select p.phone_id,
                p.phone_number,
                p.registration_time,
-               p.money,
                r.region_name,
                au.nick_name as admin_nick_name,
                au.user_avatar as admin_avatar,
@@ -145,7 +143,7 @@
 
     <!-- 获取指定地区和项目的可用号码列表 -->
     <select id="getAvailablePhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
-        SELECT DISTINCT p.phone_id, p.phone_number, p.admin_user_id, p.registration_time, p.money
+        SELECT DISTINCT p.phone_id, p.phone_number, p.admin_user_id, p.registration_time
         FROM phone p
                  JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
         WHERE ppr.region_id = #{regionId}

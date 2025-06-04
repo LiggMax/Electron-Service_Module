@@ -131,11 +131,9 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 continue;
             }
 
-            //TODO 号码价格暂时默认0.20元
-            Float money = 0.20f;
             // 添加到有效列表
             validPhoneNumbers.add(phoneNumber);
-            phonesToInsert.add(createPhoneEntity(phoneNumber, now, adminUserId, money));
+            phonesToInsert.add(createPhoneEntity(phoneNumber, now, adminUserId));
         }
         
         // 如果没有有效的手机号，直接返回
@@ -178,12 +176,11 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     /**
      * 创建手机号实体对象
      */
-    private PhoneEntity createPhoneEntity(Long phoneNumber, LocalDateTime now, Long adminUserId, Float money) {
+    private PhoneEntity createPhoneEntity(Long phoneNumber, LocalDateTime now, Long adminUserId) {
         PhoneEntity phone = new PhoneEntity();
         phone.setPhoneNumber(phoneNumber);
         phone.setRegistrationTime(now);
         phone.setAdminUserId(adminUserId);
-        phone.setMoney(money);
         return phone;
     }
     
@@ -453,7 +450,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             if (!phoneExists) {
                 // 手机号不存在，先添加手机号
                 try {
-                    PhoneEntity phone = createPhoneEntity(phoneNumber, now, adminUserId, 0.20f);
+                    PhoneEntity phone = createPhoneEntity(phoneNumber, now, adminUserId);
                     List<PhoneEntity> phonesToInsert = new ArrayList<>();
                     phonesToInsert.add(phone);
                     int inserted = phoneNumberMapper.batchInsertPhones(phonesToInsert);
