@@ -93,97 +93,166 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
      */
     @Override
     @Transactional
-    public String buyProject(Long userId, Integer regionId, Integer projectId) {
-        log.info("用户[{}]开始购买项目[{}]，地区[{}]", userId, projectId, regionId);
+    public Map<String, Object> buyProject(Long userId, Integer regionId, Integer projectId, Integer quantity) {
+        log.info("用户[{}]开始购买项目[{}]，地区[{}]，数量[{}]", userId, projectId, regionId, quantity);
 
-        // 获取可用号码列表，增加可用状态过滤
+        Map<String, Object> result = new HashMap<>();
+        List<String> purchasedPhones = new ArrayList<>();
+
+        // 获取用户和项目信息
+        UserEntity userInfo = userMapper.selectById(userId);
+        ProjectEntity projectEntity = projectMapper.selectById(projectId);
+
+        if (userInfo == null) {
+            result.put("error", "用户信息不存在");
+            return result;
+        }
+
+        if (projectEntity == null) {
+            result.put("error", "项目信息不存在");
+            return result;
+        }
+
+        // 计算总费用
+        Float unitPrice = projectEntity.getProjectPrice();
+        Float totalPrice = unitPrice * quantity;
+
+        // 检查用户余额
+        if (userInfo.getMoney() < totalPrice) {
+            result.put("error", String.format("余额不足，需要%.2f元，余额%.2f元", totalPrice, userInfo.getMoney()));
+            return result;
+        }
+
+        // 获取可用号码列表
         List<PhoneEntity> phoneEntities = phoneNumberMapper.getAvailablePhonesByProject(regionId, projectId);
 
-        if (phoneEntities.isEmpty()) {
-            return "该地区暂无可用号码";
+        if (phoneEntities.size() < quantity) {
+            result.put("error", String.format("该地区可用号码不足，需要%d个，仅有%d个可用", quantity, phoneEntities.size()));
+            return result;
         }
 
-        // 随机选择一个号码
-        int randomIndex = (int) (Math.random() * phoneEntities.size());
-        PhoneEntity phoneEntity = phoneEntities.get(randomIndex);
+        // 随机打乱号码列表并取前quantity个
+        Collections.shuffle(phoneEntities);
+        List<PhoneEntity> selectedPhones = phoneEntities.subList(0, quantity);
 
-        // 构建锁的key：phoneId + projectId
-        String lockKey = phoneEntity.getPhoneId() + "_" + projectId;
+        // 按phoneId排序，避免死锁
+        selectedPhones.sort(Comparator.comparing(PhoneEntity::getPhoneId));
 
-        // 获取或创建对应的锁
-        ReentrantLock phoneLock = phoneLocks.computeIfAbsent(lockKey, k -> new ReentrantLock());
+        List<ReentrantLock> acquiredLocks = new ArrayList<>();
+        int successCount = 0;
+        List<String> failedReasons = new ArrayList<>();
 
-        // 尝试获取锁，最多等待3秒
-        boolean lockAcquired = false;
         try {
-            lockAcquired = phoneLock.tryLock(3, TimeUnit.SECONDS);
-            if (!lockAcquired) {
-                log.warn("用户[{}]购买号码[{}]项目[{}]获取锁超时", userId, phoneEntity.getPhoneNumber(), projectId);
-                return "服务繁忙，请稍后重试";
+            // 批量获取锁
+            for (PhoneEntity phone : selectedPhones) {
+                String lockKey = phone.getPhoneId() + "_" + projectId;
+                ReentrantLock phoneLock = phoneLocks.computeIfAbsent(lockKey, k -> new ReentrantLock());
+
+                boolean lockAcquired = false;
+                try {
+                    lockAcquired = phoneLock.tryLock(2, TimeUnit.SECONDS);
+                    if (!lockAcquired) {
+                        failedReasons.add("号码" + phone.getPhoneNumber() + "获取锁超时");
+                        break;
+                    }
+                    acquiredLocks.add(phoneLock);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    failedReasons.add("购买过程被中断");
+                    break;
+                }
             }
 
-            log.info("用户[{}]获取到号码[{}]项目[{}]的锁", userId, phoneEntity.getPhoneNumber(), projectId);
-
-            // 再次检查号码是否可用（双重检查）
-            if (!isPhoneAvailableForProject(phoneEntity.getPhoneId(), projectId)) {
-                log.warn("号码[{}]项目[{}]已被其他用户购买", phoneEntity.getPhoneNumber(), projectId);
-                return "号码已被其他用户购买，请重新选择";
+            // 如果没有获取到所有锁，则返回错误
+            if (acquiredLocks.size() != selectedPhones.size()) {
+                result.put("error", "部分号码正在被其他用户购买，请重试");
+                return result;
             }
 
-            // 获取用户和项目信息
-            UserEntity userInfo = userMapper.selectById(userId);
-            ProjectEntity projectEntity = projectMapper.selectById(projectId);
-
-            // 获取费用
-            Float projectMoney = projectEntity.getProjectPrice();
-
-            if (userInfo.getMoney() < projectMoney) {
-                return "您的余额不足";
+            // 双重检查所有号码是否仍然可用
+            for (PhoneEntity phone : selectedPhones) {
+                if (!isPhoneAvailableForProject(phone.getPhoneId(), projectId)) {
+                    failedReasons.add("号码" + phone.getPhoneNumber() + "已被其他用户购买");
+                }
             }
 
-            // 尝试更新号码项目关联表状态（原子操作）
-            int updateResult = phoneProjectRelationMapper.updateAvailableStatusWithCondition(
-                    phoneEntity.getPhoneId(), projectId);
-
-            if (updateResult == 0) {
-                log.warn("号码[{}]项目[{}]状态更新失败，可能已被其他用户购买",
-                        phoneEntity.getPhoneNumber(), projectId);
-                return "号码已被其他用户购买，请重新选择";
+            if (!failedReasons.isEmpty()) {
+                result.put("error", String.join(", ", failedReasons));
+                return result;
             }
 
-            // 添加用户订单
-            int addResult = userMapper.addPhoneNumber(userId, phoneEntity.getPhoneNumber(),
-                    phoneEntity.getAdminUserId(), projectId, projectMoney, regionId);
+            // 批量处理购买
+            for (PhoneEntity phone : selectedPhones) {
+                try {
+                    // 更新号码项目关联表状态
+                    int updateResult = phoneProjectRelationMapper.updateAvailableStatusWithCondition(
+                            phone.getPhoneId(), projectId);
 
-            if (addResult > 0) {
-                // 更新用户余额
-                userMapper.updateUserMoney(userId, projectMoney);
+                    if (updateResult == 0) {
+                        failedReasons.add("号码" + phone.getPhoneNumber() + "状态更新失败");
+                        continue;
+                    }
 
-                log.info("用户[{}]成功购买项目[{}]的手机号[{}]，花费{}元",
-                        userId, projectId, phoneEntity.getPhoneNumber(), projectMoney);
-                return null;
+                    // 添加用户订单
+                    int addResult = userMapper.addPhoneNumber(userId, phone.getPhoneNumber(),
+                            phone.getAdminUserId(), projectId, unitPrice, regionId);
+
+                    if (addResult > 0) {
+                        purchasedPhones.add(String.valueOf(phone.getPhoneNumber()));
+                        successCount++;
+                        log.info("用户[{}]成功购买号码[{}]", userId, phone.getPhoneNumber());
+                    } else {
+                        // 回滚号码状态
+                        phoneProjectRelationMapper.rollbackAvailableStatus(phone.getPhoneId(), projectId);
+                        failedReasons.add("号码" + phone.getPhoneNumber() + "订单创建失败");
+                    }
+                } catch (Exception e) {
+                    log.error("处理号码[{}]时发生错误: {}", phone.getPhoneNumber(), e.getMessage());
+                    failedReasons.add("号码" + phone.getPhoneNumber() + "处理异常");
+                }
+            }
+
+            // 如果有成功购买的号码，更新用户余额
+            if (successCount > 0) {
+                Float actualCost = unitPrice * successCount;
+                userMapper.updateUserMoney(userId, actualCost);
+
+                // 构建成功结果
+                result.put("success", true);
+                result.put("orderId", UUID.randomUUID().toString().replace("-", ""));
+                result.put("purchasedPhones", purchasedPhones);
+                result.put("successCount", successCount);
+                result.put("totalCost", actualCost);
+                result.put("unitPrice", unitPrice);
+
+                log.info("用户[{}]购买完成，成功{}个，总费用{}元", userId, successCount, actualCost);
+
+                // 如果部分失败，添加警告信息
+                if (successCount < quantity) {
+                    result.put("warning", String.format("仅成功购买%d个号码，失败原因: %s",
+                            successCount, String.join(", ", failedReasons)));
+                }
             } else {
-                // 如果订单创建失败，需要回滚号码状态
-                phoneProjectRelationMapper.rollbackAvailableStatus(phoneEntity.getPhoneId(), projectId);
-                return "订单创建失败，请重试";
+                result.put("error", "所有号码购买失败: " + String.join(", ", failedReasons));
             }
 
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("用户[{}]购买项目[{}]被中断", userId, projectId);
-            return "服务中断，请重试";
         } catch (Exception e) {
             log.error("用户[{}]购买项目[{}]失败: {}", userId, projectId, e.getMessage(), e);
+            result.put("error", "购买过程中发生系统错误，请稍后重试");
             throw e;
         } finally {
-            if (lockAcquired) {
-                phoneLock.unlock();
-                log.info("用户[{}]释放号码[{}]项目[{}]的锁", userId, phoneEntity.getPhoneNumber(), projectId);
-
-                // 清理长时间未使用的锁
-                cleanupUnusedLocks();
+            // 释放所有获取的锁
+            for (ReentrantLock lock : acquiredLocks) {
+                if (lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                }
             }
+
+            // 清理长时间未使用的锁
+            cleanupUnusedLocks();
         }
+
+        return result;
     }
 
     /**

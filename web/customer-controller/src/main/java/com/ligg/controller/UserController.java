@@ -93,24 +93,31 @@ public class UserController {
         Long userId = (Long) map.get("userId");
         
         // 获取项目ID、地区ID和购买数量
-        Integer projectId =  (Integer) userData.get("projectId");
+        Integer projectId = (Integer) userData.get("projectId");
         Integer regionId = ((Number) userData.get("regionId")).intValue();
+        int quantity = userData.get("quantity") != null ?
+                ((Number) userData.get("quantity")).intValue() : 1;
+
+        // 验证购买数量
+        if (quantity <= 0 || quantity > 100) {
+            return Result.error(400, "购买数量必须在1-100之间");
+        }
 
         long startTime = System.currentTimeMillis();
         
         // 调用Service层方法处理购买逻辑
-        String result = userService.buyProject(userId, regionId, projectId);
+        Map<String, Object> result = userService.buyProject(userId, regionId, projectId, quantity);
 
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-        
-        if (result != null) {
-            log.warn("用户[{}]购买项目失败 - 耗时: {}ms, 原因: {}", userId, duration, result);
-            return Result.error(400, result);
+
+        if (result.containsKey("error")) {
+            log.warn("用户[{}]购买项目失败 - 耗时: {}ms, 原因: {}", userId, duration, result.get("error"));
+            return Result.error(400, (String) result.get("error"));
         }
 
-        log.info("用户[{}]购买项目成功 - 耗时: {}ms", userId, duration);
-        return Result.success();
+        log.info("用户[{}]购买项目成功 - 耗时: {}ms, 购买数量: {}", userId, duration, quantity);
+        return Result.success(200, result);
     }
 
     /**

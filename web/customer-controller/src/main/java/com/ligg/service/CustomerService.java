@@ -24,7 +24,7 @@ public interface CustomerService extends IService<UserEntity> {
     String addUserFavorite(UserFavoriteEntity userFavoriteEntity);
 
     //购买项目
-    String buyProject(Long userId, Integer regionId, Integer projectId);
+    Map<String, Object> buyProject(Long userId, Integer regionId, Integer projectId, Integer quantity);
 
     //查询用户收藏项目
     List<Map<String,Object>> getUserFavorite(Long userId);

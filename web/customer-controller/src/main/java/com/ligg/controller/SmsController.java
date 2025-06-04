@@ -51,7 +51,6 @@ public class SmsController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         //获取用户订单列表
         List<CodeVo> codeList = smsService.getCodeList((Long) map.get("userId"));
-
         return Result.success(200, codeList);
     }
 }
