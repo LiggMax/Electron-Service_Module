@@ -11,5 +11,5 @@ public interface OrderService {
     //结算订单
     void settleOrder(OrderEntity order);
     //获取订单详情
-    OrderEntity getOrderInfo(Integer orderId);
+    OrderEntity getOrderInfo(String orderId);
 }

@@ -34,7 +34,7 @@ public class OrderController {
      * 结算订单
      */
     @PostMapping("/settle")
-    public Result<String> settleOrder(Integer orderId){
+    public Result<String> settleOrder(String orderId) {
         //获取订单数据
         OrderEntity orderInfo = orderService.getOrderInfo(orderId);
         if(orderInfo == null){

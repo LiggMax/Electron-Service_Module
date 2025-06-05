@@ -40,6 +40,9 @@ public class UserController {
     @Autowired
     private TokenService tokenService;
 
+    /**
+     * 获取用户信息
+     */
     @GetMapping("/info")
     public Result<UserEntity> getUserInfo() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));

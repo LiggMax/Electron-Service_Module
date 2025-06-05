@@ -1,4 +1,4 @@
-package com.ligg.common.entity;
+package com.ligg.common.entity.adminweb;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,10 +9,12 @@ import java.time.LocalDateTime;
 /**
  * @Author Ligg
  * @Time 2025/6/4
+ *
+ * 客户账单
  */
 @Data
-@TableName("bill")
-public class BillEntity {
+@TableName("customer_bill")
+public class CustomerBillEntity {
     private String id;
 
     /**

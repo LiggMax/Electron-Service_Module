@@ -11,6 +11,7 @@ import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.OrderService;
+import com.ligg.service.annotation.OrderSettlement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public OrderEntity getOrderInfo(Integer orderId) {
+    public OrderEntity getOrderInfo(String orderId) {
         return userOrderMapper.selectById(orderId);
     }
 
@@ -62,17 +63,15 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
+    @OrderSettlement
     public void settleOrder(OrderEntity order) {
-
-        //订单价格
-        Float orderMoney = order.getPhoneMoney() + order.getProjectMoney();
 
         // 获取卡商抽成比例
         MerchantEntity merchantInfo = merchantMapper.selectById(order.getMerchantId());
         log.info("获取卡商抽成比例 {}%", merchantInfo.getDivideInto());
 
         // 计算抽成金额和剩余金额
-        CommissionUtils.CommissionResult result = CommissionUtils.calculateCommission(merchantInfo.getDivideInto(), orderMoney);
+        CommissionUtils.CommissionResult result = CommissionUtils.calculateCommission(merchantInfo.getDivideInto(), order.getProjectMoney());
 
         BigDecimal remainingAmount = result.getRemainingAmount(); //剩余金额（卡商收益）
         BigDecimal commissionAmount = result.getCommissionAmount(); //被抽成掉的金额（平台收益）

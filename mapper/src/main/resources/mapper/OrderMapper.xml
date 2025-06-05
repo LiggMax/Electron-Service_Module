@@ -6,7 +6,6 @@
         select uo.orders_id as id,
                uo.phone_number,
                uo.project_money,
-               uo.phone_money,
                uo.code,
                uo.state,
                uo.created_at,
@@ -25,7 +24,11 @@
 
     <!--根据手机号查询订单-->
     <select id="selectByPhoneNumber" resultType="com.ligg.common.dto.OrdersDto">
-        select o.orders_id,o.phone_number,o.created_at,o.project_money,o.phone_money,o.state,
+        select o.orders_id,
+               o.phone_number,
+               o.created_at,
+               o.project_money,
+               o.state,
                pj.project_name,
                pj.project_name
         from orders o
@@ -35,7 +38,10 @@
 
     <!--根据用户id查询订单-->
     <select id="selectByUserId" resultType="com.ligg.common.dto.OrdersDto">
-        select o.orders_id,o.phone_number,o.created_at,o.project_money,o.phone_money,
+        select o.orders_id,
+               o.phone_number,
+               o.created_at,
+               o.project_money,
                pj.project_name
         from orders o
                  join project pj on o.project_id = pj.project_id

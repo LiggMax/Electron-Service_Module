@@ -1,7 +1,7 @@
 package com.ligg.service.aspect;
 
-import com.ligg.common.entity.BillEntity;
-import com.ligg.mapper.BillMapper;
+import com.ligg.common.entity.adminweb.CustomerBillEntity;
+import com.ligg.mapper.AdminWeb.CustomerBillMapper;
 import com.ligg.service.annotation.Bill;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,7 +28,7 @@ import java.util.Map;
 public class BillAspect {
 
     @Autowired
-    private BillMapper billMapper;
+    private CustomerBillMapper billMapper;
 
     @Around("@annotation(com.ligg.service.annotation.Bill)")
     public Object recordBill(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -90,7 +90,7 @@ public class BillAspect {
                                     purchaseTime);
 
                             // 记录账单到数据库
-                            BillEntity billEntity = new BillEntity();
+                            CustomerBillEntity billEntity = new CustomerBillEntity();
                             billEntity.setUserId(userId);
                             billEntity.setAmount(unitPrice);
                             billEntity.setIsUserType(isUserType);

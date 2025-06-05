@@ -70,7 +70,6 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
             orderVo.setPhoneNumber(orderEntity.getPhoneNumber());
             orderVo.setState(orderEntity.getState());
             orderVo.setCreatedAt(orderEntity.getCreatedAt());
-            orderVo.setPhoneMoney(orderEntity.getPhoneMoney());
 
             orderVoList.add(orderVo);
         }
