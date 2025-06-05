@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.admin.MerchantEntity;
+import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.MerchantMapper;
 import com.ligg.mapper.user.UserOrderMapper;
@@ -12,6 +13,7 @@ import com.ligg.service.MerchantUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,17 +59,25 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
      */
     @Override
     public List<OrderVo> getOrder(Long AdminId) {
+        MerchantEntity merchant = merchantMapper.selectById(AdminId);
         List<OrderEntity> orderEntities = userOrderMapper.selectList(new LambdaUpdateWrapper<OrderEntity>()
                 .eq(OrderEntity::getMerchantId, AdminId)
                 .orderByDesc(OrderEntity::getCreatedAt));
 
         ArrayList<OrderVo> orderVoList = new ArrayList<>();
         for (OrderEntity orderEntity : orderEntities) {
+            //  计算卡商实际获取的金额
+            BigDecimal commissionAmount = CommissionUtils.calculateCommission(
+                    merchant.getDivideInto(),
+                    orderEntity.getProjectMoney()
+            ).getRemainingAmount();
+
             OrderVo orderVo = new OrderVo();
             orderVo.setId(orderEntity.getOrdersId());
             orderVo.setAdminId(orderEntity.getMerchantId());
             orderVo.setUserId(orderEntity.getUserId());
             orderVo.setPhoneNumber(orderEntity.getPhoneNumber());
+            orderVo.setProjectMoney(commissionAmount.floatValue());
             orderVo.setState(orderEntity.getState());
             orderVo.setCreatedAt(orderEntity.getCreatedAt());
 
@@ -75,4 +85,5 @@ public class MerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Merchan
         }
         return orderVoList;
     }
+
 }

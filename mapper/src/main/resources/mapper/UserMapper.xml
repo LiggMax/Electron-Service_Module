@@ -112,7 +112,7 @@
 
     <!--获取用户订单-->
     <select id="getUserOrder" resultType="java.util.Map">
-        select orders_id, phone_number, created_at, project_money
+        select orders_id, phone_number, created_at, project_money, state
         from orders
         where user_id = #{userId}
         order by created_at desc
