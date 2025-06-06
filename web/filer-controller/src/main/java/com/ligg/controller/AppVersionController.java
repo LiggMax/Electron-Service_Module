@@ -53,7 +53,7 @@ public class AppVersionController {
                                         @RequestParam("version") String version,
                                         @RequestParam("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes,
                                         Integer app) {
-        // 文件大小检查（传统上传限制为500MB）
+        // 文件大小检查（传统上传限制为200MB）
         if (appFile.getSize() > 200 * 1024 * 1024) {
             return Result.error(400, "文件过大");
         }

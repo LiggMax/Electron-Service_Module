@@ -8,8 +8,8 @@ spring:
     password: 200309
   servlet:
     multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
+      max-file-size: 200MB
+      max-request-size: 200MB
   profiles:
     active: common,mapper,service # 指定配置文件
   data:
