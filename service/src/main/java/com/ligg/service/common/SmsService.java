@@ -1,6 +1,5 @@
 package com.ligg.service.common;
 
-import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.vo.CodeVo;
 
@@ -10,9 +9,7 @@ public interface SmsService {
 
     //获取号码列表
     List<SmsDto> getSmsList(Long userId);
+
     //获取验证码列表
     List<CodeVo> getCodeList(Long userId);
-
-    //获取订单列表
-    List<OrdersDto> getOrdersList(Long userId);
 }

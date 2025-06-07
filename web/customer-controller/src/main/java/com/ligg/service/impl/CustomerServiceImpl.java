@@ -221,7 +221,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
                         order.setPhoneNumber(phone.getPhoneNumber());
 
                         //  将号码信息保存到Redis中
-                        redisTemplate.opsForValue().set("order:" + userId,
+                        redisTemplate.opsForValue().set("user:orders:" + userId + ":" + ordersId,
                                 objectMapper.writeValueAsString(order), 20, TimeUnit.MINUTES);
 
                         purchasedPhones.add(String.valueOf(phone.getPhoneNumber()));

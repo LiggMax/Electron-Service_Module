@@ -1,17 +1,27 @@
 package com.ligg.service.common.impl;
 
-import com.ligg.common.dto.OrdersDto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.vo.CodeVo;
 import com.ligg.mapper.AdminWeb.OrderMapper;
 import com.ligg.mapper.SmsMapper;
-import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.common.SmsService;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.apache.bcel.classfile.Code;
+import org.simpleframework.xml.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 public class SmsServiceImpl implements SmsService {
 
@@ -19,10 +29,13 @@ public class SmsServiceImpl implements SmsService {
     private SmsMapper smsMapper;
 
     @Autowired
-    private UserOrderMapper userOrderMapper;
+    private OrderMapper orderMapper;
 
     @Autowired
-    private OrderMapper  orderMapper;
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public List<SmsDto> getSmsList(Long userId) {
@@ -34,11 +47,30 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public List<CodeVo> getCodeList(Long userId) {
-        return smsMapper.getCodeList(userId);
-    }
+        String pattern = "user:orders:" + userId + ":*";
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
 
-    @Override
-    public List<OrdersDto> getOrdersList(Long userId) {
-        return orderMapper.selectByUserId(userId);
+        Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
+
+        List<CodeVo> orders = new ArrayList<>();
+
+        while (cursor.hasNext()) {
+            byte[] keyBytes = cursor.next();
+            String key = new String(keyBytes);
+
+            String json = redisTemplate.opsForValue().get(key);
+            if (json != null) {
+                try {
+                    CodeVo codeVo = objectMapper.readValue(json, CodeVo.class);
+                    if (codeVo != null && codeVo.getCode() != null && !codeVo.getCode().isEmpty()) {
+                        orders.add(codeVo);
+                    }
+                } catch (Exception e) {
+                    log.error("反序列化订单失败: {}", e.getMessage());
+                }
+            }
+        }
+
+        return orders;
     }
 }
