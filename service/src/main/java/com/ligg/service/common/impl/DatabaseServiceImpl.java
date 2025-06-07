@@ -32,7 +32,7 @@ public class DatabaseServiceImpl implements DatabaseService {
             // 示例：清理相关的缓存数据
             String cacheKey = "cache:" + businessId;
             Boolean deleted = redisTemplate.delete(cacheKey);
-            if (Boolean.TRUE.equals(deleted)) {
+            if (deleted) {
                 log.info("成功清理相关缓存: {}", cacheKey);
             }
 

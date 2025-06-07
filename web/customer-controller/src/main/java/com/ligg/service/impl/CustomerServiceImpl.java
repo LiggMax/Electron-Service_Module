@@ -2,6 +2,8 @@ package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
@@ -17,6 +19,7 @@ import com.ligg.service.CustomerService;
 import com.ligg.service.annotation.Bill;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +47,13 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
     @Autowired
     private PhoneProjectRelationMapper phoneProjectRelationMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     /**
      * 根据账号和密码查询用户信息
@@ -201,6 +211,19 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
                             phone.getAdminUserId(), projectId, unitPrice, regionId);
 
                     if (addResult > 0) {
+                        OrderEntity order = new OrderEntity();
+                        order.setOrdersId(ordersId);
+                        order.setUserId(userId);
+                        order.setMerchantId(phone.getAdminUserId());
+                        order.setProjectId(projectId);
+                        order.setProjectMoney(unitPrice);
+                        order.setCreatedAt(LocalDateTime.now());
+                        order.setPhoneNumber(phone.getPhoneNumber());
+
+                        //  将号码信息保存到Redis中
+                        redisTemplate.opsForValue().set("order:" + userId,
+                                objectMapper.writeValueAsString(order), 20, TimeUnit.MINUTES);
+
                         purchasedPhones.add(String.valueOf(phone.getPhoneNumber()));
                         successCount++;
                         log.info("用户[{}]成功购买号码[{}]", userId, phone.getPhoneNumber());

@@ -26,7 +26,7 @@ public class TestBcrypt {
     // 测试redis过期监听
     @Test
     public void testRedis() {
-        redisTemplate.opsForValue().set("your_prefix:", "测试过期监听", 1, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("过期的key:", "测试过期监听", 10, TimeUnit.SECONDS);
     }
 
     // 测试Redis key过期监听功能
