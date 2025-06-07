@@ -220,7 +220,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
                         //  将号码信息保存到Redis中
                         redisTemplate.opsForValue().set("user:orders:" + userId + ":" + ordersId,
-                                objectMapper.writeValueAsString(order), 20, TimeUnit.MINUTES);
+                                objectMapper.writeValueAsString(order), 1, TimeUnit.MINUTES);
 
                         purchasedPhones.add(String.valueOf(phone.getPhoneNumber()));
                         successCount++;

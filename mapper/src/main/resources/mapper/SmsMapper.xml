@@ -15,6 +15,7 @@
                  join region r on uo.region_id = r.region_id
         where uo.user_id = #{userId}
           and uo.state != 2
+        order by uo.created_at desc
     </select>
 
     <!--获取短信验证码信息-->

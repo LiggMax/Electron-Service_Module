@@ -34,8 +34,6 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String expiredKey = message.toString();
-        log.info("检测到Redis key过期: {}", expiredKey);
-
         String[] parts = expiredKey.split(":");
         if (parts.length == 4) {
             // 订单ID
@@ -46,11 +44,14 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
              * 如果订单过期还未使用，则删除订单信息 , 并返回订单金额给用户
              */
             if (orderInfo.getCode() == null || orderInfo.getCode().isEmpty()) {
+                log.info("检测到用户:{}订单过期未使用，订单id{},退款金额{}",
+                        orderInfo.getUserId(), orderId, orderInfo.getProjectMoney());
+
                 //删除订单信息
                 customerOrdersService.deleteOrderById(orderId);
 
-                //退款
-                customerOrdersService.refundOrder(orderInfo);
+                //退款并回滚号码项目关联状态为可用
+                customerOrdersService.refundOrderAndUpdateRelation(orderInfo);
             }
         }
     }

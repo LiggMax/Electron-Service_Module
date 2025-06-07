@@ -21,5 +21,5 @@ public interface CustomerOrdersService {
     /**
      * 订单退款
      */
-    void refundOrder(OrderEntity orderInfo);
+    void refundOrderAndUpdateRelation(OrderEntity orderInfo);
 }
