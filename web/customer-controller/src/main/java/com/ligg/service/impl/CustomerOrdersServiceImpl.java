@@ -1,0 +1,48 @@
+package com.ligg.service.impl;
+
+import com.ligg.common.entity.OrderEntity;
+import com.ligg.mapper.user.CustomerMapper;
+import com.ligg.mapper.user.UserOrderMapper;
+import com.ligg.service.CustomerOrdersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Author Ligg
+ * @Time 2025/6/7
+ **/
+@Service
+public class CustomerOrdersServiceImpl implements CustomerOrdersService {
+
+    @Autowired
+    private UserOrderMapper userOrderMapper;
+
+    @Autowired
+    private CustomerMapper customerMapper;
+
+    /**
+     * 根据id获取订单信息
+     */
+    @Override
+    public OrderEntity getOrderById(String orderId) {
+        return userOrderMapper.selectById(orderId);
+    }
+
+    /**
+     * 根据id删除订单
+     */
+    @Override
+    public void deleteOrderById(String orderId) {
+        userOrderMapper.deleteById(orderId);
+    }
+
+    /**
+     * 订单退款
+     */
+    @Override
+    public void refundOrder(OrderEntity orderInfo) {
+        if (orderInfo.getState() == 0) {
+            customerMapper.updateUserMoney(orderInfo.getUserId(), orderInfo.getProjectMoney());
+        }
+    }
+}

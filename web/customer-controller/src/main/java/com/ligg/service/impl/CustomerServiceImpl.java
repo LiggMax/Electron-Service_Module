@@ -214,8 +214,6 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
                         OrderEntity order = new OrderEntity();
                         order.setOrdersId(ordersId);
                         order.setUserId(userId);
-                        order.setMerchantId(phone.getAdminUserId());
-                        order.setProjectId(projectId);
                         order.setProjectMoney(unitPrice);
                         order.setCreatedAt(LocalDateTime.now());
                         order.setPhoneNumber(phone.getPhoneNumber());

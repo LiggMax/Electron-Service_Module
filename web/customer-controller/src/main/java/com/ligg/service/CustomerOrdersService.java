@@ -1,0 +1,25 @@
+package com.ligg.service;
+
+import com.ligg.common.entity.OrderEntity;
+
+/**
+ * @Author Ligg
+ * @Time 2025/6/7
+ **/
+public interface CustomerOrdersService {
+
+    /**
+     * 根据id获取订单信息
+     */
+    OrderEntity getOrderById(String orderId);
+
+    /**
+     * 根据id删除订单
+     */
+    void deleteOrderById(String orderId);
+
+    /**
+     * 订单退款
+     */
+    void refundOrder(OrderEntity orderInfo);
+}

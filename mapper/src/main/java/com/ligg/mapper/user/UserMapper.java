@@ -48,9 +48,6 @@ public interface UserMapper extends BaseMapper<UserEntity> {
     //根据账号密码查询用户信息
     UserEntity findAccountAndPasswordByUser(String account);
 
-    //注册账号
-//    void registerAccount(String account, String password);
-
     //根据账号密码查询后台管理用户信息
     AdminWebUserEntity findByAdminWebUser(String account);
 

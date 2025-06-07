@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
-import com.ligg.mapper.CustomerMapper;
+import com.ligg.mapper.user.CustomerMapper;
 import com.ligg.service.CustomerManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
