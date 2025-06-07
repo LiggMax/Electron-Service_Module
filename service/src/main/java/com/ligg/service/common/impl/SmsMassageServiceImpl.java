@@ -1,6 +1,7 @@
 package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.ProjectEntity;
@@ -11,6 +12,7 @@ import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.common.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,13 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     /**
      * 提取验证码和短信
@@ -84,6 +93,14 @@ public class SmsMassageServiceImpl implements SmsMassageService {
                                 .eq(OrderEntity::getProjectId, projectId.getProjectId())
                                 .set(OrderEntity::getCode, messageContent)
                                 .set(OrderEntity::getState, 1));
+
+                        //更新缓存
+                        try {
+                            redisTemplate.opsForValue().set("user:orders:" + orderDto.getUserId() + ":" + orderDto.getOrdersId(),
+                                    objectMapper.writeValueAsString(orderDto));
+                        } catch (Exception e) {
+                            log.error("更新缓存失败: {}", e.getMessage());
+                        }
                     }
                 }
             }

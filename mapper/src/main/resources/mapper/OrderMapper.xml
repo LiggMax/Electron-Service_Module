@@ -24,11 +24,13 @@
 
     <!--根据手机号查询订单-->
     <select id="selectByPhoneNumber" resultType="com.ligg.common.dto.OrdersDto">
-        select o.orders_id,
+        select o.user_id,
+               o.orders_id,
                o.phone_number,
                o.created_at,
                o.project_money,
                o.state,
+               o.code,
                pj.project_name,
                pj.project_name
         from orders o

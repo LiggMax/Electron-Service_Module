@@ -9,7 +9,8 @@ import lombok.Data;
 
 @Data
 public class OrdersDto {
-    private Integer ordersId;//订单id
+    private String ordersId;//订单id
+    private Long userId;
     private String userName;
     private String adminName;
     private String projectName;
