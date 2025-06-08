@@ -6,7 +6,7 @@ import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.SmsParserUtil;
-import com.ligg.mapper.AdminWeb.OrderMapper;
+import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.common.SmsMassageService;

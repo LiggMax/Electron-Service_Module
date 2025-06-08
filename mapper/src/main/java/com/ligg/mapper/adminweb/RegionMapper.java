@@ -1,4 +1,4 @@
-package com.ligg.mapper.AdminWeb;
+package com.ligg.mapper.adminweb;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ligg.common.entity.RegionEntity;

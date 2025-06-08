@@ -1,4 +1,4 @@
-package com.ligg.mapper.AdminWeb;
+package com.ligg.mapper.adminweb;
 
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.vo.OrderVo;

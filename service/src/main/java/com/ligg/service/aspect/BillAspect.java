@@ -1,7 +1,7 @@
 package com.ligg.service.aspect;
 
 import com.ligg.common.entity.adminweb.CustomerBillEntity;
-import com.ligg.mapper.AdminWeb.CustomerBillMapper;
+import com.ligg.mapper.adminweb.CustomerBillMapper;
 import com.ligg.service.annotation.Bill;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

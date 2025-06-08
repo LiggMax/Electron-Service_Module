@@ -5,7 +5,7 @@ import com.ligg.common.entity.adminweb.OrderBillEntity;
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.utils.JWTUtil;
-import com.ligg.mapper.AdminWeb.OrderBillMapper;
+import com.ligg.mapper.adminweb.OrderBillMapper;
 import com.ligg.mapper.MerchantMapper;
 import com.ligg.service.annotation.OrderSettlement;
 import jakarta.servlet.http.HttpServletRequest;

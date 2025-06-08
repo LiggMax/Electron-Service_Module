@@ -7,7 +7,7 @@ import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.mapper.MerchantMapper;
-import com.ligg.mapper.AdminWeb.OrderMapper;
+import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.AdminWebUserMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.OrderService;
