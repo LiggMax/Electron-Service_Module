@@ -1,5 +1,6 @@
 package com.ligg.service.aspect;
 
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.adminweb.CustomerBillEntity;
 import com.ligg.mapper.adminweb.CustomerBillMapper;
 import com.ligg.service.annotation.Bill;
@@ -46,14 +47,37 @@ public class BillAspect {
         // 记录购买时间
         LocalDateTime purchaseTime = LocalDateTime.now();
 
-        // 提取userId（第一个参数）
-        Long userId = args.length > 0 ? (Long) args[0] : null;
+        // 智能提取userId - 支持不同参数类型
+        Long userId = extractUserId(args);
 
         try {
             // 执行原方法
             Object result = joinPoint.proceed();
 
-            // 处理成功结果
+            // 特殊处理退款操作（OrderEntity参数）
+            if (args.length > 0 && args[0] instanceof OrderEntity orderInfo) {
+
+                log.info("💰 订单退款记录 - 用户ID: {}, 订单ID: {}, 退款金额: ¥{}, 处理时间: {}",
+                        orderInfo.getUserId(),
+                        orderInfo.getOrdersId(),
+                        orderInfo.getProjectMoney() != null ? String.format("%.2f", orderInfo.getProjectMoney()) : "0.00",
+                        purchaseTime);
+
+                // 记录退款账单到数据库
+                CustomerBillEntity billEntity = new CustomerBillEntity();
+                billEntity.setUserId(orderInfo.getUserId());
+                billEntity.setAmount(orderInfo.getProjectMoney());
+                billEntity.setIsUserType(isUserType);
+                billEntity.setBillType(billType);
+                billEntity.setRemark(remark);
+                billEntity.setPurchaseTime(purchaseTime);
+                billMapper.insert(billEntity);
+
+                log.info("✅ 退款账单已记录到数据库");
+                return result;
+            }
+
+            // 处理其他业务逻辑的返回结果（原有购买逻辑）
             if (result instanceof Map) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> resultMap = (Map<String, Object>) result;
@@ -112,6 +136,32 @@ public class BillAspect {
             throw e;
         } finally {
             log.info("=== 📋 {} 结束 ===", remark);
+        }
+    }
+
+    /**
+     * 智能提取userId - 支持多种参数类型
+     *
+     * @param args 方法参数数组
+     * @return userId
+     */
+    private Long extractUserId(Object[] args) {
+        if (args.length == 0) {
+            return null;
+        }
+
+        Object firstArg = args[0];
+
+        // 如果第一个参数是Long类型，直接返回（通常是购买场景）
+        if (firstArg instanceof Long) {
+            return (Long) firstArg;
+        }
+        // 如果第一个参数是OrderEntity，提取其中的userId（退款场景）
+        else if (firstArg instanceof OrderEntity) {
+            return ((OrderEntity) firstArg).getUserId();
+        } else {
+            log.warn("未识别的参数类型: {}, 无法提取userId", firstArg.getClass().getSimpleName());
+            return null;
         }
     }
 }
