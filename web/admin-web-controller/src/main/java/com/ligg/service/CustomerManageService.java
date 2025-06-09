@@ -10,4 +10,7 @@ public interface CustomerManageService extends IService<UserEntity> {
     void updatePassword(Long userId, String password);
     //添加客户
     void saveUser(UserEntity userEntity);
+
+    //修改客户信息
+    void updateCustomerInfoById(UserEntity userEntity);
 }

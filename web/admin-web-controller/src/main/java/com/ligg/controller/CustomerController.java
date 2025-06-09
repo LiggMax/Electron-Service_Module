@@ -47,7 +47,7 @@ public class CustomerController {
      */
     @PutMapping("/edit")
     public Result<String> updateUserInfo(@Validated @RequestBody UserEntity userEntity) {
-        userService.updateById(userEntity);
+        userService.updateCustomerInfoById(userEntity);
         return Result.success(200, "更新成功");
     }
 

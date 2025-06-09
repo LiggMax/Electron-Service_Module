@@ -2,6 +2,8 @@ package com.ligg.common.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @Author by Ligg
  * @Time 2025/5/28
@@ -20,4 +22,5 @@ public class OrdersDto {
     private Integer state;
     private Float projectMoney;
     private Float phoneMoney;
+    private LocalDateTime createdAt;
 }

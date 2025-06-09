@@ -53,4 +53,10 @@ public class CustomerManageServiceImpl extends ServiceImpl<CustomerMapper, UserE
         userEntity.setCreatedAt(LocalDateTime.now());
         customerMapper.insert(userEntity);
     }
+
+
+    @Override
+    public void updateCustomerInfoById(UserEntity userEntity) {
+        customerMapper.updateById(userEntity);
+    }
 }

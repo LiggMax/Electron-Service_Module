@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -96,9 +98,11 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
                         //更新缓存
                         try {
+                            orderDto.setOrdersId(orderDto.getOrdersId());
                             orderDto.setCode(messageContent);
+                            orderDto.setCreatedAt(LocalDateTime.now());
                             redisTemplate.opsForValue().set("user:orders:" + orderDto.getUserId() + ":" + orderDto.getOrdersId(),
-                                    objectMapper.writeValueAsString(orderDto));
+                                    objectMapper.writeValueAsString(orderDto), 20, TimeUnit.MINUTES);
                         } catch (Exception e) {
                             log.error("更新缓存失败: {}", e.getMessage());
                         }

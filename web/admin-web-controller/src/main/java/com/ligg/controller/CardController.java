@@ -33,7 +33,7 @@ public class CardController {
      */
     @PutMapping("/edit")
     public Result<String> updateCardInfo(@Validated @RequestBody MerchantEntity merchantEntity) {
-        merchantUserService.updateById(merchantEntity);
+        merchantUserService.updateEditById(merchantEntity);
         return Result.success(200,"修改成功");
     }
 

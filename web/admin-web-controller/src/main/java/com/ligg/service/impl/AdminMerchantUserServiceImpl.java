@@ -43,4 +43,12 @@ public class AdminMerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Me
                 .set(MerchantEntity::getPassword, BCryptUtil.encrypt(password));
         merchantMapper.update(null, updateWrapper);
     }
+
+    /**
+     * 修改卡商信息
+     */
+    @Override
+    public void updateEditById(MerchantEntity merchantEntity) {
+        merchantMapper.updateById(merchantEntity);
+    }
 }
