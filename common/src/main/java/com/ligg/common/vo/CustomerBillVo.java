@@ -37,4 +37,9 @@ public class CustomerBillVo {
      * 购买时间
      */
     private LocalDateTime purchaseTime;
+
+    /**
+     * 订单备注
+     */
+    private String remark;
 }

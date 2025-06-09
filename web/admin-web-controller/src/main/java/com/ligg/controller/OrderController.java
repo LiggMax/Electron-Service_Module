@@ -16,7 +16,7 @@ import java.util.List;
  * 订单管理
  */
 @RestController
-@RequestMapping("/api/adminWeb/order")
+@RequestMapping("/api/admin_web/order")
 public class OrderController {
 
     @Autowired

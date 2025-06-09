@@ -96,6 +96,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
                         //更新缓存
                         try {
+                            orderDto.setCode(messageContent);
                             redisTemplate.opsForValue().set("user:orders:" + orderDto.getUserId() + ":" + orderDto.getOrdersId(),
                                     objectMapper.writeValueAsString(orderDto));
                         } catch (Exception e) {
