@@ -19,6 +19,7 @@ import java.util.Map;
 /**
  * @Author Ligg
  * @Time 2025/6/4
+ *
  * 账单记录切面
  * 用于记录购买相关的关键信息
  */
@@ -38,7 +39,7 @@ public class BillAspect {
 
         // 获取注解信息
         Bill billAnnotation = method.getAnnotation(Bill.class);
-        String operation = billAnnotation.operation();
+        String remark = billAnnotation.remark();
         int isUserType = billAnnotation.isUserType();
         int billType = billAnnotation.billType();
 
@@ -95,21 +96,22 @@ public class BillAspect {
                             billEntity.setAmount(unitPrice);
                             billEntity.setIsUserType(isUserType);
                             billEntity.setBillType(billType);
+                            billEntity.setRemark(remark);
                             billEntity.setPurchaseTime(purchaseTime);
                             billMapper.insert(billEntity);
                         }
                     }
                 } else {
                     String errorMessage = (String) resultMap.get("error");
-                    log.warn("❌ {} 失败 - 用户ID: {}, 原因: {}, 时间: {}", operation, userId, errorMessage, purchaseTime);
+                    log.warn("❌ {} 失败 - 用户ID: {}, 原因: {}, 时间: {}", remark, userId, errorMessage, purchaseTime);
                 }
             }
             return result;
         } catch (Exception e) {
-            log.error("💥 {} 异常 - 用户ID: {}, 错误: {}, 时间: {}", operation, userId, e.getMessage(), purchaseTime);
+            log.error("💥 {} 异常 - 用户ID: {}, 错误: {}, 时间: {}", remark, userId, e.getMessage(), purchaseTime);
             throw e;
         } finally {
-            log.info("=== 📋 {} 结束 ===", operation);
+            log.info("=== 📋 {} 结束 ===", remark);
         }
     }
 }

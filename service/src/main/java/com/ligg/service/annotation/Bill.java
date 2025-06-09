@@ -18,12 +18,7 @@ public @interface Bill {
     /**
      * 操作类型描述
      */
-    String operation() default "购买操作";
-
-    /**
-     * 自定义业务标识
-     */
-    String businessType() default "PURCHASE";
+    String remark() default "购买操作";
 
     /**
      * 用户类型
@@ -33,7 +28,7 @@ public @interface Bill {
 
     /**
      * 账单类型
-     * 1: 充值, 2: 消费
+     * 1: 增加, 2: 减少
      */
     int billType() default 2;
 }

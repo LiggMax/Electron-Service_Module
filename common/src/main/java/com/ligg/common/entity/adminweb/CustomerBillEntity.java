@@ -2,6 +2,7 @@ package com.ligg.common.entity.adminweb;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -41,4 +42,10 @@ public class CustomerBillEntity {
      * 购买时间
      */
     private LocalDateTime purchaseTime;
+
+    /**
+     * 备注
+     */
+    @Pattern(regexp = "^{0,100}$")
+    private String remark;
 }

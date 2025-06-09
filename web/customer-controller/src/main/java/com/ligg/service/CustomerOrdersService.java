@@ -19,7 +19,7 @@ public interface CustomerOrdersService {
     void deleteOrderById(String orderId);
 
     /**
-     * 订单退款
+     * 订单退款并回滚关联关系状态
      */
     void refundOrderAndUpdateRelation(OrderEntity orderInfo);
 }

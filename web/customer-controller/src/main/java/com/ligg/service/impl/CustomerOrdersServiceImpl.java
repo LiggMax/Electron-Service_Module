@@ -7,6 +7,7 @@ import com.ligg.mapper.PhoneProjectRelationMapper;
 import com.ligg.mapper.user.CustomerMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.CustomerOrdersService;
+import com.ligg.service.annotation.Bill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,7 @@ public class CustomerOrdersServiceImpl implements CustomerOrdersService {
     /**
      * 订单退款并回滚关联关系状态
      */
+    @Bill(remark = "订单超时未使用退款", billType = 1)
     @Override
     public void refundOrderAndUpdateRelation(OrderEntity orderInfo) {
         if (orderInfo.getState() == 0) {
