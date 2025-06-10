@@ -23,7 +23,9 @@ public class SmsTest {
     @Test
     public void testSmsParser() {
         String sms = "COM5,47567094,【京东】註冊驗證碼：651229。京東客服絕不會索取此驗證碼，切勿轉發或告知他人。COM5,47567094,\u001BRed\u001BYour verification code is 142007, for verification code login, please verify within 5 mins. Do not share the verification code to others.COM5,47567094,[抖音] 4718 is your verification code, valid for 5 minutes.COM15,47548365,[抖音] 7216 is your verification code, valid for 5 minutes.COM15,47548365,【京东】註冊驗證碼：。京東客服絕不會 173532, for verification code login,索取此驗證碼，切勿轉發或告知他人。COM7,47548177,\u001BRed\u001BYour verification code is please verify within 5 mins. Do not share the verification code to others.COM7,47548177,[抖音] 8888 is your verification code, valid for 5 minutes.";
-        List<Map<String, String>> maps = SmsUtil.extractSmsContent(sms);
+        String keyword = "【京东】註冊驗證碼：";
+        int codeLength = 6;
+        List<Map<String, String>> maps = SmsUtil.extractSmsContent(sms, keyword, codeLength);
         log.info("{}", maps);
     }
 }
