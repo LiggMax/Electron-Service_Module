@@ -3,7 +3,6 @@ package com.ligg.service.common.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.vo.CodeVo;
-import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.SmsMapper;
 import com.ligg.service.common.SmsService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,6 @@ public class SmsServiceImpl implements SmsService {
 
     @Autowired
     private SmsMapper smsMapper;
-
-    @Autowired
-    private OrderMapper orderMapper;
 
     @Autowired
     private StringRedisTemplate redisTemplate;

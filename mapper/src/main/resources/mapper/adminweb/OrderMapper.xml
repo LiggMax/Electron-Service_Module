@@ -3,23 +3,25 @@
 <mapper namespace="com.ligg.mapper.adminweb.OrderMapper">
     <!-- 获取所有订单 -->
     <select id="getAllOrder" resultType="com.ligg.common.vo.OrderVo">
-        select uo.orders_id as id,
-               uo.phone_number,
-               uo.project_money,
-               uo.code,
-               uo.state,
-               uo.created_at,
+        select o.orders_id as id,
+               o.phone_number,
+               o.project_money,
+               o.code,
+               o.state,
+               o.created_at,
+               pj.project_name,
                u.user_id,
                u.nick_name        as user_nick_name,
                u.user_avatar,
                au.nick_name       as admin_nick_name,
                au.user_id         as admin_id,
                au.user_avatar     as admin_avatar
-        from orders uo
-                 left join users u on uo.user_id = u.user_id
-                 left join phone p on uo.phone_number = p.phone_number
+        from orders o
+                 left join users u on o.user_id = u.user_id
+                 left join phone p on o.phone_number = p.phone_number
                  left join merchant au on p.admin_user_id = au.user_id
-        order by uo.created_at desc
+                 left join project pj on o.project_id = pj.project_id
+        order by o.created_at desc
     </select>
 
     <!--根据手机号查询订单-->

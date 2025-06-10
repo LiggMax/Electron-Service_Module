@@ -12,7 +12,6 @@ public class OrderVo {
     private String projectName;//项目名称
     private Long phoneNumber; //号码
     private Float projectMoney;//项目金额
-    private Float phoneMoney;//号码金额
     private String userNickName;//客户名称
     private String userAvatar;//客户头像
     private String adminNickName;//卡商名称
