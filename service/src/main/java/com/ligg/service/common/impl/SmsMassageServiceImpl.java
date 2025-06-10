@@ -6,6 +6,7 @@ import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.SmsParserUtil;
+import com.ligg.common.utils.SmsUtil;
 import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.ProjectMapper;
 import com.ligg.mapper.user.UserOrderMapper;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -46,24 +48,45 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     @Override
     public List<Map<String, String>> extractCodeAndSms(String sms) {
         if (sms == null || sms.isEmpty()) {
-            System.out.println("短信内容为空");
             return null;
         }
 
-        // 使用工具类提取验证码信息
-        List<Map<String, String>> resultList = SmsParserUtil.extractSmsContent(sms);
+        // 获取所有项目配置
+        List<ProjectEntity> projects = projectMapper.selectList(null);
+        if (projects.isEmpty()) {
+            return null;
+        }
 
-        if (resultList.isEmpty()) {
-            log.info("未匹配到任何验证码信息");
-        } else {
-            System.out.println("共提取到 " + resultList.size() + " 条验证码信息");
-            for (Map<String, String> result : resultList) {
-                System.out.println("提取成功 - 平台: " + result.get("platform") +
-                        ", 号码: " + result.get("phoneNumber") +
-                        ", 短信内容: " + result.get("messageContent"));
+        List<Map<String, String>> allResults = new ArrayList<>();
+
+        // 对每个项目的关键字和验证码长度进行短信解析
+        for (ProjectEntity project : projects) {
+            String keyword = project.getKeyword();
+            int codeLength = project.getCodeLength();
+
+            if (keyword == null || keyword.isEmpty() || codeLength <= 0) {
+                continue;
+            }
+
+            // 使用工具类提取验证码信息
+            List<Map<String, String>> resultList = SmsUtil.extractSmsContent(sms, keyword, codeLength);
+
+            if (!resultList.isEmpty()) {
+                // 为每个结果添加项目信息
+                for (Map<String, String> result : resultList) {
+                    result.put("projectId", String.valueOf(project.getProjectId()));
+                    result.put("projectName", project.getProjectName());
+                    result.put("phoneNumber", result.get("phoneNumber"));
+                    result.put("platform", project.getProjectName()); // 保持向后兼容
+                    result.put("smsContent", result.get("smsContent")); // 保持向后兼容
+                }
+                allResults.addAll(resultList);
             }
         }
-        return resultList;
+        log.info("提取的验证码和短信: {}", allResults);
+        log.info("提取的短信内容: {}", sms);
+        log.info("提取的短信内容: {}", sms);
+        return allResults;
     }
 
     /**
@@ -75,7 +98,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             //手机号码
             String phoneNumber = map.get("phoneNumber");
             //短信内容
-            String messageContent = map.get("messageContent");
+            String messageContent = map.get("smsContent");
 
             //查询订单
             List<OrdersDto> orders = orderMapper.selectByPhoneNumber(phoneNumber);

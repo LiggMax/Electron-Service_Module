@@ -15,10 +15,35 @@ import java.time.LocalDateTime;
 @TableName("project")
 public class ProjectEntity {
     @TableId(type = IdType.AUTO)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Integer projectId;
+
+    /**
+     * 项目名称
+     */
     private String projectName;
-    private Float projectPrice;// 项目价格
-    private LocalDateTime projectCreatedAt;// 创建时间
+
+    /**
+     * 项目价格
+     */
+    private Float projectPrice;
+
+    /**
+     * 解析关键字
+     */
+    private String keyword;
+
+    /**
+     * 验证码长度
+     */
+    private int codeLength;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime projectCreatedAt;
+
+    /**
+     * 更新时间
+     */
     private LocalDateTime projectUpdateAt;
 }
