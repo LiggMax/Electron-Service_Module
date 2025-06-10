@@ -5,6 +5,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -51,10 +52,10 @@ public interface ProjectService extends IService<ProjectEntity> {
     List<Integer> getProjectIdsByNames(List<String> projectNames);
 
     // 新增项目
-    void saveProject(String projectName,Float projectPrice);
+    void saveProject(ProjectEntity projectEntity);
 
     // 更新项目
-    void updateProject(Long projectId, Double projectPrice, String projectName);
+    void updateProject(ProjectEntity projectEntity);
 
     //根据项目名称查询信息
     Boolean nameFindProjectInfo(String projectName);

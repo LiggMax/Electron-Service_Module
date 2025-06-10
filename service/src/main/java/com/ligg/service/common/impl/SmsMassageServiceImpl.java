@@ -77,14 +77,14 @@ public class SmsMassageServiceImpl implements SmsMassageService {
                     result.put("projectId", String.valueOf(project.getProjectId()));
                     result.put("projectName", project.getProjectName());
                     result.put("phoneNumber", result.get("phoneNumber"));
-                    result.put("platform", project.getProjectName()); // 保持向后兼容
-                    result.put("smsContent", result.get("smsContent")); // 保持向后兼容
+                    result.put("verificationCode", result.get("verificationCode"));
+                    result.put("platform", project.getProjectName());
+                    result.put("smsContent", result.get("smsContent"));
                 }
                 allResults.addAll(resultList);
             }
         }
         log.info("提取的验证码和短信: {}", allResults);
-        log.info("提取的短信内容: {}", sms);
         log.info("提取的短信内容: {}", sms);
         return allResults;
     }
@@ -100,6 +100,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             //短信内容
             String messageContent = map.get("smsContent");
 
+            String code = map.get("verificationCode");
             //查询订单
             List<OrdersDto> orders = orderMapper.selectByPhoneNumber(phoneNumber);
 
@@ -116,13 +117,13 @@ public class SmsMassageServiceImpl implements SmsMassageService {
                         userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
                                 .eq(OrderEntity::getPhoneNumber, phoneNumber)
                                 .eq(OrderEntity::getProjectId, projectId.getProjectId())
-                                .set(OrderEntity::getCode, messageContent)
+                                .set(OrderEntity::getCode, code)
                                 .set(OrderEntity::getState, 1));
 
                         //更新缓存
                         try {
                             orderDto.setOrdersId(orderDto.getOrdersId());
-                            orderDto.setCode(messageContent);
+                            orderDto.setCode(code);
                             orderDto.setCreatedAt(LocalDateTime.now());
                             redisTemplate.opsForValue().set("user:orders:" + orderDto.getUserId() + ":" + orderDto.getOrdersId(),
                                     objectMapper.writeValueAsString(orderDto), 20, TimeUnit.MINUTES);

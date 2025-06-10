@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -66,6 +67,8 @@ public class SmsServiceImpl implements SmsService {
             }
         }
 
+        // 按创建时间降序排序（最新的在前面）
+        orders.sort(Comparator.comparing(CodeVo::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
         return orders;
     }
 }

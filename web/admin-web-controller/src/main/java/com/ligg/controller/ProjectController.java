@@ -3,6 +3,9 @@ package com.ligg.controller;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.ProjectService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +33,8 @@ public class ProjectController {
      * 添加项目
      */
     @PostMapping("/add")
-    public Result<String> addProject(@RequestParam String projectName,
-                                     @RequestParam Float projectPrice) {
-//        if(projectService.nameFindProjectInfo(projectName)){
-//            return Result.error(400, "项目已存在");
-//        }
-        projectService.saveProject(projectName, projectPrice);
+    public Result<String> addProject(@RequestBody ProjectEntity projectEntity) {
+        projectService.saveProject(projectEntity);
         return Result.success(200, "添加成功");
     }
 
@@ -43,10 +42,8 @@ public class ProjectController {
      * 修改项目
      */
     @PutMapping("/edit")
-    public Result<String> editProject(@RequestParam Long projectId,
-                                      @RequestParam Double projectPrice,
-                                      @RequestParam(required = false) String projectName) {
-        projectService.updateProject(projectId, projectPrice, projectName);
+    public Result<String> editProject(@RequestBody ProjectEntity projectEntity) {
+        projectService.updateProject(projectEntity);
         return Result.success(200, "修改成功");
     }
 

@@ -3,6 +3,9 @@ package com.ligg.common.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,11 +33,14 @@ public class ProjectEntity {
     /**
      * 解析关键字
      */
+    @NotNull
     private String keyword;
 
     /**
      * 验证码长度
      */
+    @Min(1)
+    @Max(20)
     private int codeLength;
 
     /**

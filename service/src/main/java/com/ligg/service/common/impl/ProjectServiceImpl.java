@@ -87,13 +87,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      * 添加项目
      */
     @Override
-    public void saveProject(String projectName, Float projectPrice) {
-
-        ProjectEntity projectEntity = new ProjectEntity();
-        projectEntity.setProjectName(projectName);
-        projectEntity.setProjectPrice(projectPrice);
-        projectEntity.setProjectCreatedAt(LocalDateTime.now());
-        projectMapper.insert(projectEntity);
+    public void saveProject(ProjectEntity project) {
+        projectMapper.insert(project);
     }
 
     /**
@@ -109,11 +104,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      * 编辑项目
      */
     @Override
-    public void updateProject(Long projectId, Double projectPrice, String projectName) {
+    public void updateProject(ProjectEntity project) {
         projectMapper.update(new LambdaUpdateWrapper<ProjectEntity>()
-                .eq(ProjectEntity::getProjectId, projectId)
-                .set(ProjectEntity::getProjectPrice, projectPrice)
-                .set(ProjectEntity::getProjectName, projectName)
+                .eq(ProjectEntity::getProjectId, project.getProjectId())
+                .set(ProjectEntity::getProjectPrice, project.getProjectPrice())
+                .set(ProjectEntity::getProjectName, project.getProjectName())
+                .set(ProjectEntity::getKeyword, project.getKeyword())
+                .set(ProjectEntity::getCodeLength, project.getCodeLength())
                 .set(ProjectEntity::getProjectUpdateAt, LocalDateTime.now()));
     }
 }
