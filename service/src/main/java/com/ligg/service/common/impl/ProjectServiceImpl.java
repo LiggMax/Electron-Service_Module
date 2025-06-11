@@ -70,20 +70,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
     }
 
     /**
-     * 批量根据项目名称查询项目ID
-     *
-     * @param projectNames 项目名称列表
-     * @return 项目ID列表
-     */
-    @Override
-    public List<Integer> getProjectIdsByNames(List<String> projectNames) {
-        if (projectNames == null || projectNames.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return projectMapper.getProjectIdsByNames(projectNames);
-    }
-
-    /**
      * 添加项目
      */
     @Override
@@ -91,14 +77,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
         projectMapper.insert(project);
     }
 
-    /**
-     * 根据项目名查询项目是否存在
-     */
-    @Override
-    public Boolean nameFindProjectInfo(String projectName) {
-        return projectMapper.selectOne(new LambdaQueryWrapper<ProjectEntity>()
-                .eq(ProjectEntity::getProjectName, projectName)) != null;
-    }
 
     /**
      * 编辑项目
@@ -112,5 +90,15 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
                 .set(ProjectEntity::getKeyword, project.getKeyword())
                 .set(ProjectEntity::getCodeLength, project.getCodeLength())
                 .set(ProjectEntity::getProjectUpdateAt, LocalDateTime.now()));
+    }
+
+    /**
+     * 项目图标上传
+     */
+    @Override
+    public void uploadIcon(Integer projectId, String iconUrl) {
+        projectMapper.update(new LambdaUpdateWrapper<ProjectEntity>()
+                .eq(ProjectEntity::getProjectId, projectId)
+                .set(ProjectEntity::getIcon, iconUrl));
     }
 }

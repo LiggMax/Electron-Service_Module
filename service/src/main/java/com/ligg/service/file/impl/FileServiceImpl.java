@@ -1,7 +1,7 @@
 package com.ligg.service.file.impl;
 
 import com.ligg.common.utils.DatePathUtils;
-import com.ligg.common.utils.minio.MinioProperties;
+import com.ligg.common.minio.MinioProperties;
 import com.ligg.service.file.FileService;
 import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
+
+import static com.ligg.common.minio.MinioBucketPolicyConfig.createBucketPolicyConfig;
 
 /**
  * 文件上传业务类
@@ -103,36 +105,33 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * 存储桶配置
-     * "Principal": "*" 表示允许所有用户访问。
-     * "Action": "s3:GetObject" 表示允许下载/读取对象
-     * "Action": "s3:PutObject" 表示允许上传/写入对象
-     * %s 是格式化占位符，会被传入的 bucketName 替换
+     * 图片上传
      */
-    private String createBucketPolicyConfig(String bucketName) {
-        return """
-                {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": "*",
-                            "Action": [
-                                "s3:GetObject"
-                            ],
-                            "Resource": "arn:aws:s3:::%s/*"
-                        },
-                        {
-                            "Effect": "Allow",
-                            "Principal": "*",
-                            "Action": [
-                                "s3:PutObject"
-                            ],
-                            "Resource": "arn:aws:s3:::%s/*"
-                        }
-                    ]
-                }
-                """.formatted(bucketName, bucketName);
-    }
+    @Override
+    public String uploadImage(MultipartFile image) {
+        try {
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(properties.getImage()).build())) {
+                minioClient.makeBucket(MakeBucketArgs.builder()
+                        .bucket(properties.getImage())
+                        .build());
+                minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                        .bucket(properties.getImage())
+                        .config(createBucketPolicyConfig(properties.getImage()))
+                        .build());
+            }
 
+            String datePath = DatePathUtils.generateYearMonthDayPath();
+            String fileName = String.join("/", datePath + UUID.randomUUID() + "-" + image.getOriginalFilename());
+            minioClient.putObject(PutObjectArgs.builder()
+                    .bucket(properties.getImage())
+                    .stream(image.getInputStream(), image.getSize(), -1)
+                    .contentType(image.getContentType())
+                    .object(fileName)
+                    .build());
+            return String.join("/", properties.getEndpoint(), properties.getImage(), fileName);
+        } catch (Exception e) {
+            log.error("上传失败: bucketName={}, error={}", properties.getImage(), e.getMessage(), e);
+        }
+        return null;
+    }
 }

@@ -8,4 +8,7 @@ public interface FileService {
 
     //上传APP
     String uploadApp(MultipartFile appFile, Integer app);
+
+    //图片上传
+    String uploadImage(MultipartFile image);
 }

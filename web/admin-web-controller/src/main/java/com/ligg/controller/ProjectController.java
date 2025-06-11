@@ -3,11 +3,13 @@ package com.ligg.controller;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.ProjectService;
+import com.ligg.service.file.FileService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private FileService fileService;
 
     /**
      * 项目列表
@@ -51,8 +56,19 @@ public class ProjectController {
      * 删除项目
      */
     @DeleteMapping
-    public Result<String> deleteProject(@RequestParam Long projectId) {
+    public Result<String> deleteProject(@RequestParam Integer projectId) {
         projectService.removeById(projectId);
         return Result.success(200, "删除成功");
+    }
+
+    /**
+     * 项目图标上传
+     */
+    @PostMapping("/uploadIcon")
+    public Result<String> uploadIcon(@RequestParam("projectId") @NotNull Integer projectId,
+                                     MultipartFile icon) {
+        String iconUrl = fileService.uploadImage(icon);
+        projectService.uploadIcon(projectId, iconUrl);
+        return Result.success(200, "上传成功");
     }
 }

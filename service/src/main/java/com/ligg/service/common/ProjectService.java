@@ -5,6 +5,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -44,19 +45,12 @@ public interface ProjectService extends IService<ProjectEntity> {
      */
     Integer getProjectIdByName(String projectName);
     
-    /**
-     * 批量根据项目名称查询项目ID
-     * @param projectNames 项目名称列表
-     * @return 项目ID列表
-     */
-    List<Integer> getProjectIdsByNames(List<String> projectNames);
-
     // 新增项目
     void saveProject(ProjectEntity projectEntity);
 
     // 更新项目
     void updateProject(ProjectEntity projectEntity);
 
-    //根据项目名称查询信息
-    Boolean nameFindProjectInfo(String projectName);
+    //上传项目图标
+    void uploadIcon(@NotNull Integer projectId, String iconUrl);
 }

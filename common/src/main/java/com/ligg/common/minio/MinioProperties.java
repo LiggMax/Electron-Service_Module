@@ -1,4 +1,4 @@
-package com.ligg.common.utils.minio;
+package com.ligg.common.minio;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,6 +20,7 @@ public class MinioProperties {
      * sk密钥
      */
     private String secretKey;
+
     /**
      * 用户头像存储桶
      */
@@ -29,4 +30,9 @@ public class MinioProperties {
      * app存储桶
      */
     private String downloadApp;
+
+    /**
+     * 图片存储桶
+     */
+    private String Image;
 }

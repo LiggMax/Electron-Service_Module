@@ -1,5 +1,6 @@
-package com.ligg.common.utils.minio;
+package com.ligg.entrance.config;
 
+import com.ligg.common.minio.MinioProperties;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableConfigurationProperties(MinioProperties.class)
-public class MinioConfiguration {
+public class MinioConfig {
 
     @Autowired
     private MinioProperties minioProperties;

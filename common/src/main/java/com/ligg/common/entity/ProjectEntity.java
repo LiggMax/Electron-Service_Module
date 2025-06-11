@@ -31,6 +31,11 @@ public class ProjectEntity {
     private Float projectPrice;
 
     /**
+     * 项目图标
+     */
+    private String icon;
+
+    /**
      * 解析关键字
      */
     @NotNull
