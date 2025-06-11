@@ -16,7 +16,24 @@ import java.time.LocalDateTime;
 public class RegionEntity {
     @TableId(type = IdType.AUTO)
     private Integer regionId;
+
+    /**
+     * 区域名称
+     */
     private String regionName;
+
+    /**
+     * 区域标识
+     */
     private String regionMark;
+
+    /**
+     * 区域图标
+     */
+    private String icon;
+
+    /**
+     * 创建时间
+     */
     private LocalDateTime regionCreatedAt;
 }

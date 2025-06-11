@@ -3,8 +3,10 @@ package com.ligg.controller;
 import com.ligg.common.entity.RegionEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.RegionService;
+import com.ligg.service.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,9 @@ public class RegionController {
 
     @Autowired
     private RegionService regionService;
+
+    @Autowired
+    private FileService fileService;
 
     /**
      * 添加地区
@@ -47,5 +52,19 @@ public class RegionController {
     public Result<String> deleteRegion(@RequestParam Integer regionId) {
         regionService.removeById(regionId);
         return Result.success(200, "删除成功");
+    }
+
+    /**
+     * 添加地区图标
+     */
+    @PostMapping("/upload_region_icon")
+    public Result<String> uploadRegionIcon(@RequestParam Integer regionId,
+                                           @RequestParam MultipartFile iconFile) {
+        if (iconFile.getSize() > 1024 * 1024 * 10) {
+            return Result.error(400, "文件大小不不合法");
+        }
+        String iconUrl = fileService.uploadImage(iconFile);
+        regionService.updateRegionIcon(regionId, iconUrl);
+        return Result.success(200, "上传成功");
     }
 }

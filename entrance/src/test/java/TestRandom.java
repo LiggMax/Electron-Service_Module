@@ -23,6 +23,11 @@ public class TestRandom {
 
     @Test
     public void test(){
-        System.out.println(redisTemplate.opsForValue().get("Token:1"));
+
+        String url = "https://www.baidu.com/";
+
+        String urls = url.substring(0, 5);
+
+        System.out.println(urls);
     }
 }
