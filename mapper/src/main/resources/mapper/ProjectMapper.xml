@@ -34,9 +34,10 @@
 
     <!--获取项目所有地区和每个地区的手机号数量-->
     <select id="getProjectCommodityList" resultType="com.ligg.common.dto.RegionCommodityDto">
-        SELECT r.region_id         as regionId,
-               r.region_name       as regionName,
-               r.region_mark       as regionMark,
+        SELECT r.region_id,
+               r.region_name,
+               r.region_mark,
+               r.icon,
                COUNT(ppr.phone_id) as phoneCount
         FROM phone_project_relation ppr
                  left join region r on ppr.region_id = r.region_id

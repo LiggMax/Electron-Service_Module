@@ -7,9 +7,11 @@
         select uo.orders_id,
                uo.state,
                p.project_name,
+               p.icon as projectIcon,
                uo.phone_number,
                uo.created_at,
-               r.region_name
+               r.region_name,
+               r.icon as regionIcon
         from orders uo
                  join project p on uo.project_id = p.project_id
                  join region r on uo.region_id = r.region_id

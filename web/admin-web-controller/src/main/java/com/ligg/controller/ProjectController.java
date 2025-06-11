@@ -64,7 +64,7 @@ public class ProjectController {
     /**
      * 项目图标上传
      */
-    @PostMapping("/uploadIcon")
+    @PostMapping("/upload_icon")
     public Result<String> uploadIcon(@RequestParam("projectId") @NotNull Integer projectId,
                                      @RequestParam("icon") MultipartFile icon) {
         if (icon.getSize() > 10 * 1024 * 1024) {
