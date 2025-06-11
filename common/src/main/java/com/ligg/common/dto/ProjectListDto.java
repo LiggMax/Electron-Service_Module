@@ -23,7 +23,12 @@ public class ProjectListDto {
      * 项目价格
      */
     private Double projectPrice;
-    
+
+    /**
+     * 项目图标
+     */
+    private String icon;
+
     /**
      * 项目手机号数量
      */

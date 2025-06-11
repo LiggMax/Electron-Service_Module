@@ -66,7 +66,10 @@ public class ProjectController {
      */
     @PostMapping("/uploadIcon")
     public Result<String> uploadIcon(@RequestParam("projectId") @NotNull Integer projectId,
-                                     MultipartFile icon) {
+                                     @RequestParam("icon") MultipartFile icon) {
+        if (icon.getSize() > 10 * 1024 * 1024) {
+            return Result.error(400, "文件大小不合法");
+        }
         String iconUrl = fileService.uploadImage(icon);
         projectService.uploadIcon(projectId, iconUrl);
         return Result.success(200, "上传成功");

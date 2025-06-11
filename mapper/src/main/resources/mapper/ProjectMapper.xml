@@ -4,9 +4,10 @@
 
     <!-- 查询项目列表 -->
     <select id="getAllProjectsList" resultType="com.ligg.common.dto.ProjectListDto">
-        SELECT p.project_id        AS projectId,
-               p.project_name      AS projectName,
-               p.project_price     AS projectPrice,
+        SELECT p.project_id,
+               p.project_name,
+               p.project_price,
+               p.icon,
                count(ppr.phone_id) AS phoneCount
         FROM project p
                  left join phone_project_relation ppr on p.project_id = ppr.project_id
@@ -21,7 +22,7 @@
         FROM phone p
         JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
         JOIN project pj ON ppr.project_id = pj.project_id
-        WHERE p.usage_status = 1 
+        WHERE p.usage_status = 1
         AND p.line_status = 1
         <if test="projectNames != null and projectNames.length > 0">
             AND pj.project_name IN
@@ -33,34 +34,30 @@
 
     <!--获取项目所有地区和每个地区的手机号数量-->
     <select id="getProjectCommodityList" resultType="com.ligg.common.dto.RegionCommodityDto">
-        SELECT 
-            r.region_id as regionId,
-            r.region_name as regionName,
-            r.region_mark as regionMark,
-            COUNT(ppr.phone_id) as phoneCount
-        FROM 
-           phone_project_relation ppr
-        left join region r on ppr.region_id = r.region_id
-        WHERE
-            ppr.project_id = #{projectId} AND ppr.is_available = 0
-        GROUP BY
-            r.region_id, r.region_name, r.region_mark
-        ORDER BY 
-            phoneCount DESC
+        SELECT r.region_id         as regionId,
+               r.region_name       as regionName,
+               r.region_mark       as regionMark,
+               COUNT(ppr.phone_id) as phoneCount
+        FROM phone_project_relation ppr
+                 left join region r on ppr.region_id = r.region_id
+        WHERE ppr.project_id = #{projectId}
+          AND ppr.is_available = 0
+        GROUP BY r.region_id, r.region_name, r.region_mark
+        ORDER BY phoneCount DESC
     </select>
 
     <!--获取所有项目数据-->
     <select id="getProject" resultType="com.ligg.common.entity.ProjectEntity">
-        select project_id,project_name,project_price,project_created_at
+        select project_id, project_name, project_price, project_created_at
         from project
     </select>
 
     <!--获取所有地区-->
     <select id="getRegion" resultType="com.ligg.common.entity.RegionEntity">
-        select region_id,region_name,region_mark
+        select region_id, region_name, region_mark
         from region
     </select>
-    
+
     <!--根据项目名称查询项目ID-->
     <select id="getProjectIdByName" resultType="java.lang.Integer">
         SELECT project_id
@@ -68,7 +65,7 @@
         WHERE project_name = #{projectName}
         LIMIT 1
     </select>
-    
+
     <!--批量根据项目名称查询项目ID列表-->
     <select id="getProjectIdsByNames" resultType="java.lang.Integer">
         SELECT project_id
