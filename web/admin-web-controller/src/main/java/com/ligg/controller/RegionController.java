@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.RegionEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.RegionService;
@@ -15,7 +16,7 @@ import java.util.List;
  * 地区管理
  */
 @RestController
-@RequestMapping("/api/adminWeb/region")
+@RequestMapping("/api/admin_web/region")
 public class RegionController {
 
     @Autowired
@@ -27,7 +28,7 @@ public class RegionController {
     /**
      * 添加地区
      */
-    @PostMapping("/saveOrUpdateRegion")
+    @PostMapping("/save_or_update_region")
     public Result<String> addRegion(@RequestBody RegionEntity regionEntity) {
         //添加或修改
         regionEntity.setRegionCreatedAt(LocalDateTime.now());
@@ -42,7 +43,8 @@ public class RegionController {
     public Result<List<RegionEntity>> getRegionList() {
         return Result.success(200, regionService
                 .getBaseMapper()
-                .selectList(null));
+                .selectList(new LambdaQueryWrapper<RegionEntity>()
+                        .orderByDesc(RegionEntity::getRegionId)));
     }
 
     /**

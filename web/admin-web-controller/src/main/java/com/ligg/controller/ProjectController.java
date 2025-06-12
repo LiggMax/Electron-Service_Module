@@ -1,12 +1,11 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.ProjectService;
 import com.ligg.service.file.FileService;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,7 @@ import java.util.List;
  * 项目管理
  */
 @RestController
-@RequestMapping("/api/adminWeb/project")
+@RequestMapping("/api/admin_web/project")
 public class ProjectController {
 
     @Autowired
@@ -31,7 +30,9 @@ public class ProjectController {
      */
     @GetMapping
     public Result<List<ProjectEntity>> getProjectList() {
-        return Result.success(200, projectService.getBaseMapper().selectList(null));
+        return Result.success(200, projectService.getBaseMapper()
+                .selectList(new LambdaQueryWrapper<ProjectEntity>()
+                        .orderByDesc(ProjectEntity::getProjectUpdateAt)));
     }
 
     /**
