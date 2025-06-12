@@ -1,6 +1,5 @@
 package com.ligg.service.impl;
 
-import com.ligg.common.entity.adminweb.CustomerBillEntity;
 import com.ligg.common.entity.adminweb.OrderBillEntity;
 import com.ligg.common.vo.CustomerBillVo;
 import com.ligg.common.vo.OrderBillVo;
@@ -30,11 +29,11 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<CustomerBillVo> getCustomerBill() {
-        List<CustomerBillEntity> customerBillList = customerBillMapper.selectList(null);
+        List<CustomerBillVo> customerBill = customerBillMapper.selectCustomersBill();
 
         //TODO 暂时将数据转换成vo，后续添加新数据
         List<CustomerBillVo> customerBillVoList = new ArrayList<>();
-        for (CustomerBillEntity entity : customerBillList) {
+        for (CustomerBillVo entity : customerBill) {
             CustomerBillVo vo = new CustomerBillVo();
             BeanUtils.copyProperties(entity, vo);
             customerBillVoList.add(vo);

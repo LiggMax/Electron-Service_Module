@@ -1,45 +1,32 @@
 package com.ligg.common.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ligg.common.entity.adminweb.CustomerBillEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 
 /**
  * @Author Ligg
  * @Time 2025/6/5
+ *
+ * 客户账单VO
  **/
 @Data
-public class CustomerBillVo {
-    private String id;
+@EqualsAndHashCode(callSuper = true)
+public class CustomerBillVo extends CustomerBillEntity {
 
     /**
-     * 1:充值，2：消费
+     * 客户昵称
      */
-    private Integer billType;
+    private String nickName;
 
     /**
-     * 金额
+     * 客户头像
      */
-    private Float amount;
-    /**
-     * 用户id
-     */
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Long userId;
+    private String userAvatar;
 
     /**
-     * 1:客户，2：卡商
+     * 客户账号
      */
-    private Integer isUserType;
-
-    /**
-     * 购买时间
-     */
-    private LocalDateTime purchaseTime;
-
-    /**
-     * 订单备注
-     */
-    private String remark;
+    private String account;
 }
