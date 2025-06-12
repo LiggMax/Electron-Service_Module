@@ -7,9 +7,14 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CustomerMapper extends BaseMapper<UserEntity> {
 
+
     /**
-     * 更新用户余额
-     * 用于客户订单退款
+     * 充值用户余额
      */
-    int updateUserMoney(Long userId, Float money);
+    void addUserMoney(Long userId, Float balance);
+
+    /**
+     * 扣款用户余额
+     */
+    void subtractUserMoney(Long userId, Float balance);
 }

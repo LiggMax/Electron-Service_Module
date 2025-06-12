@@ -2,10 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ligg.mapper.user.CustomerMapper">
 
-    <!-- 更新用户余额 -->
-    <update id="updateUserMoney">
+    <!-- 充值余额 -->
+    <update id="addUserMoney">
         update users
-        set money = money + #{money}
+        set money = money + #{balance}
+        where user_id = #{userId}
+    </update>
+
+    <!-- 扣除余额 -->
+    <update id="subtractUserMoney">
+        update users
+        set money = money - #{balance}
         where user_id = #{userId}
     </update>
 </mapper>

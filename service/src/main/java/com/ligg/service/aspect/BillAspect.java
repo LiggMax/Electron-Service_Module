@@ -35,6 +35,7 @@ public class BillAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Object[] args = joinPoint.getArgs();
+        String methodName = method.getName();
 
         // 获取注解信息
         Bill billAnnotation = method.getAnnotation(Bill.class);
@@ -51,6 +52,8 @@ public class BillAspect {
             // 根据不同的业务场景记录账单
             if (isRefundScenario(args)) {
                 handleRefundBill(args, billAnnotation, processTime);
+            } else if (isBalanceUpdateScenario(args, methodName)) {
+                handleBalanceUpdateBill(args, billAnnotation, processTime);
             } else if (isPurchaseScenario(result)) {
                 handlePurchaseBill(result, userId, billAnnotation, processTime);
             }
@@ -76,6 +79,15 @@ public class BillAspect {
      */
     private boolean isPurchaseScenario(Object result) {
         return result instanceof Map && Boolean.TRUE.equals(((Map<?, ?>) result).get("success"));
+    }
+
+    /**
+     * 判断是否为余额更新场景
+     */
+    private boolean isBalanceUpdateScenario(Object[] args, String methodName) {
+        // 检查方法名包含balance或者参数符合余额更新的特征
+        return methodName.contains("Balance") || methodName.contains("balance") ||
+                (args.length >= 3 && args[0] instanceof Long && args[1] instanceof Float && args[2] instanceof Boolean);
     }
 
     /**
@@ -122,6 +134,22 @@ public class BillAspect {
                         billAnnotation.billType(), billAnnotation.remark(), processTime);
             }
         }
+    }
+
+    /**
+     * 处理余额更新账单记录
+     */
+    private void handleBalanceUpdateBill(Object[] args, Bill billAnnotation, LocalDateTime processTime) {
+        // 解析余额更新参数：updateBalance(Long userId, Float balance, Boolean isType)
+        Long userId = (Long) args[0];
+        Float balance = (Float) args[1];
+        Boolean isType = (Boolean) args[2]; // true为加款，false为减款
+        int billType = isType ? 1 : 2; // 1为增加，2为减少
+        String remark = billType == 1 ? "后台充值" : "后台扣款";
+
+        // 记录余额变动账单
+        saveBillRecord(userId, balance, billAnnotation.isUserType(),
+                billType, remark, processTime);
     }
 
     /**

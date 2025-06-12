@@ -1,5 +1,6 @@
 package com.ligg.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.adminweb.OrderBillEntity;
 import com.ligg.common.vo.CustomerBillVo;
 import com.ligg.common.vo.OrderBillVo;
@@ -45,7 +46,8 @@ public class BillServiceImpl implements BillService {
     @Override
     public BillVo getOrderBill() {
         // 获取所有订单账单数据
-        List<OrderBillEntity> orderBillList = orderBillMapper.selectList(null);
+        List<OrderBillEntity> orderBillList = orderBillMapper.selectList(new LambdaQueryWrapper<OrderBillEntity>()
+                .orderByDesc(OrderBillEntity::getStartTime));
 
         // 转换为VO列表
         List<OrderBillVo> orderBillVoList = new ArrayList<>();

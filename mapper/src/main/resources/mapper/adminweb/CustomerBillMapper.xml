@@ -15,5 +15,6 @@
                u.account
         from customer_bill cb
                  left join users u on cb.user_id = u.user_id
+        order by cb.purchase_time desc 
     </select>
 </mapper>

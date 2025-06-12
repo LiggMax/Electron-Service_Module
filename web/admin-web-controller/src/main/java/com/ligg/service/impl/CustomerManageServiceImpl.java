@@ -6,6 +6,7 @@ import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.user.CustomerMapper;
 import com.ligg.service.CustomerManageService;
+import com.ligg.service.annotation.Bill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -55,8 +56,26 @@ public class CustomerManageServiceImpl extends ServiceImpl<CustomerMapper, UserE
     }
 
 
+    /**
+     * 修改用户信息
+     */
     @Override
     public void updateCustomerInfoById(UserEntity userEntity) {
         customerMapper.updateById(userEntity);
+    }
+
+    /**
+     * 更新余额
+     */
+    @Bill
+    @Override
+    public void updateBalance(Long userId, Float balance, Boolean isType) {
+        if (isType) {
+            //加款
+            customerMapper.addUserMoney(userId, balance);
+        } else {
+            //减款
+            customerMapper.subtractUserMoney(userId, balance);
+        }
     }
 }

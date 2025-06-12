@@ -22,14 +22,14 @@ import java.util.UUID;
 public class CustomerController {
 
     @Autowired
-    private CustomerManageService userService;
+    private CustomerManageService customerManageService;
 
     /**
      * 客户列表
      */
     @GetMapping("/user")
     public Result<List<UserEntity>> getUserList() {
-        List<UserEntity> userEntities = userService.getBaseMapper().selectList(null);
+        List<UserEntity> userEntities = customerManageService.getBaseMapper().selectList(null);
         return Result.success(200, userEntities);
     }
 
@@ -38,16 +38,17 @@ public class CustomerController {
      */
     @PutMapping("/status")
     public Result<String> updateUserStatus(@RequestParam Long userId, @RequestParam Boolean status) {
-        userService.updateUserStatus(userId, status);
+        customerManageService.updateUserStatus(userId, status);
         return Result.success(200, "更新成功");
     }
 
     /**
      * 编辑客户个人信息
      */
+    //TODO 接口有被修改客户金融的风险 需要修改
     @PutMapping("/edit")
     public Result<String> updateUserInfo(@Validated @RequestBody UserEntity userEntity) {
-        userService.updateCustomerInfoById(userEntity);
+        customerManageService.updateCustomerInfoById(userEntity);
         return Result.success(200, "更新成功");
     }
 
@@ -60,7 +61,7 @@ public class CustomerController {
                                         @Min(value = 6, message = "密码长度不能小于6位")
                                         @Max(value = 16, message = "密码长度不能超过16位")
                                         String password) {
-        userService.updatePassword(userId, password);
+        customerManageService.updatePassword(userId, password);
         return Result.success(200, "重置成功");
     }
 
@@ -78,7 +79,7 @@ public class CustomerController {
         userEntity.setNickName(nickName);
         userEntity.setEmail(email);
         userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
-        userService.saveUser(userEntity);
+        customerManageService.saveUser(userEntity);
         return Result.success(200, "添加成功");
     }
 
@@ -86,8 +87,19 @@ public class CustomerController {
      * 删除客户
      */
     @DeleteMapping("/deleteUser")
-    public Result<String> deleteUser(@RequestParam Long userId){
-        userService.removeById(userId);
-        return Result.success(200,"删除成功");
+    public Result<String> deleteUser(@RequestParam Long userId) {
+        customerManageService.removeById(userId);
+        return Result.success(200, "删除成功");
+    }
+
+    /**
+     * 客户余额编辑
+     */
+    @PutMapping("/edit_balance")
+    public Result<String> editBalance(@RequestParam Long userId,
+                                      @RequestParam Float balance,
+                                      @RequestParam Boolean isType) {
+        customerManageService.updateBalance(userId, balance, isType);
+        return Result.success(200, "编辑成功");
     }
 }

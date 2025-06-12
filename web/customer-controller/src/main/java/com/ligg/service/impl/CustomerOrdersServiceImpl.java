@@ -53,7 +53,7 @@ public class CustomerOrdersServiceImpl implements CustomerOrdersService {
     public void refundOrderAndUpdateRelation(OrderEntity orderInfo) {
         if (orderInfo.getState() == 0) {
             //退款
-            customerMapper.updateUserMoney(orderInfo.getUserId(), orderInfo.getProjectMoney());
+            customerMapper.addUserMoney(orderInfo.getUserId(), orderInfo.getProjectMoney());
             //回滚号码项目关联状态为可用
             PhoneEntity phone = phoneNumberMapper.getPhoneByNumber(orderInfo.getPhoneNumber());
             phoneProjectRelationMapper.rollbackAvailableStatus(phone.getPhoneId(), orderInfo.getProjectId());

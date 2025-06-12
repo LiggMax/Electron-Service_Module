@@ -13,4 +13,7 @@ public interface CustomerManageService extends IService<UserEntity> {
 
     //修改客户信息
     void updateCustomerInfoById(UserEntity userEntity);
+
+    //修改客户余额
+    void updateBalance(Long userId, Float balance, Boolean isType);
 }
