@@ -6,6 +6,7 @@ import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.mapper.MerchantMapper;
 import com.ligg.service.AdminMerchantUserService;
+import com.ligg.service.annotation.Bill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,16 +53,18 @@ public class AdminMerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Me
         merchantMapper.updateById(merchantEntity);
     }
 
+
     /**
      * 提现
      */
+    @Bill(remark = "卡商提现", isUserType = 1)
     @Override
     public void payouts(Long userId, Float balance, Boolean isType) {
-        if (isType) {
-            merchantMapper.payouts(userId, balance);
-        } else {
+        if (!isType) {
             //TODO 后续实现充值功能
             return;
+        } else {
+            merchantMapper.payouts(userId, balance);
         }
     }
 }
