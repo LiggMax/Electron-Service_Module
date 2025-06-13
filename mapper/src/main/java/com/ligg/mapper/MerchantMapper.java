@@ -13,4 +13,7 @@ public interface MerchantMapper extends BaseMapper<MerchantEntity> {
 
     //卡商结算
     void amountSettlement(Long userId, BigDecimal remainingAmount);
+
+    //卡商提现
+    void payouts(Long userId, Float balance);
 }

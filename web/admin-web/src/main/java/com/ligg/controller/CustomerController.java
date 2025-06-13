@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.CustomerManageService;
@@ -29,7 +30,9 @@ public class CustomerController {
      */
     @GetMapping("/user")
     public Result<List<UserEntity>> getUserList() {
-        List<UserEntity> userEntities = customerManageService.getBaseMapper().selectList(null);
+        List<UserEntity> userEntities = customerManageService.getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserEntity>()
+                        .orderByDesc(UserEntity::getCreatedAt));
         return Result.success(200, userEntities);
     }
 

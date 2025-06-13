@@ -51,4 +51,17 @@ public class AdminMerchantUserServiceImpl extends ServiceImpl<MerchantMapper, Me
     public void updateEditById(MerchantEntity merchantEntity) {
         merchantMapper.updateById(merchantEntity);
     }
+
+    /**
+     * 提现
+     */
+    @Override
+    public void payouts(Long userId, Float balance, Boolean isType) {
+        if (isType) {
+            merchantMapper.payouts(userId, balance);
+        } else {
+            //TODO 后续实现充值功能
+            return;
+        }
+    }
 }

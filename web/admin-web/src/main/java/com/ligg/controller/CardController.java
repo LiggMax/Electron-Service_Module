@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminMerchantUserService;
@@ -14,7 +15,7 @@ import java.util.List;
  * 卡商
  */
 @RestController
-@RequestMapping("/api/card")
+@RequestMapping("/api/admin_web/card")
 public class CardController {
 
     @Autowired
@@ -25,7 +26,10 @@ public class CardController {
      */
     @GetMapping
     public Result<List<MerchantEntity>> getCardList() {
-        return Result.success(200, merchantUserService.getBaseMapper().selectList(null));
+        return Result.success(200, merchantUserService.getBaseMapper()
+                .selectList(new LambdaQueryWrapper<MerchantEntity>()
+                        .orderByDesc(MerchantEntity::getCreatedAt)
+                        .orderByDesc(MerchantEntity::getUpdatedAt)));
     }
 
     /**
@@ -34,7 +38,7 @@ public class CardController {
     @PutMapping("/edit")
     public Result<String> updateCardInfo(@Validated @RequestBody MerchantEntity merchantEntity) {
         merchantUserService.updateEditById(merchantEntity);
-        return Result.success(200,"修改成功");
+        return Result.success(200, "修改成功");
     }
 
     /**
@@ -51,7 +55,7 @@ public class CardController {
         merchantEntity.setNickName(nickName);
         merchantEntity.setEmail(email);
         merchantUserService.saveCardUser(merchantEntity);
-        return Result.success(200,"添加成功");
+        return Result.success(200, "添加成功");
     }
 
     /**
@@ -59,19 +63,31 @@ public class CardController {
      */
     @PutMapping("/reset")
     public Result<String> resetPassword(@RequestParam Long userId,
-                                        @Min(value = 6,message = "密码长度不能小于6位")
-                                        @Max (value = 20,message = "密码长度不能大于20位")
-                                        @RequestParam String password){
+                                        @Min(value = 6, message = "密码长度不能小于6位")
+                                        @Max(value = 20, message = "密码长度不能大于20位")
+                                        @RequestParam String password) {
         merchantUserService.resetPassword(userId, password);
-        return Result.success(200,"重置成功");
+        return Result.success(200, "重置成功");
     }
 
     /**
      * 删除卡商
      */
     @DeleteMapping("/deleteCard")
-    public Result<String> deleteCardInfo(@RequestParam Long userId){
+    public Result<String> deleteCardInfo(@RequestParam Long userId) {
         merchantUserService.removeById(userId);
-        return Result.success(200,"删除成功");
+        return Result.success(200, "删除成功");
     }
+
+    /**
+     * 卡商提现
+     */
+    @PutMapping("/payouts")
+    public Result<String> payouts(@RequestParam Long userId,
+                                  @RequestParam Float balance,
+                                  @RequestParam Boolean isType) {
+        merchantUserService.payouts(userId, balance, isType);
+        return Result.success(200, "提现成功");
+    }
+
 }

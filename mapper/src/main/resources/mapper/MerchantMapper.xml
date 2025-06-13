@@ -9,6 +9,13 @@
         where user_id = #{userId}
     </update>
 
+    <!--  卡商提现 -->
+    <update id="payouts">
+        update merchant
+        set money = money - #{balance}
+        where user_id = #{userId}
+    </update>
+
     <!--根据手机号查询卡商信息 -->
     <select id="selectByPhoneGetAdminUser" resultType="com.ligg.common.entity.admin.MerchantEntity">
         select au.user_id,

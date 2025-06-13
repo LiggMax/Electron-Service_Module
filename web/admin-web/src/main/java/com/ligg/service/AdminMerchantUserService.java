@@ -19,4 +19,10 @@ public interface AdminMerchantUserService extends IService<MerchantEntity> {
     //修改卡商信息
     void updateEditById(MerchantEntity merchantEntity);
 
+    /**
+     * 提现
+     *
+     * @param isType true:提现 false:充值
+     */
+    void payouts(Long userId, Float balance, Boolean isType);
 }
