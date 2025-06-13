@@ -17,25 +17,25 @@
     <dependencies>
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>merchant-controller</artifactId>
+            <artifactId>merchant</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>customer-controller</artifactId>
+            <artifactId>customer</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>admin-web-controller</artifactId>
+            <artifactId>admin-web</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.ligg</groupId>
-            <artifactId>filer-controller</artifactId>
+            <artifactId>filer</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 

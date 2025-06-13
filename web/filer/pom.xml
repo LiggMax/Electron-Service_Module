@@ -9,19 +9,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>admin-web-controller</artifactId>
+    <artifactId>filer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>admin-web-controller</name>
-    <description>admin-web-controller</description>
+    <name>file-service</name>
+    <description>用户接口控制器</description>
     <packaging>jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>com.ligg</groupId>
-            <artifactId>customer-controller</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.ligg</groupId>
             <artifactId>common</artifactId>

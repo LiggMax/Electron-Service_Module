@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>merchant-controller</artifactId>
+    <artifactId>merchant</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>merchant-controller</name>
     <description>管理后台接口控制器</description>
