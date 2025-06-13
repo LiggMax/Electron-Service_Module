@@ -2,7 +2,9 @@ package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.ProjectEntity;
+import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
 import com.ligg.common.utils.Result;
+import com.ligg.service.ProjectKeyWordService;
 import com.ligg.service.common.ProjectService;
 import com.ligg.service.file.FileService;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +26,9 @@ public class ProjectController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private ProjectKeyWordService projectKeyWordService;
 
     /**
      * 项目列表
@@ -74,5 +79,23 @@ public class ProjectController {
         String iconUrl = fileService.uploadImage(icon);
         projectService.uploadIcon(projectId, iconUrl);
         return Result.success(200, "上传成功");
+    }
+
+    /**
+     * 添加项目关键词设置
+     */
+    @PostMapping("/keywords")
+    public Result<String> setKeywords(@RequestBody ProjectKeyWordEntity projectKeyWord) {
+        projectKeyWordService.saveKeyWord(projectKeyWord);
+        return Result.success();
+    }
+
+    /**
+     * 获取项目关键词设置
+     */
+    @GetMapping("/keywords")
+    public Result<List<ProjectKeyWordEntity>> getKeywords(@RequestParam Integer projectId) {
+        List<ProjectKeyWordEntity> keyWordDate = projectKeyWordService.getKeyWordByProjectId(projectId);
+        return Result.success(200, keyWordDate);
     }
 }

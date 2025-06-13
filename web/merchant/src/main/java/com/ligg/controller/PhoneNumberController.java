@@ -73,12 +73,10 @@ public class PhoneNumberController {
     @GetMapping("/phoneDetail")
     public Result<PhoneAndProjectDto> phoneDetail(Long phoneId) {
         if (phoneId == null) {
-            log.info("查询号码详情缺少Id");
             return Result.error(400, "请求参数错误");
         }
         Map<String, Object> userInfo = jwtUtil.parseToken(request.getHeader("Token"));
         if (userInfo == null || userInfo.get("userId") == null) {
-            log.info("查询号码详情缺少用户id");
             return Result.error(400, "请求参数错误");
         }
         Long adminUserId = (Long) userInfo.get("userId");

@@ -1,7 +1,6 @@
 package com.ligg.common.utils;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.stereotype.Component;
 
 /**
  * BCrypt 密码加密工具类

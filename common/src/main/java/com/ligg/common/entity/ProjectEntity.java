@@ -35,6 +35,7 @@ public class ProjectEntity {
      */
     private String icon;
 
+    //TODO 关键词和验证码长度需要删除
     /**
      * 解析关键字
      */

@@ -19,8 +19,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${ignore.urls}")
-    private String[] URLS;
     @Autowired
     private LoginInterceptors loginInterceptors;
     @Autowired
@@ -32,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptors)
                 .order(1)
                 //放行路径
-                .excludePathPatterns("/api/admin/account/**",
+                .excludePathPatterns("/api/merchant/account/**",
                         "/api/user/account/**",
                         "/api/sms/**",
                         "/api/version/**",
@@ -52,16 +50,16 @@ public class WebConfig implements WebMvcConfigurer {
     /**
      * 跨域配置
      */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")// 允许跨域访问的路径
-                .allowedOriginPatterns(URLS) // 使用通配符模式允许所有来源
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")// 允许跨域访问的方法
-                .allowedHeaders("*")// 允许跨域访问的头
-                .exposedHeaders("*") // 允许客户端访问的响应头
-                .allowCredentials(true)// 是否允许发送cookie
-                .maxAge(3600);// 预检间隔时间
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")// 允许跨域访问的路径
+//                .allowedOriginPatterns(URLS) // 使用通配符模式允许所有来源
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")// 允许跨域访问的方法
+//                .allowedHeaders("*")// 允许跨域访问的头
+//                .exposedHeaders("*") // 允许客户端访问的响应头
+//                .allowCredentials(true)// 是否允许发送cookie
+//                .maxAge(3600);// 预检间隔时间
+//    }
 
     /**
      * 配置CORS过滤器，确保在拦截器之前处理跨域
