@@ -56,8 +56,11 @@
         LEFT JOIN merchant au ON p.admin_user_id = au.user_id
         LEFT JOIN project pj ON ppr.project_id = pj.project_id
         <where>
-            <if test="countryCode != null and countryCode != '' ">
-                r.region_name like concat('%', #{countryCode}, '%')
+            <if test="regionId != null and regionId != '' ">
+                r.region_id = #{regionId}
+            </if>
+            <if test="projectId != null and projectId != ''">
+                and ppr.project_id = #{projectId}
             </if>
             <if test="keyword != null and keyword != ''">
                 and (p.phone_number like concat('%', #{keyword}, '%')

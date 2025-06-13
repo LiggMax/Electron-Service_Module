@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/admin/phone")
+@RequestMapping("/api/merchant/phone")
 public class PhoneNumberController {
 
 
@@ -54,11 +54,12 @@ public class PhoneNumberController {
     @GetMapping("/list")
     public Result<List<PhoneVo>> phoneList(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String countryCode) {
+            @RequestParam(required = false) Integer regionId,
+            @RequestParam(required = false) Integer projectId) {
         try {
             Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
             Long adminUserId = (Long) map.get("userId");
-            List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId, countryCode, keyword);
+            List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId, regionId, projectId, keyword);
             return Result.success(200, phoneList);
         } catch (Exception e) {
             log.error("查询卡号数据失败: {}", e.getMessage(), e);

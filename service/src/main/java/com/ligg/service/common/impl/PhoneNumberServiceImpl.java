@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneEntity> implements PhoneNumberService {
+public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper, PhoneEntity> implements PhoneNumberService {
 
     @Autowired
     private PhoneNumberMapper phoneNumberMapper;
@@ -35,8 +35,8 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
      * 获取卡商号码列表
      */
     @Override
-    public List<PhoneVo> phoneList(Long adminUserId, String countryCode, String keyword) {
-        return phoneNumberMapper.phoneList(adminUserId,countryCode, keyword);
+    public List<PhoneVo> phoneList(Long adminUserId, Integer regionId, Integer projectId, String keyword) {
+        return phoneNumberMapper.phoneList(adminUserId, regionId, projectId, keyword);
     }
 
 
@@ -52,22 +52,22 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         try {
             // 创建基础DTO对象
             PhoneAndProjectDto dto = new PhoneAndProjectDto();
-            
+
             // 获取手机号基本信息
             PhoneEntity phoneEntity = phoneNumberMapper.getPhoneByNumber(phoneNumber);
             if (phoneEntity == null) {
                 System.out.println("未找到手机号: " + phoneNumber);
                 return null;
             }
-            
+
             // 设置基本信息
             dto.setPhoneNumber(phoneNumber);
             dto.setRegistrationTime(phoneEntity.getRegistrationTime());
-            
+
             // 获取项目列表
             List<ProjectEntity> projects = phoneNumberMapper.getProjectByPhoneNumber(phoneNumber);
             dto.setProjects(projects);
-            
+
             return dto;
         } catch (Exception e) {
             System.out.println("根据手机号查询详情失败: phoneNumber=" + phoneNumber + ", error=" + e.getMessage());
@@ -79,9 +79,9 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
      * 批量添加手机号
      *
      * @param phoneNumbers 手机号列表
-     * @param regionId 地区ID
-     * @param projectIds 项目ID列表
-     * @param adminUserId 管理员用户ID
+     * @param regionId     地区ID
+     * @param projectIds   项目ID列表
+     * @param adminUserId  管理员用户ID
      * @return 成功添加的数量
      */
     @Override
@@ -89,35 +89,35 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
     public int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId) {
         // 参数校验
         if (CollectionUtils.isEmpty(phoneNumbers) || CollectionUtils.isEmpty(projectIds) || regionId == null) {
-            log.warn("批量添加手机号参数无效: phoneNumbers={}, regionId={}, projectIds={}", 
+            log.warn("批量添加手机号参数无效: phoneNumbers={}, regionId={}, projectIds={}",
                     phoneNumbers, regionId, projectIds);
             return 0;
         }
-        
+
         // 确保regionId不是默认值
         if (regionId <= 0) {
             log.warn("地区ID无效，已设置为默认值1: {}", regionId);
             regionId = 1;
         }
-        
+
         // 获取第一个项目ID作为主项目ID
         Long primaryProjectId = projectIds.get(0);
-        
+
         // 确保primaryProjectId不是默认值
         if (primaryProjectId <= 0) {
             log.warn("项目ID无效，已设置为默认值1: {}", primaryProjectId);
             primaryProjectId = 1L;
         }
-        
+
         // 记录实际使用的地区ID和项目ID
         log.info("实际使用的地区ID: {}, 主项目ID: {}, 管理员ID: {}", regionId, primaryProjectId, adminUserId);
-        
+
         LocalDateTime now = LocalDateTime.now();
-        
+
         // 筛选有效的手机号
         List<Long> validPhoneNumbers = new ArrayList<>();
         List<PhoneEntity> phonesToInsert = new ArrayList<>();
-        
+
         // 处理每个手机号
         for (String phoneStr : phoneNumbers) {
             // 解析手机号
@@ -125,7 +125,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             if (phoneNumber == null) {
                 continue;
             }
-            
+
             // 检查是否存在
             if (isPhoneExist(phoneNumber)) {
                 continue;
@@ -135,7 +135,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             validPhoneNumbers.add(phoneNumber);
             phonesToInsert.add(createPhoneEntity(phoneNumber, now, adminUserId));
         }
-        
+
         // 如果没有有效的手机号，直接返回
         if (phonesToInsert.isEmpty()) {
             log.info("没有有效的手机号可添加");
@@ -145,7 +145,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         // 执行插入操作
         return insertPhones(phonesToInsert, validPhoneNumbers, projectIds, regionId);
     }
-    
+
     /**
      * 解析手机号字符串为Long类型
      */
@@ -154,10 +154,10 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             log.warn("手机号为空");
             return null;
         }
-        
+
         // 清除可能的空格、破折号等字符
         String cleanPhoneStr = phoneStr.trim().replaceAll("[\\s-]", "");
-        
+
         try {
             return Long.parseLong(cleanPhoneStr);
         } catch (NumberFormatException e) {
@@ -165,14 +165,14 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             return null;
         }
     }
-    
+
     /**
      * 检查手机号是否已存在
      */
     private boolean isPhoneExist(Long phoneNumber) {
         return phoneNumberMapper.checkPhoneExists(phoneNumber) > 0;
     }
-    
+
     /**
      * 创建手机号实体对象
      */
@@ -183,7 +183,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         phone.setAdminUserId(adminUserId);
         return phone;
     }
-    
+
     /**
      * 执行批量插入手机号及关联
      */
@@ -191,18 +191,18 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         try {
             // 批量插入手机号
             int totalAdded = phoneNumberMapper.batchInsertPhones(phonesToInsert);
-            
+
             // 为每个项目插入关联信息到 phone_project_relation 表
             for (Long phoneNumber : validPhoneNumbers) {
                 for (Long projectId : projectIds) {
                     try {
-                    phoneNumberMapper.insertPhoneProject(phoneNumber, projectId, regionId);
+                        phoneNumberMapper.insertPhoneProject(phoneNumber, projectId, regionId);
                     } catch (Exception e) {
                         log.error("插入手机号和项目关联失败: phoneNumber={}, projectId={}, error={}", phoneNumber, projectId, e.getMessage());
                     }
                 }
             }
-            
+
             log.info("成功添加手机号: {}, 关联项目: {}", totalAdded, projectIds);
             return totalAdded;
         } catch (Exception e) {
@@ -210,7 +210,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
             throw e; // 抛出异常以触发事务回滚
         }
     }
-    
+
     /**
      * 从请求数据中提取地区ID
      *
@@ -297,7 +297,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                         if (project instanceof Map) {
                             @SuppressWarnings("unchecked")
                             Map<String, Object> projectMap = (Map<String, Object>) project;
-                            
+
                             // 获取 projectId
                             if (projectMap.containsKey("projectId")) {
                                 Object projectIdObj = projectMap.get("projectId");
@@ -308,7 +308,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                                     continue;
                                 }
                             }
-                            
+
                             // 如果没有有效的 projectId，尝试通过 projectName 查询
                             Object projectNameObj = projectMap.get("projectName");
                             if (projectNameObj instanceof String projectName) {
@@ -331,7 +331,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                             }
                         }
                     }
-                    
+
                     log.info("从projects字段提取项目ID列表: {}", projectIds);
                 }
             } catch (Exception e) {
@@ -416,25 +416,25 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         result.put("existingPhones", 0);
         result.put("newRelations", 0);
         result.put("invalidPhones", 0);
-        
+
         // 参数校验
         if (CollectionUtils.isEmpty(phoneNumbers) || CollectionUtils.isEmpty(projectIds) || regionId == null) {
             System.out.println("批量处理手机号参数无效: phoneNumbers=" + phoneNumbers + ", regionId=" + regionId + ", projectIds=" + projectIds);
             return result;
         }
-        
+
         // 确保regionId不是默认值
         if (regionId <= 0) {
             System.out.println("地区ID无效，已设置为默认值1: " + regionId);
             regionId = 1;
         }
-        
+
         LocalDateTime now = LocalDateTime.now();
         int newPhones = 0;
         int existingPhones = 0;
         int newRelations = 0;
         int invalidPhones = 0;
-        
+
         // 处理每个手机号
         for (String phoneStr : phoneNumbers) {
             // 解析手机号
@@ -443,10 +443,10 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 invalidPhones++;
                 continue;
             }
-            
+
             // 检查手机号是否已存在
             boolean phoneExists = isPhoneExist(phoneNumber);
-            
+
             if (!phoneExists) {
                 // 手机号不存在，先添加手机号
                 try {
@@ -467,7 +467,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 existingPhones++;
                 System.out.println("手机号已存在: " + phoneNumber);
             }
-            
+
             // 为每个项目添加关联关系（如果不存在）
             for (Long projectId : projectIds) {
                 try {
@@ -487,14 +487,14 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 }
             }
         }
-        
+
         result.put("newPhones", newPhones);
         result.put("existingPhones", existingPhones);
         result.put("newRelations", newRelations);
         result.put("invalidPhones", invalidPhones);
-        
+
         System.out.println("批量处理完成 - 新增手机号: " + newPhones + ", 已存在手机号: " + existingPhones + ", 新增关联: " + newRelations + ", 无效手机号: " + invalidPhones);
-        
+
         return result;
     }
 
@@ -506,7 +506,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         try {
             return phoneNumberMapper.checkPhoneProjectRelationExists(phoneNumber, projectId) > 0;
         } catch (Exception e) {
-            log.error("检查手机号项目关联失败: phoneNumber={}, projectId={}, error={}", 
+            log.error("检查手机号项目关联失败: phoneNumber={}, projectId={}, error={}",
                     phoneNumber, projectId, e.getMessage());
             return false;
         }
@@ -523,7 +523,7 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
         resultData.put("totalExisting", totalExisting);
         resultData.put("totalRelationAdded", totalRelationAdded);
         resultData.put("totalInvalid", totalInvalid);
-        
+
         // 构建详细信息
         String message = "处理完成！" +
                 "总计处理: " + totalProcessed + "个号码，" +
@@ -531,10 +531,10 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper,PhoneE
                 "已存在号码: " + totalExisting + "个，" +
                 "新增项目关联: " + totalRelationAdded + "个，" +
                 "无效号码: " + totalInvalid + "个";
-        
+
         resultData.put("message", message);
         resultData.put("success", true);
-        
+
         return resultData;
     }
 

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 卡商登录
  */
 @RestController
-@RequestMapping("/api/admin/account")
-public class AdminAccountController {
+@RequestMapping("/api/merchant/account")
+public class MerchantAccountController {
 
 
     @Autowired

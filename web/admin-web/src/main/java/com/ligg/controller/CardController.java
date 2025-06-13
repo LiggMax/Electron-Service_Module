@@ -86,6 +86,10 @@ public class CardController {
     public Result<String> payouts(@RequestParam Long userId,
                                   @RequestParam Float balance,
                                   @RequestParam Boolean isType) {
+        MerchantEntity merchant = merchantUserService.getById(userId);
+        if (merchant.getMoney() < balance) {
+            return Result.error(500, "余额不足");
+        }
         merchantUserService.payouts(userId, balance, isType);
         return Result.success(200, "提现成功");
     }
