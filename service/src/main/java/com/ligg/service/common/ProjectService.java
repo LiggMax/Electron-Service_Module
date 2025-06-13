@@ -5,9 +5,7 @@ import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
-import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;

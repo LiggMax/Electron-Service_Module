@@ -1,9 +1,7 @@
 package com.ligg.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
-import com.ligg.common.vo.OrderBillVo;
 
 import java.util.List;
 

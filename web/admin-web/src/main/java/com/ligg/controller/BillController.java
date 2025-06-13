@@ -3,7 +3,6 @@ package com.ligg.controller;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
-import com.ligg.common.vo.OrderBillVo;
 import com.ligg.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

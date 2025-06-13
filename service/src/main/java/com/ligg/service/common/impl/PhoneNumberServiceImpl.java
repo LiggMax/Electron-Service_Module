@@ -539,29 +539,6 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper, Phone
     }
 
     /**
-     * 构建上传结果数据
-     */
-    @Override
-    public Map<String, Object> buildResultData(int totalProcessed, int totalAdded, int totalDuplicate, int totalInvalid) {
-        Map<String, Object> resultData = new HashMap<>();
-        resultData.put("total", totalProcessed);
-        resultData.put("added", totalAdded);
-        resultData.put("duplicate", totalDuplicate);
-        resultData.put("invalid", totalInvalid);
-
-        String message = "导入成功：成功添加" + totalAdded + "个手机号";
-        if (totalDuplicate > 0) {
-            message += "，" + totalDuplicate + "个重复号码已跳过";
-        }
-        if (totalInvalid > 0) {
-            message += "，" + totalInvalid + "个无效号码已忽略";
-        }
-
-        resultData.put("message", message);
-        return resultData;
-    }
-
-    /**
      * 将各种类型转换为Integer
      */
     @Override

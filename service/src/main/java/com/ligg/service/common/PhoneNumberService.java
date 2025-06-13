@@ -81,11 +81,6 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
     List<String> extractPhoneNumbers(Map<String, Object> uploadData);
 
     /**
-     * 构建上传结果数据
-     */
-    Map<String, Object> buildResultData(int totalProcessed, int totalAdded, int totalDuplicate, int totalInvalid);
-
-    /**
      * 构建新的上传结果数据
      */
     Map<String, Object> buildUploadResultData(int totalProcessed, int totalAdded, int totalExisting, int totalRelationAdded, int totalInvalid);
