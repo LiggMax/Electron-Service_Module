@@ -150,17 +150,17 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             orderDto.setCreatedAt(LocalDateTime.now());
 
             // 使用独立 Key 存储每个验证码
-            String key = "phone:" + phoneNumber + ":code:" + code;
-            String hashKey = "phone:" + phoneNumber + ":codes";
+            String key = "phone:" + phoneNumber + ":code:" + code + ":userId:" + orderDto.getUserId();
+            String hashKey = "phone:" + phoneNumber + ":codes:" + ":userId:" + orderDto.getUserId();
 
             String json = objectMapper.writeValueAsString(orderDto);
 
             // 设置独立验证码缓存（20分钟过期）
-            redisTemplate.opsForValue().set(key, json, 2, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(key, json, 20, TimeUnit.MINUTES);
 
             // 可选：同时写入 Hash 结构中便于查询所有验证码
             redisTemplate.opsForHash().put(hashKey, code, json);
-            redisTemplate.expire(hashKey, 2, TimeUnit.MINUTES); // 可选：为 Hash 设置统一过期时间
+            redisTemplate.expire(hashKey, 20, TimeUnit.MINUTES); // 可选：为 Hash 设置统一过期时间
         } catch (Exception e) {
             log.error("添加短信缓存失败", e);
         }

@@ -33,9 +33,7 @@ public class SmsUtil {
         Pattern comPattern = Pattern.compile("COM(\\d+),(\\d+),([^C]*?)(?=COM|$)");
         Matcher comMatcher = comPattern.matcher(sms);
 
-        int matchCount = 0;
         while (comMatcher.find()) {
-            matchCount++;
             String phoneNumber = comMatcher.group(2);       // 号码
             String smsContent = comMatcher.group(3);        // 短信内容
 
