@@ -25,7 +25,7 @@ public class LoginInterceptors implements HandlerInterceptor {
     private JWTUtil jwtUtil;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         //获取请求头中的token
         String Token = request.getHeader("Token");
