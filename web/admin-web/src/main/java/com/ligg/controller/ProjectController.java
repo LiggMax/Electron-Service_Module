@@ -3,6 +3,7 @@ package com.ligg.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.ProjectEntity;
 import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.service.ProjectKeyWordService;
 import com.ligg.service.common.ProjectService;
@@ -35,7 +36,7 @@ public class ProjectController {
      */
     @GetMapping
     public Result<List<ProjectEntity>> getProjectList() {
-        return Result.success(200, projectService.getBaseMapper()
+        return Result.success(BusinessStatus.SUCCESS, projectService.getBaseMapper()
                 .selectList(new LambdaQueryWrapper<ProjectEntity>()
                         .orderByDesc(ProjectEntity::getProjectUpdateAt)));
     }
@@ -46,7 +47,7 @@ public class ProjectController {
     @PostMapping("/add")
     public Result<String> addProject(@RequestBody ProjectEntity projectEntity) {
         projectService.saveProject(projectEntity);
-        return Result.success(200, "添加成功");
+        return Result.success(BusinessStatus.SUCCESS, "添加成功");
     }
 
     /**
@@ -55,7 +56,7 @@ public class ProjectController {
     @PutMapping("/edit")
     public Result<String> editProject(@RequestBody ProjectEntity projectEntity) {
         projectService.updateProject(projectEntity);
-        return Result.success(200, "修改成功");
+        return Result.success(BusinessStatus.SUCCESS, "修改成功");
     }
 
     /**
@@ -64,7 +65,7 @@ public class ProjectController {
     @DeleteMapping
     public Result<String> deleteProject(@RequestParam Integer projectId) {
         projectService.removeById(projectId);
-        return Result.success(200, "删除成功");
+        return Result.success(BusinessStatus.SUCCESS, "删除成功");
     }
 
     /**
@@ -74,11 +75,11 @@ public class ProjectController {
     public Result<String> uploadIcon(@RequestParam("projectId") @NotNull Integer projectId,
                                      @RequestParam("icon") MultipartFile icon) {
         if (icon.getSize() > 10 * 1024 * 1024) {
-            return Result.error(400, "文件大小不合法");
+            return Result.error(BusinessStatus.BAD_REQUEST, "文件大小不合法");
         }
         String iconUrl = fileService.uploadImage(icon);
         projectService.uploadIcon(projectId, iconUrl);
-        return Result.success(200, "上传成功");
+        return Result.success(BusinessStatus.SUCCESS, "上传成功");
     }
 
     /**
@@ -96,6 +97,6 @@ public class ProjectController {
     @GetMapping("/keywords")
     public Result<List<ProjectKeyWordEntity>> getKeywords(@RequestParam Integer projectId) {
         List<ProjectKeyWordEntity> keyWordDate = projectKeyWordService.getKeyWordByProjectId(projectId);
-        return Result.success(200, keyWordDate);
+        return Result.success(BusinessStatus.SUCCESS, keyWordDate);
     }
 }

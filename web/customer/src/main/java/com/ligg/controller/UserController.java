@@ -2,6 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.entity.user.UserEntity;
 import com.ligg.common.entity.user.UserFavoriteEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.UserDataVo;
@@ -48,7 +49,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         UserEntity userInfo = userService.findByUserInfo(userId);
-        return Result.success(200, userInfo);
+        return Result.success(BusinessStatus.SUCCESS, userInfo);
     }
 
     /**
@@ -69,7 +70,7 @@ public class UserController {
         if (user == null) {
             return Result.success();
         }
-        return Result.error(400, user);
+        return Result.error(BusinessStatus.SUCCESS, user);
     }
 
     /**
@@ -82,7 +83,7 @@ public class UserController {
 
         String result = userService.addUserFavorite(userFavoriteEntity);
         if (result != null) {
-            return Result.error(400, result);
+            return Result.error(BusinessStatus.BAD_REQUEST, result);
         }
         return Result.success();
     }
@@ -103,7 +104,7 @@ public class UserController {
 
         // 验证购买数量
         if (quantity <= 0 || quantity > 100) {
-            return Result.error(400, "购买数量必须在1-100之间");
+            return Result.error(BusinessStatus.BAD_REQUEST, "购买数量必须在1-100之间");
         }
 
         long startTime = System.currentTimeMillis();
@@ -116,11 +117,11 @@ public class UserController {
 
         if (result.containsKey("error")) {
             log.warn("用户[{}]购买项目失败 - 耗时: {}ms, 原因: {}", userId, duration, result.get("error"));
-            return Result.error(400, (String) result.get("error"));
+            return Result.error(BusinessStatus.BAD_REQUEST, (String) result.get("error"));
         }
 
         log.info("用户[{}]购买项目成功 - 耗时: {}ms, 购买数量: {}", userId, duration, quantity);
-        return Result.success(200, result);
+        return Result.success(BusinessStatus.BAD_REQUEST, result);
     }
 
     /**
@@ -131,7 +132,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         List<Map<String, Object>> userFavorite = userService.getUserFavorite(userId);
-        return Result.success(200, userFavorite);
+        return Result.success(BusinessStatus.BAD_REQUEST, userFavorite);
     }
 
     /**
@@ -142,7 +143,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         List<Map<String, Object>> userOrder = userService.getUserOrder(userId);
-        return Result.success(200, userOrder);
+        return Result.success(BusinessStatus.SUCCESS, userOrder);
     }
 
     /**
@@ -163,7 +164,7 @@ public class UserController {
     @PostMapping("/uploadAvatar")
     public Result<String> uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
         if (avatar.getSize() > 1024 * 1024 * 5) {
-            return Result.error(400, "文件大小不能超过5M");
+            return Result.error(BusinessStatus.BAD_REQUEST, "文件大小不能超过5M");
         }
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
@@ -172,7 +173,7 @@ public class UserController {
         String avatarUrl = fileService.uploadAvatar(avatar);
         log.info("用户{}"+"上传头像{}"+"成功", userId, avatarUrl);
         if (avatarUrl == null) {
-            return Result.error(400, "上传失败,请稍后再试");
+            return Result.error(BusinessStatus.BAD_REQUEST, "上传失败,请稍后再试");
         }
 
         // 更新用户头像
@@ -180,6 +181,6 @@ public class UserController {
         userEntity.setUserId(userId);
         userEntity.setUserAvatar(avatarUrl);
         userService.updateById(userEntity);
-        return Result.success(200,avatarUrl);
+        return Result.success(BusinessStatus.SUCCESS, avatarUrl);
     }
 }

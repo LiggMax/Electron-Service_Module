@@ -1,5 +1,6 @@
 package com.ligg.controller;
 
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.PhoneVo;
 import com.ligg.service.common.PhoneNumberService;
@@ -27,7 +28,7 @@ public class PhoneController {
     @GetMapping
     public Result<List<PhoneVo>> getPhoneList(){
        List<PhoneVo> phoneVoList = phoneNumberService.getPhoneList();
-        return Result.success(200,phoneVoList);
+        return Result.success(BusinessStatus.SUCCESS, phoneVoList);
     }
 
     /**
@@ -36,6 +37,6 @@ public class PhoneController {
     @DeleteMapping()
     public Result<String> deletePhone(Long phoneId){
         phoneNumberService.getBaseMapper().deleteById(phoneId);
-        return Result.success(200,"删除成功");
+        return Result.success(BusinessStatus.SUCCESS, "删除成功");
     }
 }

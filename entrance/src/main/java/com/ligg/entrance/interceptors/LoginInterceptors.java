@@ -45,7 +45,7 @@ public class LoginInterceptors implements HandlerInterceptor {
             return true;
         } catch (Exception e) {
             log.error("Token validation failed: ",e);
-            response.setStatus(401);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
     }

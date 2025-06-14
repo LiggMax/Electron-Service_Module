@@ -1,6 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.adminweb.AnnouncementEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,6 @@ public class MessageController {
     @GetMapping("/announcement")
     public Result<List<AnnouncementEntity>> getAnnouncement() {
        List<AnnouncementEntity>  announcementEntity = announcementService.UserGetAnnouncement();
-       return Result.success(200,announcementEntity);
+        return Result.success(BusinessStatus.SUCCESS, announcementEntity);
     }
 }

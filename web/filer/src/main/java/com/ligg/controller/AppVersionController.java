@@ -1,6 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.version.AppVersion;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.service.annotation.RequireAuth;
 import com.ligg.service.file.AppVersionService;
@@ -39,9 +40,9 @@ public class AppVersionController {
     public Result<List<AppVersion>> checkVersion(String version, Integer app) {
         try {
             List<AppVersion> result = appVersionService.getAppVersionList(version, app);
-            return Result.success(200, result);
+            return Result.success(BusinessStatus.SUCCESS, result);
         } catch (Exception e) {
-            return Result.error(500, "检查版本失败");
+            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "检查版本失败");
         }
     }
 
@@ -53,22 +54,22 @@ public class AppVersionController {
                                         @RequestParam("version") String version,
                                         @RequestParam("releaseNotes") @Pattern(regexp = "^.{1,100}$") String releaseNotes,
                                         Integer app) {
-        // 文件大小检查（传统上传限制为200MB）
+        // 文件大小检查（传统上传限制为BusinessStatus.SUCCESSMB）
         if (appFile.getSize() > 200 * 1024 * 1024) {
-            return Result.error(400, "文件过大");
+            return Result.error(BusinessStatus.BAD_REQUEST, "文件过大");
         }
         try {
             String downloadUrl = fileService.uploadApp(appFile, app);
             if (downloadUrl != null) {
                 appVersionService.saveVersion(version, releaseNotes, downloadUrl, appFile.getSize(), app, LocalDateTime.now());
-                return Result.success(200, "上传成功");
+                return Result.success(BusinessStatus.SUCCESS, "上传成功");
             } else {
-                return Result.error(500, "上传失败");
+                return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "上传失败");
             }
         } catch (
                 Exception e) {
             log.error("文件上传失败: error={}", e.getMessage(), e);
-            return Result.error(500, "上传失败: " + e.getMessage());
+            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "上传失败: " + e.getMessage());
         }
     }
 
@@ -83,10 +84,10 @@ public class AppVersionController {
 
         try {
             Map<String, Object> result = appVersionService.getVersionList(page, size);
-            return Result.success(200, result);
+            return Result.success(BusinessStatus.SUCCESS, result);
         } catch (Exception e) {
             log.error("获取版本列表失败: error={}", e.getMessage());
-            return Result.error(500, "获取版本列表失败");
+            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "获取版本列表失败");
         }
     }
 }

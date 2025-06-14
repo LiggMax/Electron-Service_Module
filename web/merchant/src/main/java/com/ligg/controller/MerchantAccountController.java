@@ -1,6 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.admin.MerchantEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.MerchantUserService;
@@ -32,15 +33,15 @@ public class MerchantAccountController {
                            @RequestParam String password){
         MerchantEntity userInfo = merchantUserService.getUserByAccount(account);
         if (userInfo == null){
-            return Result.error(400,"账号或密码错误");
+            return Result.error(BusinessStatus.BAD_REQUEST, "账号或密码错误");
         }
         if (!BCryptUtil.verify(password, userInfo.getPassword())){
-            return Result.error(400,"账号或密码错误");
+            return Result.error(BusinessStatus.BAD_REQUEST, "账号或密码错误");
         }
         String token = tokenService.createToken(userInfo.getUserId(), userInfo.getAccount());
         //更新登录时间
         merchantUserService.updateLoginTime(userInfo.getUserId());
-        return Result.success(200,token);
+        return Result.success(BusinessStatus.SUCCESS, token);
     }
 
 

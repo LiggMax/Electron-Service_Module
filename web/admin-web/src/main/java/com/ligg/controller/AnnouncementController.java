@@ -2,6 +2,7 @@ package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.adminweb.AnnouncementEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class AnnouncementController {
      */
     @GetMapping
     public Result<List<AnnouncementEntity>> getAnnouncement() {
-        return Result.success(200,announcementService.getBaseMapper()
+        return Result.success(BusinessStatus.SUCCESS, announcementService.getBaseMapper()
                 .selectList(new LambdaQueryWrapper<AnnouncementEntity>()
                         .orderByDesc(AnnouncementEntity::getCreateTime)));
     }

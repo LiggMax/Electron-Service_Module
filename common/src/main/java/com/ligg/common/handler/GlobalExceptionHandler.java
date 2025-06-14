@@ -1,6 +1,7 @@
 package com.ligg.common.handler;
 
 import com.ligg.common.exception.AuthException;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthException.class)
     public Result<String> handleAuthException(AuthException e) {
         log.warn("权限验证失败: {}", e.getErrorMessage());
-        return Result.error(e.getErrorCode(), e.getErrorMessage());
+        return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
     }
 
     /**
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Result<String> handleRuntimeException(RuntimeException e) {
         log.error("运行时异常: {}", e.getMessage(), e);
-        return Result.error(500, "系统内部错误");
+        return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "系统内部错误");
     }
 
     /**
@@ -39,6 +40,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<String> handleException(Exception e) {
         log.error("系统异常: {}", e.getMessage(), e);
-        return Result.error(500, "系统异常");
+        return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "系统异常");
     }
 } 

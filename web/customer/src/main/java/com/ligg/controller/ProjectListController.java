@@ -3,6 +3,7 @@ package com.ligg.controller;
 import com.ligg.common.dto.ProjectListDto;
 import com.ligg.common.dto.RegionCommodityDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.Result;
 import com.ligg.service.common.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ProjectListController {
     @GetMapping("/list")
     public Result<List<ProjectListDto>> getAllProjects() {
         List<ProjectListDto> projects = projectService.getAllProjectsList();
-        return Result.success(200,projects);
+        return Result.success(BusinessStatus.SUCCESS, projects);
     }
     
     /**
@@ -37,7 +38,7 @@ public class ProjectListController {
     @GetMapping("/phones/{projectName}")
     public Result<List<PhoneEntity>> getPhonesByProject(@PathVariable String projectName) {
         List<PhoneEntity> phones = projectService.getPhonesByProject(new String[]{projectName});
-        return Result.success(200,phones);
+        return Result.success(BusinessStatus.SUCCESS, phones);
     }
 
     /**
@@ -46,6 +47,6 @@ public class ProjectListController {
     @GetMapping("/commodity")
     public Result<List<RegionCommodityDto>> getProjectCommodityList(@RequestParam Long projectId) {
         List<RegionCommodityDto> projects = projectService.getProjectCommodityList(projectId);
-        return Result.success(200,projects);
+        return Result.success(BusinessStatus.SUCCESS, projects);
     }
 }
