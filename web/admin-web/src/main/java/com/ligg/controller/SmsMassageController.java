@@ -28,11 +28,9 @@ public class SmsMassageController {
     @PostMapping("/massage")
     public Result<List<Map<String, String>>> getCode(String sms) {
         //提取短信中的验证码和短信号码
-        log.info("接收到的初始短信内容：{}", sms);
-        List<Map<String, String>> maps = smsMassageService.extractCodeAndSms(sms);
-
+        List<Map<String, String>> allResults = smsMassageService.extractCodeAndSms(sms);
         //保存短信和验证码，更新订单状态
-        smsMassageService.saveSmsAndCode(maps);
+        smsMassageService.saveSmsAndCode(allResults);
         return Result.success();
     }
 }

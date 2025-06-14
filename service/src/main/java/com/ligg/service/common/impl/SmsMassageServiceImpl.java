@@ -60,7 +60,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
         if (keyWords.isEmpty()) {
             return null;
         }
-
+        log.info("接收到的初始短信内容：{}", sms);
         List<Map<String, String>> allResults = new ArrayList<>();
 
         // 对每个项目的关键字和验证码长度进行短信解析
@@ -85,8 +85,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
                 allResults.addAll(resultList);
             }
         }
-        log.info("提取的验证码和短信: {}", allResults);
-        log.info("提取的短信内容: {}", sms);
+        log.info("解析后的短信内容：{}", allResults);
         return allResults;
     }
 
