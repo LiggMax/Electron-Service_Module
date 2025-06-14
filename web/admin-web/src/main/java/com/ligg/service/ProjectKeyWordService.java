@@ -20,4 +20,6 @@ public interface ProjectKeyWordService extends IService<ProjectKeyWordEntity> {
      * 根据项目id查询关键词
      */
     List<ProjectKeyWordEntity> getKeyWordByProjectId(Integer projectId);
+
+    void removeKetWordByIds(List<Integer> projectIds);
 }

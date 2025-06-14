@@ -99,4 +99,14 @@ public class ProjectController {
         List<ProjectKeyWordEntity> keyWordDate = projectKeyWordService.getKeyWordByProjectId(projectId);
         return Result.success(BusinessStatus.SUCCESS, keyWordDate);
     }
+
+
+    /**
+     * 批量删除项目关键词设置
+     */
+    @DeleteMapping("/keywords")
+    public Result<String> deleteKeywords(@RequestBody List<Integer> projectIds) {
+        projectKeyWordService.removeKetWordByIds(projectIds);
+        return Result.success();
+    }
 }

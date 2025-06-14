@@ -71,7 +71,6 @@ public class SmsUtil {
         int keywordIndex = content.indexOf(keyword);
 
         if (keywordIndex == -1) {
-            System.out.println("未找到关键字");
             return null;
         }
 

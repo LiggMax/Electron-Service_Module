@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,5 +39,14 @@ public class ProjectKeyWordServiceImpl extends ServiceImpl<ProjectKeyWordMapper,
         return projectKeyWordMapper.selectList(new LambdaQueryWrapper<ProjectKeyWordEntity>()
                 .eq(ProjectKeyWordEntity::getProjectId, projectId)
                 .orderByDesc(ProjectKeyWordEntity::getUpdateAt));
+    }
+
+    /**
+     * 批量删除关键词
+     */
+    @Override
+    public void removeKetWordByIds(List<Integer> projectIds) {
+        projectKeyWordMapper.delete(new LambdaQueryWrapper<ProjectKeyWordEntity>()
+                .in(ProjectKeyWordEntity::getId, projectIds));
     }
 }

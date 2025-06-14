@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.ProjectEntity;
+import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
 import com.ligg.common.utils.SmsUtil;
 import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.ProjectMapper;
@@ -55,17 +56,17 @@ public class SmsMassageServiceImpl implements SmsMassageService {
         }
 
         // 获取所有项目配置
-        List<ProjectEntity> projects = projectMapper.selectList(null);
-        if (projects.isEmpty()) {
+        List<ProjectKeyWordEntity> keyWords = projectKeyWordMapper.selectList(null);
+        if (keyWords.isEmpty()) {
             return null;
         }
 
         List<Map<String, String>> allResults = new ArrayList<>();
 
         // 对每个项目的关键字和验证码长度进行短信解析
-        for (ProjectEntity project : projects) {
-            String keyword = project.getKeyword();
-            int codeLength = project.getCodeLength();
+        for (ProjectKeyWordEntity projectKeyWord : keyWords) {
+            String keyword = projectKeyWord.getKeyword();
+            int codeLength = projectKeyWord.getCodeLength();
 
             if (keyword == null || keyword.isEmpty() || codeLength <= 0) {
                 continue;
@@ -77,11 +78,8 @@ public class SmsMassageServiceImpl implements SmsMassageService {
             if (!resultList.isEmpty()) {
                 // 为每个结果添加项目信息
                 for (Map<String, String> result : resultList) {
-                    result.put("projectId", String.valueOf(project.getProjectId()));
-                    result.put("projectName", project.getProjectName());
                     result.put("phoneNumber", result.get("phoneNumber"));
                     result.put("verificationCode", result.get("verificationCode"));
-                    result.put("platform", project.getProjectName());
                     result.put("smsContent", result.get("smsContent"));
                 }
                 allResults.addAll(resultList);
