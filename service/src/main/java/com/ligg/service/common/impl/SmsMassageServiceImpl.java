@@ -1,6 +1,8 @@
 package com.ligg.service.common.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
@@ -93,8 +95,8 @@ public class SmsMassageServiceImpl implements SmsMassageService {
      * 保存验证码更新订单状态
      */
     @Override
-    public void saveSmsAndCode(List<Map<String, String>> maps) {
-        for (Map<String, String> map : maps) {
+    public void saveSmsAndCode(List<Map<String, String>> allMessageResults) {
+        for (Map<String, String> map : allMessageResults) {
             //手机号码
             String phoneNumber = map.get("phoneNumber");
             //短信内容
@@ -102,36 +104,45 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
             String code = map.get("verificationCode");
             //查询订单
-            List<OrdersDto> orders = orderMapper.selectByPhoneNumber(phoneNumber);
-
-            for (OrdersDto orderDto : orders) {
-                //判断短信内容包含订单项目名称
-                if (messageContent.contains(orderDto.getProjectName())) {
-                    /*
-                     * 如果短信中包含这个项目名称，说明这个短信数据该项目，则获取该项目ID
-                     */
-                    ProjectEntity projectId = projectMapper.selectByProjectName(orderDto.getProjectName());
-
-                    //订单存在或者订单状态为0，则更新
-                    if (orderDto.getState() == 0) {
-                        userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
-                                .eq(OrderEntity::getPhoneNumber, phoneNumber)
-                                .eq(OrderEntity::getProjectId, projectId.getProjectId())
-                                .set(OrderEntity::getCode, code)
-                                .set(OrderEntity::getState, 1));
-
-                        //更新缓存
+            List<OrdersDto> ordersProjectName = orderMapper.selectByPhoneNumber(phoneNumber);
+            for (OrdersDto orderDto : ordersProjectName) {
+                List<ProjectKeyWordEntity> projectKeyWord = projectKeyWordMapper.selectList(new LambdaQueryWrapper<ProjectKeyWordEntity>()
+                        .eq(ProjectKeyWordEntity::getProjectId, orderDto.getProjectId()));
+                /*
+                 * 如果短信中包含这个项目名称，说明这个短信数据该项目，则获取该项目ID
+                 */
+                for (ProjectKeyWordEntity project : projectKeyWord) {
+                    if (messageContent.contains(project.getKeyword())) {
                         try {
                             orderDto.setOrdersId(orderDto.getOrdersId());
                             orderDto.setCode(code);
                             orderDto.setCreatedAt(LocalDateTime.now());
-                            redisTemplate.opsForValue().set("user:orders:" + orderDto.getUserId() + ":" + orderDto.getOrdersId(),
-                                    objectMapper.writeValueAsString(orderDto), 20, TimeUnit.MINUTES);
+                            redisTemplate.opsForHash().put("phone:" + phoneNumber + ":orderId" + orderDto.getOrdersId(),
+                                    orderDto.getCode(), objectMapper.writeValueAsString(orderDto));
+                            //设置过期时间
+                            redisTemplate.expire("phone:" + phoneNumber + ":orderId" + orderDto.getOrdersId(),
+                                    20, TimeUnit.MINUTES
+                            );
                         } catch (Exception e) {
-                            log.error("更新缓存失败: {}", e.getMessage());
+                            log.error("添加短信缓存失败: {}", e.getMessage());
                         }
                     }
                 }
+//                if (messageContent.contains(projectKeyWord.getKeyword())) {
+//                    try {
+//                        orderDto.setOrdersId(orderDto.getOrdersId());
+//                        orderDto.setCode(code);
+//                        orderDto.setCreatedAt(LocalDateTime.now());
+//                        redisTemplate.opsForHash().put("phone:" + phoneNumber + ":orderId" + orderDto.getOrdersId(),
+//                                orderDto.getCode(), objectMapper.writeValueAsString(orderDto));
+//                        //设置过期时间
+//                        redisTemplate.expire("phone:" + phoneNumber + ":orderId" + orderDto.getOrdersId(),
+//                                5, TimeUnit.MINUTES
+//                        );
+//                    } catch (Exception e) {
+//                        log.error("添加短信缓存失败: {}", e.getMessage());
+//                    }
+//                }
             }
         }
     }

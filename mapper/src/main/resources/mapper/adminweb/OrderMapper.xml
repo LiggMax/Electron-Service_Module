@@ -33,6 +33,7 @@
                o.project_money,
                o.state,
                o.code,
+               pj.project_id,
                pj.project_name,
                pj.project_name
         from orders o
