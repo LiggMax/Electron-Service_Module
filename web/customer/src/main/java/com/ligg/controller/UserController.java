@@ -121,7 +121,7 @@ public class UserController {
         }
 
         log.info("用户[{}]购买项目成功 - 耗时: {}ms, 购买数量: {}", userId, duration, quantity);
-        return Result.success(BusinessStatus.BAD_REQUEST, result);
+        return Result.success(BusinessStatus.SUCCESS, result);
     }
 
     /**
@@ -132,7 +132,7 @@ public class UserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long userId = (Long) map.get("userId");
         List<Map<String, Object>> userFavorite = userService.getUserFavorite(userId);
-        return Result.success(BusinessStatus.BAD_REQUEST, userFavorite);
+        return Result.success(BusinessStatus.SUCCESS, userFavorite);
     }
 
     /**

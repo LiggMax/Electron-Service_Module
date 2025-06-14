@@ -21,8 +21,10 @@ public class AdminUserWebController {
 
     @Autowired
     private JWTUtil jwtUtil;
+
     @Autowired
     private AdminWebUserService adminWebUserService;
+
     @Autowired
     private HttpServletRequest request;
 

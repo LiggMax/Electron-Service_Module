@@ -9,6 +9,7 @@ import com.ligg.common.utils.SmsParserUtil;
 import com.ligg.common.utils.SmsUtil;
 import com.ligg.mapper.adminweb.OrderMapper;
 import com.ligg.mapper.ProjectMapper;
+import com.ligg.mapper.adminweb.ProjectKeyWordMapper;
 import com.ligg.mapper.user.UserOrderMapper;
 import com.ligg.service.common.SmsMassageService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private ProjectKeyWordMapper projectKeyWordMapper;
 
     @Autowired
     private StringRedisTemplate redisTemplate;

@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @Author Ligg
  * @Time 2025/6/4
+ *
  * 账单记录注解
  * 用于标记需要记录账单信息的方法
  */
