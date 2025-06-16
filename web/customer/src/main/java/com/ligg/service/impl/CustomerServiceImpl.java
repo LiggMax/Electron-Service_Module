@@ -3,6 +3,7 @@ package com.ligg.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ligg.common.constant.TimeConstants;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
@@ -220,7 +221,7 @@ public class CustomerServiceImpl extends ServiceImpl<UserMapper, UserEntity> imp
 
                         //  将号码信息保存到Redis中
                         redisTemplate.opsForValue().set("user:orders:" + userId + ":" + ordersId,
-                                objectMapper.writeValueAsString(order), 20, TimeUnit.MINUTES);
+                                objectMapper.writeValueAsString(order), TimeConstants.TEN / 10, TimeUnit.MINUTES);
 
                         purchasedPhones.add(String.valueOf(phone.getPhoneNumber()));
                         successCount++;

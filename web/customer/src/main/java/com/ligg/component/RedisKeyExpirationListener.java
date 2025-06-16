@@ -30,12 +30,21 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String expiredKey = message.toString();
+
+        //只处理以 "user:orders:" 开头的key 订单过期
+        if (!expiredKey.startsWith("user:orders:")) {
+            return;
+        }
         String[] parts = expiredKey.split(":");
-        if (parts.length == 5) {
+        if (parts.length == 4) {
             // 订单ID
-            String orderId = parts[4];
+            String orderId = parts[3];
             OrderEntity orderInfo = customerOrdersService.getOrderById(orderId);
 
+            if (orderInfo == null) {
+                log.warn("订单{}不存在", orderId);
+                return;
+            }
             /*
              * 如果订单过期还未使用，则删除订单信息 , 并返回订单金额给用户
              */

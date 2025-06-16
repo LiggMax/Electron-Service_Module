@@ -2,6 +2,7 @@ package com.ligg.service.common.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ligg.common.constant.TimeConstants;
 import com.ligg.common.dto.OrdersDto;
 import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
@@ -166,7 +167,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
                         .set(OrderEntity::getState, 1));
                 //写入 Hash 结构中便于查询所有验证码
                 redisTemplate.opsForHash().put(hashKey, code, json);
-                redisTemplate.expire(hashKey, 20, TimeUnit.MINUTES); //设置统一过期时间
+                redisTemplate.expire(hashKey, TimeConstants.TWENTY, TimeUnit.MINUTES);
             }
         } catch (Exception e) {
             log.error("添加短信缓存失败", e);
