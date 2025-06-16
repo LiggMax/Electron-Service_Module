@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.BCryptUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminWebUserService;
@@ -42,11 +42,11 @@ public class AdminWebAccountController {
                String token = tokenService.createToken(adminWebInfo.getAdminId(), adminWebInfo.getAccount());
                 //更新最后登录时间和ip
                adminWebUserService.updateLoginTimeAndIp(adminWebInfo.getAdminId(),request);
-               return Result.success(BusinessStatus.SUCCESS, token);
+               return Result.success(BusinessStates.SUCCESS, token);
            }
-           return Result.error(BusinessStatus.BAD_REQUEST, "账号或密码错误");
+           return Result.error(BusinessStates.BAD_REQUEST, "账号或密码错误");
        }
-        return Result.error(BusinessStatus.BAD_REQUEST, "账号或密码错误");
+        return Result.error(BusinessStates.BAD_REQUEST, "账号或密码错误");
     }
 
 

@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.admin.MerchantEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
@@ -41,7 +41,7 @@ public class AdminUserController {
         Map<String, Object> map = jwtUtil.parseToken(token);
         Long userId = (Long) map.get("userId");
         tokenService.clearToken(userId);
-        return Result.success(BusinessStatus.SUCCESS, "退出成功");
+        return Result.success(BusinessStates.SUCCESS, "退出成功");
     }
 
     /**
@@ -51,12 +51,12 @@ public class AdminUserController {
     public Result<MerchantEntity> getUserInfo() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         if (map == null){
-            return Result.error(BusinessStatus.UNAUTHORIZED, "请重新登录");
+            return Result.error(BusinessStates.UNAUTHORIZED, "请重新登录");
         }
         Long userId = (Long) map.get("userId");
         //根据id获取用户信息
         MerchantEntity AdminUserInfo = merchantUserService.getUserById(userId);
-        return Result.success(BusinessStatus.SUCCESS, AdminUserInfo);
+        return Result.success(BusinessStates.SUCCESS, AdminUserInfo);
     }
 
     /**
@@ -67,6 +67,6 @@ public class AdminUserController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         Long AdminId = (Long) map.get("userId");
         List<OrderVo> orderVoList = merchantUserService.getOrder(AdminId);
-        return Result.success(BusinessStatus.SUCCESS, orderVoList);
+        return Result.success(BusinessStates.SUCCESS, orderVoList);
     }
 }

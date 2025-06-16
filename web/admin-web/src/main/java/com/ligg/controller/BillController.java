@@ -1,6 +1,6 @@
 package com.ligg.controller;
 
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
@@ -41,6 +41,6 @@ public class BillController {
         HashMap<String, Object> billMap = new HashMap<>();
         billMap.put("customerBill", customerBill);
         billMap.put("orderBill", orderBill);
-        return Result.success(BusinessStatus.SUCCESS, billMap);
+        return Result.success(BusinessStates.SUCCESS, billMap);
     }
 }

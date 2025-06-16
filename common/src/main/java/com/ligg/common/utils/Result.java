@@ -1,6 +1,6 @@
 package com.ligg.common.utils;
 
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ public class Result<T> {
     private String message;//提示信息
     private T data;//响应数据
 
-    public static <E> Result<E> success(BusinessStatus status, E data) {
+    public static <E> Result<E> success(BusinessStates status, E data) {
         return new Result<>(status.getCode(), "操作成功", data);
     }
 
@@ -22,7 +22,7 @@ public class Result<T> {
         return new Result<>(200, "操作成功", null);
     }
 
-    public static <T> Result<T> error(BusinessStatus status, String message) {
+    public static <T> Result<T> error(BusinessStates status, String message) {
         return new Result<>(status.getCode(), message, null);
     }
 }

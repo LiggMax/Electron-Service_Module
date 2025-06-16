@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.PhoneVo;
@@ -42,10 +42,10 @@ public class PhoneNumberController {
     public Result<Map<String, Object>> getProjectsAndRegion() {
         try {
             Map<String, Object> data = projectService.getProjectAndRegionList();
-            return Result.success(BusinessStatus.SUCCESS, data);
+            return Result.success(BusinessStates.SUCCESS, data);
         } catch (Exception e) {
             log.error("获取项目和地区数据失败: {}", e.getMessage(), e);
-            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "获取项目和地区数据失败: " + e.getMessage());
+            return Result.error(BusinessStates.INTERNAL_SERVER_ERROR, "获取项目和地区数据失败: " + e.getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ public class PhoneNumberController {
             Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
             Long adminUserId = (Long) map.get("userId");
             List<PhoneVo> phoneList = phoneNumberService.phoneList(adminUserId, regionId, projectId, keyword);
-            return Result.success(BusinessStatus.SUCCESS, phoneList);
+            return Result.success(BusinessStates.SUCCESS, phoneList);
         } catch (Exception e) {
             log.error("查询卡号数据失败: {}", e.getMessage(), e);
-            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "查询卡号数据失败: " + e.getMessage());
+            return Result.error(BusinessStates.INTERNAL_SERVER_ERROR, "查询卡号数据失败: " + e.getMessage());
         }
     }
 
@@ -74,11 +74,11 @@ public class PhoneNumberController {
     @GetMapping("/phoneDetail")
     public Result<PhoneAndProjectDto> phoneDetail(Long phoneId) {
         if (phoneId == null) {
-            return Result.error(BusinessStatus.BAD_REQUEST, "请求参数错误");
+            return Result.error(BusinessStates.BAD_REQUEST, "请求参数错误");
         }
         Map<String, Object> userInfo = jwtUtil.parseToken(request.getHeader("Token"));
         if (userInfo == null || userInfo.get("userId") == null) {
-            return Result.error(BusinessStatus.BAD_REQUEST, "请求参数错误");
+            return Result.error(BusinessStates.BAD_REQUEST, "请求参数错误");
         }
         Long adminUserId = (Long) userInfo.get("userId");
 
@@ -87,7 +87,7 @@ public class PhoneNumberController {
             PhoneEntity phoneEntity = phoneNumberService.getById(phoneId);
             if (phoneEntity == null) {
                 log.warn("未找到ID为{}的手机号", phoneId);
-                return Result.error(BusinessStatus.BAD_REQUEST, "未找到手机号");
+                return Result.error(BusinessStates.BAD_REQUEST, "未找到手机号");
             }
 
             // 2. 使用手机号查询详情和关联项目
@@ -100,10 +100,10 @@ public class PhoneNumberController {
             phoneDetailData.setPhoneId(phoneEntity.getPhoneId());
             phoneDetailData.setPhoneNumber(phoneEntity.getPhoneNumber());
 
-            return Result.success(BusinessStatus.SUCCESS, phoneDetailData);
+            return Result.success(BusinessStates.SUCCESS, phoneDetailData);
         } catch (Exception e) {
             log.error("查询手机号详情失败: phoneId={}, error={}", phoneId, e.getMessage(), e);
-            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "查询手机号详情失败");
+            return Result.error(BusinessStates.INTERNAL_SERVER_ERROR, "查询手机号详情失败");
         }
     }
 
@@ -126,7 +126,7 @@ public class PhoneNumberController {
             Map<String, Object> token = jwtUtil.parseToken(request.getHeader("Token"));
             Long adminUserId = (Long) token.get("userId");
             if (adminUserId == null) {
-                return Result.error(BusinessStatus.UNAUTHORIZED, "未授权的操作，请先登录");
+                return Result.error(BusinessStates.UNAUTHORIZED, "未授权的操作，请先登录");
             }
 
             // 1. 提取并验证地区ID
@@ -137,13 +137,13 @@ public class PhoneNumberController {
             List<Long> projectIds = phoneNumberService.extractProjectIds(uploadData);
             log.info("提取的项目IDs: {}", projectIds);
             if (CollectionUtils.isEmpty(projectIds)) {
-                return Result.error(BusinessStatus.BAD_REQUEST, "无法识别有效的项目ID");
+                return Result.error(BusinessStates.BAD_REQUEST, "无法识别有效的项目ID");
             }
 
             // 3. 解析文件内容并获取手机号列表
             List<String> allPhoneNumbers = phoneNumberService.extractPhoneNumbers(uploadData);
             if (CollectionUtils.isEmpty(allPhoneNumbers)) {
-                return Result.error(BusinessStatus.BAD_REQUEST, "没有找到有效的手机号数据");
+                return Result.error(BusinessStates.BAD_REQUEST, "没有找到有效的手机号数据");
             }
 
             totalProcessed = allPhoneNumbers.size();
@@ -164,11 +164,11 @@ public class PhoneNumberController {
                     totalProcessed, totalAdded, totalExisting, totalRelationAdded, totalInvalid);
 
             // 返回成功结果和详细信息
-            return Result.success(BusinessStatus.SUCCESS, resultData);
+            return Result.success(BusinessStates.SUCCESS, resultData);
         } catch (Exception e) {
             // 异常处理
             log.error("上传失败: {}", e.getMessage(), e);
-            return Result.error(BusinessStatus.INTERNAL_SERVER_ERROR, "上传失败: " + e.getMessage());
+            return Result.error(BusinessStates.INTERNAL_SERVER_ERROR, "上传失败: " + e.getMessage());
         }
     }
 }

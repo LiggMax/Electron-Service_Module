@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.RegionEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.service.RegionService;
 import com.ligg.service.file.FileService;
@@ -42,7 +42,7 @@ public class RegionController {
      */
     @GetMapping
     public Result<List<RegionEntity>> getRegionList() {
-        return Result.success(BusinessStatus.SUCCESS, regionService
+        return Result.success(BusinessStates.SUCCESS, regionService
                 .getBaseMapper()
                 .selectList(new LambdaQueryWrapper<RegionEntity>()
                         .orderByDesc(RegionEntity::getRegionId)));
@@ -54,7 +54,7 @@ public class RegionController {
     @DeleteMapping
     public Result<String> deleteRegion(@RequestParam Integer regionId) {
         regionService.removeById(regionId);
-        return Result.success(BusinessStatus.SUCCESS, "删除成功");
+        return Result.success(BusinessStates.SUCCESS, "删除成功");
     }
 
     /**
@@ -64,10 +64,10 @@ public class RegionController {
     public Result<String> uploadRegionIcon(@RequestParam Integer regionId,
                                            @RequestParam MultipartFile iconFile) {
         if (iconFile.getSize() > 1024 * 1024 * 10) {
-            return Result.error(BusinessStatus.BAD_REQUEST, "文件大小不不合法");
+            return Result.error(BusinessStates.BAD_REQUEST, "文件大小不不合法");
         }
         String iconUrl = fileService.uploadImage(iconFile);
         regionService.updateRegionIcon(regionId, iconUrl);
-        return Result.success(BusinessStatus.SUCCESS, "上传成功");
+        return Result.success(BusinessStates.SUCCESS, "上传成功");
     }
 }

@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.user.UserEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.service.CustomerManageService;
 import jakarta.validation.constraints.Email;
@@ -34,7 +34,7 @@ public class CustomerController {
         List<UserEntity> userEntities = customerManageService.getBaseMapper()
                 .selectList(new LambdaQueryWrapper<UserEntity>()
                         .orderByDesc(UserEntity::getCreatedAt));
-        return Result.success(BusinessStatus.SUCCESS, userEntities);
+        return Result.success(BusinessStates.SUCCESS, userEntities);
     }
 
     /**
@@ -43,7 +43,7 @@ public class CustomerController {
     @PutMapping("/status")
     public Result<String> updateUserStatus(@RequestParam Long userId, @RequestParam Boolean status) {
         customerManageService.updateUserStatus(userId, status);
-        return Result.success(BusinessStatus.SUCCESS, "更新成功");
+        return Result.success(BusinessStates.SUCCESS, "更新成功");
     }
 
     /**
@@ -53,7 +53,7 @@ public class CustomerController {
     @PutMapping("/edit")
     public Result<String> updateUserInfo(@Validated @RequestBody UserEntity userEntity) {
         customerManageService.updateCustomerInfoById(userEntity);
-        return Result.success(BusinessStatus.SUCCESS, "更新成功");
+        return Result.success(BusinessStates.SUCCESS, "更新成功");
     }
 
     /**
@@ -66,7 +66,7 @@ public class CustomerController {
                                         @Max(value = 16, message = "密码长度不能超过16位")
                                         String password) {
         customerManageService.updatePassword(userId, password);
-        return Result.success(BusinessStatus.SUCCESS, "重置成功");
+        return Result.success(BusinessStates.SUCCESS, "重置成功");
     }
 
     /**
@@ -84,7 +84,7 @@ public class CustomerController {
         userEntity.setEmail(email);
         userEntity.setInvitationCode(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
         customerManageService.saveUser(userEntity);
-        return Result.success(BusinessStatus.SUCCESS, "添加成功");
+        return Result.success(BusinessStates.SUCCESS, "添加成功");
     }
 
     /**
@@ -93,7 +93,7 @@ public class CustomerController {
     @DeleteMapping("/deleteUser")
     public Result<String> deleteUser(@RequestParam Long userId) {
         customerManageService.removeById(userId);
-        return Result.success(BusinessStatus.SUCCESS, "删除成功");
+        return Result.success(BusinessStates.SUCCESS, "删除成功");
     }
 
     /**
@@ -104,6 +104,6 @@ public class CustomerController {
                                       @RequestParam Float balance,
                                       @RequestParam Boolean isType) {
         customerManageService.updateBalance(userId, balance, isType);
-        return Result.success(BusinessStatus.SUCCESS, "编辑成功");
+        return Result.success(BusinessStates.SUCCESS, "编辑成功");
     }
 }

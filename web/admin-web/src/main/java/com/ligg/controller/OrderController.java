@@ -1,7 +1,8 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.OrderEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
+import com.ligg.common.statuEnum.OrderState;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.OrderVo;
 import com.ligg.service.OrderService;
@@ -27,8 +28,8 @@ public class OrderController {
      * 获取所有订单
      */
     @GetMapping
-    public Result<List<OrderVo>> getAllOrder(){
-        return Result.success(BusinessStatus.SUCCESS, orderService.getAllOrder());
+    public Result<List<OrderVo>> getAllOrder() {
+        return Result.success(BusinessStates.SUCCESS, orderService.getAllOrder());
     }
 
     /**
@@ -38,17 +39,20 @@ public class OrderController {
     public Result<String> settleOrder(String orderId) {
         //获取订单数据
         OrderEntity orderInfo = orderService.getOrderInfo(orderId);
-        if(orderInfo == null){
-            return Result.error(BusinessStatus.BAD_REQUEST, "订单不存在");
+        if (orderInfo == null) {
+            return Result.error(BusinessStates.BAD_REQUEST, "订单不存在");
         }
-        if (orderInfo.getState() == 0){
-            return Result.error(BusinessStatus.BAD_REQUEST, "订单还未使用，不可结算");
+        OrderState state = OrderState.fromCode(orderInfo.getState());
+        if (state == null) {
+            return Result.error(BusinessStates.BAD_REQUEST, "未知的订单状态");
         }
-        if (orderInfo.getState() == 2){
-            return Result.error(BusinessStatus.BAD_REQUEST, "订单已结算,请勿重复提交");
-        }
-        //结算订单
-        orderService.settleOrder(orderInfo);
-        return Result.success(BusinessStatus.SUCCESS, "结算成功");
+
+        return switch (state) {
+            case UNUSED, IN_USE, SETTLED -> Result.error(BusinessStates.BAD_REQUEST, state.getMessage());
+            case AVAILABLE_FOR_SETTLE -> {
+                orderService.settleOrder(orderInfo);
+                yield Result.success(BusinessStates.SUCCESS, "结算成功");
+            }
+        };
     }
 }

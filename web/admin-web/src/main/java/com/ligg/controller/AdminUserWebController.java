@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.entity.adminweb.AdminWebUserEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminWebUserService;
@@ -37,7 +37,7 @@ public class AdminUserWebController {
         Long userId = (Long) userMap.get("userId");
         AdminWebUserEntity userInfo = adminWebUserService.getById(userId);
         userInfo.setPassword(null);
-        return Result.success(BusinessStatus.SUCCESS, userInfo);
+        return Result.success(BusinessStates.SUCCESS, userInfo);
     }
 
     /**
@@ -47,7 +47,7 @@ public class AdminUserWebController {
     public Result<String> editUserInfo(@RequestBody @Validated AdminWebUserEntity adminWebUserEntity) {
         Map<String, Object> userMap = jwtUtil.parseToken(request.getHeader("Token"));
         if(userMap.get("userId") == null) {
-            return Result.error(BusinessStatus.BAD_REQUEST, "用户数据错误");
+            return Result.error(BusinessStates.BAD_REQUEST, "用户数据错误");
         }
         adminWebUserEntity.setAdminId((Long) userMap.get("userId"));
         adminWebUserService.updateById(adminWebUserEntity);

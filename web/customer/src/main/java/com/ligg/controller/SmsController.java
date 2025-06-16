@@ -1,7 +1,7 @@
 package com.ligg.controller;
 
 import com.ligg.common.dto.SmsDto;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.CodeVo;
@@ -40,7 +40,7 @@ public class SmsController {
     public Result<List<SmsDto>> getSmsList() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         List<SmsDto> smsList = smsService.getPhoneNumberList((Long) map.get("userId"));
-        return Result.success(BusinessStatus.SUCCESS, smsList);
+        return Result.success(BusinessStates.SUCCESS, smsList);
     }
 
     /**
@@ -51,6 +51,6 @@ public class SmsController {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
         //获取用户订单列表
         List<CodeVo> codeList = smsService.getCodeList((Long) map.get("userId"));
-        return Result.success(BusinessStatus.SUCCESS, codeList);
+        return Result.success(BusinessStates.SUCCESS, codeList);
     }
 }

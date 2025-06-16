@@ -2,7 +2,7 @@ package com.ligg.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ligg.common.entity.admin.MerchantEntity;
-import com.ligg.common.status.BusinessStatus;
+import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.service.AdminMerchantUserService;
 import jakarta.validation.constraints.*;
@@ -27,7 +27,7 @@ public class CardController {
      */
     @GetMapping
     public Result<List<MerchantEntity>> getCardList() {
-        return Result.success(BusinessStatus.SUCCESS, merchantUserService.getBaseMapper()
+        return Result.success(BusinessStates.SUCCESS, merchantUserService.getBaseMapper()
                 .selectList(new LambdaQueryWrapper<MerchantEntity>()
                         .orderByDesc(MerchantEntity::getCreatedAt)
                         .orderByDesc(MerchantEntity::getUpdatedAt)));
@@ -39,7 +39,7 @@ public class CardController {
     @PutMapping("/edit")
     public Result<String> updateCardInfo(@Validated @RequestBody MerchantEntity merchantEntity) {
         merchantUserService.updateEditById(merchantEntity);
-        return Result.success(BusinessStatus.SUCCESS, "修改成功");
+        return Result.success(BusinessStates.SUCCESS, "修改成功");
     }
 
     /**
@@ -56,7 +56,7 @@ public class CardController {
         merchantEntity.setNickName(nickName);
         merchantEntity.setEmail(email);
         merchantUserService.saveCardUser(merchantEntity);
-        return Result.success(BusinessStatus.SUCCESS, "添加成功");
+        return Result.success(BusinessStates.SUCCESS, "添加成功");
     }
 
     /**
@@ -68,7 +68,7 @@ public class CardController {
                                         @Max(value = 20, message = "密码长度不能大于20位")
                                         @RequestParam String password) {
         merchantUserService.resetPassword(userId, password);
-        return Result.success(BusinessStatus.SUCCESS, "重置成功");
+        return Result.success(BusinessStates.SUCCESS, "重置成功");
     }
 
     /**
@@ -77,7 +77,7 @@ public class CardController {
     @DeleteMapping("/deleteCard")
     public Result<String> deleteCardInfo(@RequestParam Long userId) {
         merchantUserService.removeById(userId);
-        return Result.success(BusinessStatus.SUCCESS, "删除成功");
+        return Result.success(BusinessStates.SUCCESS, "删除成功");
     }
 
     /**
@@ -89,10 +89,10 @@ public class CardController {
                                   @RequestParam Boolean isType) {
         MerchantEntity merchant = merchantUserService.getById(userId);
         if (merchant.getMoney() < balance) {
-            return Result.error(BusinessStatus.BAD_REQUEST, "余额不足");
+            return Result.error(BusinessStates.BAD_REQUEST, "余额不足");
         }
         merchantUserService.payouts(userId, balance, isType);
-        return Result.success(BusinessStatus.SUCCESS, "提现成功");
+        return Result.success(BusinessStates.SUCCESS, "提现成功");
     }
 
 }

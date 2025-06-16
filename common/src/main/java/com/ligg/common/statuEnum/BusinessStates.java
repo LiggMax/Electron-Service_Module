@@ -1,5 +1,4 @@
-// com/ligg/common/status/BusinessStatus.java
-package com.ligg.common.status;
+package com.ligg.common.statuEnum;
 
 import lombok.Getter;
 
@@ -7,7 +6,7 @@ import lombok.Getter;
  * 业务状态码枚举
  */
 @Getter
-public enum BusinessStatus {
+public enum BusinessStates {
     // 成功状态
     SUCCESS(200, "操作成功"),
 
@@ -31,7 +30,7 @@ public enum BusinessStatus {
     private final int code;
     private final String message;
 
-    BusinessStatus(int code, String message) {
+    BusinessStates(int code, String message) {
         this.code = code;
         this.message = message;
     }
