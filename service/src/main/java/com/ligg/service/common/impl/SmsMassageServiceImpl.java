@@ -125,7 +125,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
                 for (String keyword : keywords) {
                     if (messageContent.contains(keyword)) {
-                        updateOrderAndCache(orderDto, code, phoneNumber);
+                        updateOrderAndCache(orderDto, code);
                         break; // 匹配成功后无需继续匹配其他关键词
                     }
                 }
@@ -147,7 +147,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     /**
      * 更新订单状态并写入缓存
      */
-    private void updateOrderAndCache(OrdersDto orderDto, String code, String phoneNumber) {
+    private void updateOrderAndCache(OrdersDto orderDto, String code) {
         try {
             orderDto.setCode(code);
             orderDto.setCreatedAt(LocalDateTime.now());
