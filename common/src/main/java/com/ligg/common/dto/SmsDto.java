@@ -23,7 +23,7 @@ public class SmsDto {
     private Long phoneNumber;
 
     /**
-     * 状态x
+     * 状态
      */
     private Integer state;
 

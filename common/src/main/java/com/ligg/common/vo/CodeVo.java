@@ -9,5 +9,6 @@ public class CodeVo {
     private Integer id;
     private String code;
     private Long phoneNumber;
+    private String projectName;
     private LocalDateTime createdAt;
 }

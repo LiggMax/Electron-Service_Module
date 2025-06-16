@@ -1,10 +1,10 @@
-package com.ligg.service.common.impl;
+package com.ligg.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.SmsDto;
 import com.ligg.common.vo.CodeVo;
 import com.ligg.mapper.SmsMapper;
-import com.ligg.service.common.SmsService;
+import com.ligg.service.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.Cursor;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -30,7 +31,7 @@ public class SmsServiceImpl implements SmsService {
     private ObjectMapper objectMapper;
 
     @Override
-    public List<SmsDto> getSmsList(Long userId) {
+    public List<SmsDto> getPhoneNumberList(Long userId) {
         return smsMapper.getSmsList(userId);
     }
 
@@ -39,9 +40,8 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public List<CodeVo> getCodeList(Long userId) {
-        String pattern = "user:orders:" + userId + ":*";
+        String pattern = "codes:" + "userId:" + userId + ":orderId:" + "*";
         ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-
         Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
 
         List<CodeVo> orders = new ArrayList<>();
@@ -50,21 +50,18 @@ public class SmsServiceImpl implements SmsService {
             byte[] keyBytes = cursor.next();
             String key = new String(keyBytes);
 
-            String json = redisTemplate.opsForValue().get(key);
-            if (json != null) {
+            Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+            for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+                String value = entry.getValue().toString();
                 try {
-                    CodeVo codeVo = objectMapper.readValue(json, CodeVo.class);
-                    if (codeVo != null && codeVo.getCode() != null && !codeVo.getCode().isEmpty()) {
-                        orders.add(codeVo);
-                    }
+                    orders.add(objectMapper.readValue(value, CodeVo.class));
                 } catch (Exception e) {
-                    log.error("反序列化订单失败: {}", e.getMessage());
+                    log.error("反序短信失败: {}", e.getMessage());
                 }
             }
         }
 
-        // 按创建时间降序排序（最新的在前面）
-        orders.sort(Comparator.comparing(CodeVo::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
+        orders.sort(Comparator.comparing(CodeVo::getCreatedAt).reversed());
         return orders;
     }
 }

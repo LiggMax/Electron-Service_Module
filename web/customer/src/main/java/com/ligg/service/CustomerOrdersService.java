@@ -22,4 +22,9 @@ public interface CustomerOrdersService {
      * 订单退款并回滚关联关系状态
      */
     void refundOrderAndUpdateRelation(OrderEntity orderInfo);
+
+    /**
+     * 根据订单id更新状态
+     */
+    void updateOrderStateById(String orderId, Integer state);
 }

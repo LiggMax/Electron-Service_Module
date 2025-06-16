@@ -87,8 +87,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
                 .eq(ProjectEntity::getProjectId, project.getProjectId())
                 .set(ProjectEntity::getProjectPrice, project.getProjectPrice())
                 .set(ProjectEntity::getProjectName, project.getProjectName())
-                .set(ProjectEntity::getKeyword, project.getKeyword())
-                .set(ProjectEntity::getCodeLength, project.getCodeLength())
                 .set(ProjectEntity::getProjectUpdateAt, LocalDateTime.now()));
     }
 

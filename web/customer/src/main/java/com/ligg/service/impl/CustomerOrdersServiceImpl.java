@@ -59,4 +59,15 @@ public class CustomerOrdersServiceImpl implements CustomerOrdersService {
             phoneProjectRelationMapper.rollbackAvailableStatus(phone.getPhoneId(), orderInfo.getProjectId());
         }
     }
+
+    /**
+     * 根据订单id修改订单状态
+     */
+    @Override
+    public void updateOrderStateById(String orderId, Integer state) {
+        OrderEntity order = new OrderEntity();
+        order.setOrdersId(orderId);
+        order.setState(state);
+        userOrderMapper.updateById(order);
+    }
 }

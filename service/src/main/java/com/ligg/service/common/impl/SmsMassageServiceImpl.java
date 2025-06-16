@@ -1,7 +1,9 @@
 package com.ligg.service.common.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ligg.common.dto.OrdersDto;
+import com.ligg.common.entity.OrderEntity;
 import com.ligg.common.entity.adminweb.ProjectKeyWordEntity;
 import com.ligg.common.utils.SmsUtil;
 import com.ligg.mapper.adminweb.OrderMapper;
@@ -82,7 +84,7 @@ public class SmsMassageServiceImpl implements SmsMassageService {
 
 
     /**
-     * 保存验证码并更新订单状态到缓存
+     * 保存验证码到缓存
      */
     @Override
     public void saveSmsAndCode(List<Map<String, String>> allMessageResults) {
@@ -142,25 +144,30 @@ public class SmsMassageServiceImpl implements SmsMassageService {
     }
 
     /**
-     * 更新订单信息并写入缓存
+     * 更新订单状态并写入缓存
      */
     private void updateOrderAndCache(OrdersDto orderDto, String code, String phoneNumber) {
         try {
             orderDto.setCode(code);
             orderDto.setCreatedAt(LocalDateTime.now());
 
-            // 使用独立 Key 存储每个验证码
-            String key = "phone:" + phoneNumber + ":code:" + code + ":userId:" + orderDto.getUserId();
-            String hashKey = "phone:" + phoneNumber + ":codes:" + ":userId:" + orderDto.getUserId();
+            //String key = "phone:" + phoneNumber + ":code:" + code + ":userId:" + orderDto.getUserId();
+            String hashKey = "codes:" + "userId:" + orderDto.getUserId() + ":orderId:" + orderDto.getUserId();
 
             String json = objectMapper.writeValueAsString(orderDto);
 
             // 设置独立验证码缓存（20分钟过期）
-            redisTemplate.opsForValue().set(key, json, 20, TimeUnit.MINUTES);
+            // redisTemplate.opsForValue().set(key, json, 20, TimeUnit.MINUTES);
 
-            // 可选：同时写入 Hash 结构中便于查询所有验证码
-            redisTemplate.opsForHash().put(hashKey, code, json);
-            redisTemplate.expire(hashKey, 20, TimeUnit.MINUTES); // 可选：为 Hash 设置统一过期时间
+            if (orderDto.getState() != 2) {
+                //更新订单状态
+                orderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
+                        .eq(OrderEntity::getOrdersId, orderDto.getOrdersId())
+                        .set(OrderEntity::getState, 1));
+                //写入 Hash 结构中便于查询所有验证码
+                redisTemplate.opsForHash().put(hashKey, code, json);
+                redisTemplate.expire(hashKey, 20, TimeUnit.MINUTES); //设置统一过期时间
+            }
         } catch (Exception e) {
             log.error("添加短信缓存失败", e);
         }

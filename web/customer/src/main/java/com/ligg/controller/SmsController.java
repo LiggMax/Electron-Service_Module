@@ -5,7 +5,7 @@ import com.ligg.common.status.BusinessStatus;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.CodeVo;
-import com.ligg.service.common.SmsService;
+import com.ligg.service.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class SmsController {
     @GetMapping
     public Result<List<SmsDto>> getSmsList() {
         Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
-        List<SmsDto> smsList = smsService.getSmsList((Long) map.get("userId"));
+        List<SmsDto> smsList = smsService.getPhoneNumberList((Long) map.get("userId"));
         return Result.success(BusinessStatus.SUCCESS, smsList);
     }
 

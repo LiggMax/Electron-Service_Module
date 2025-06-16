@@ -35,20 +35,6 @@ public class ProjectEntity {
      */
     private String icon;
 
-    //TODO 关键词和验证码长度需要删除
-    /**
-     * 解析关键字
-     */
-    @NotNull
-    private String keyword;
-
-    /**
-     * 验证码长度
-     */
-    @Min(1)
-    @Max(20)
-    private int codeLength;
-
     /**
      * 创建时间
      */

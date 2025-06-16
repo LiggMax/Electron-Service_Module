@@ -20,8 +20,6 @@ public class AdminWebUserServiceImpl extends ServiceImpl<AdminWebUserMapper, Adm
     @Autowired
     private AdminWebUserMapper adminWebUserMapper;
 
-
-
     /**
      * 更新登录时间和ip
      */
@@ -33,7 +31,7 @@ public class AdminWebUserServiceImpl extends ServiceImpl<AdminWebUserMapper, Adm
                 .eq(AdminWebUserEntity::getAdminId, adminId)
                 .set(AdminWebUserEntity::getLoginIp, loginIp)
                 .set(AdminWebUserEntity::getLoginTime, LocalDateTime.now());
-        adminWebUserMapper.update(null, updateWrapper);
+        adminWebUserMapper.update(updateWrapper);
     }
 
 }

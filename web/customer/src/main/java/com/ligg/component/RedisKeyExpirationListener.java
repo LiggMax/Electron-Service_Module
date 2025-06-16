@@ -31,23 +31,26 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     public void onMessage(Message message, byte[] pattern) {
         String expiredKey = message.toString();
         String[] parts = expiredKey.split(":");
-        if (parts.length == 4) {
+        if (parts.length == 5) {
             // 订单ID
-            String orderId = parts[3];
+            String orderId = parts[4];
             OrderEntity orderInfo = customerOrdersService.getOrderById(orderId);
 
             /*
              * 如果订单过期还未使用，则删除订单信息 , 并返回订单金额给用户
              */
-            if (orderInfo.getCode() == null || orderInfo.getCode().isEmpty()) {
+            if (orderInfo.getState() == 0) {
                 log.info("检测到用户:{}订单过期未使用，订单id{},退款金额{}",
                         orderInfo.getUserId(), orderId, orderInfo.getProjectMoney());
 
                 //删除订单信息
                 customerOrdersService.deleteOrderById(orderId);
-
                 //退款并回滚号码项目关联状态为可用
                 customerOrdersService.refundOrderAndUpdateRelation(orderInfo);
+            } else if (orderInfo.getState() == 1) {
+
+                log.info("订单{} 已使用，更新状态为待结算", orderId);
+                customerOrdersService.updateOrderStateById(orderId, 2);
             }
         }
     }
