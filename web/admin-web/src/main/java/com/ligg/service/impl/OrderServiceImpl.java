@@ -3,6 +3,7 @@ package com.ligg.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ligg.common.entity.admin.MerchantEntity;
 import com.ligg.common.entity.OrderEntity;
+import com.ligg.common.statuEnum.OrderState;
 import com.ligg.common.utils.CommissionUtils;
 import com.ligg.common.utils.JWTUtil;
 import com.ligg.common.vo.OrderVo;
@@ -89,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         //更新订单状态
         userOrderMapper.update(new LambdaUpdateWrapper<OrderEntity>()
                 .eq(OrderEntity::getOrdersId, order.getOrdersId())
-                .set(OrderEntity::getState, 2));
+                .set(OrderEntity::getState, OrderState.SETTLED.getCode()));
         log.info("结算订单，更新订单状态为以结算");
     }
 }

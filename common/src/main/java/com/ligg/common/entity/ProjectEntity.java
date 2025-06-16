@@ -3,9 +3,7 @@ package com.ligg.common.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +22,12 @@ public class ProjectEntity {
      * 项目名称
      */
     private String projectName;
+
+    /**
+     * 过期时间
+     */
+    @Min(value = 15, message = "过期时间不能小于15分钟")
+    private Integer expirationTime;
 
     /**
      * 项目价格

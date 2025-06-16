@@ -10,6 +10,7 @@ import com.ligg.service.common.ProjectService;
 import com.ligg.service.file.FileService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +55,7 @@ public class ProjectController {
      * 修改项目
      */
     @PutMapping("/edit")
-    public Result<String> editProject(@RequestBody ProjectEntity projectEntity) {
+    public Result<String> editProject(@Validated @RequestBody ProjectEntity projectEntity) {
         projectService.updateProject(projectEntity);
         return Result.success(BusinessStates.SUCCESS, "修改成功");
     }
