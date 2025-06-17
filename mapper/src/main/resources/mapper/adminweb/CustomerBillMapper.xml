@@ -3,19 +3,30 @@
 <mapper namespace="com.ligg.mapper.adminweb.CustomerBillMapper">
 
     <!--  查询用户账单 -->
-    <select id="selectCustomersBill" resultType="com.ligg.common.vo.CustomerBillVo">
+    <select id="selectCustomersBillPage" resultType="com.ligg.common.vo.CustomerBillVo">
         select cb.id,
-               cb.amount,
-               cb.bill_type,
-               cb.amount,
-               cb.purchase_time,
-               cb.remark,
-               cb.is_user_type,
-               u.nick_name,
-               u.user_avatar,
-               u.account
+        cb.amount,
+        cb.bill_type,
+        cb.amount,
+        cb.purchase_time,
+        cb.remark,
+        cb.is_user_type,
+        u.nick_name,
+        u.user_avatar,
+        u.account
         from customer_bill cb
-                 left join users u on cb.user_id = u.user_id
-        order by cb.purchase_time desc 
+        left join users u on cb.user_id = u.user_id
+        <where>
+            <if test="billType != null and billType != ''">
+                cb.bill_type = #{billType}
+            </if>
+            <if test="isUserType != null and isUserType != ''">
+                and cb.is_user_type = #{isUserType}
+            </if>
+            <if test="purchaseTime != null and purchaseTime != ''">
+                and cb.purchase_time = #{purchaseTime})
+            </if>
+        </where>
+        order by cb.purchase_time desc
     </select>
 </mapper>

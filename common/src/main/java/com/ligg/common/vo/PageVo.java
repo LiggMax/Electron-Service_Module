@@ -12,7 +12,7 @@ import java.util.List;
 public class PageVo<T> {
 
     /**
-     * 总数
+     * 总记录数
      */
     private Long total;
 

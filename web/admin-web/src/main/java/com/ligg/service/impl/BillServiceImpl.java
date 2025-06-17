@@ -1,10 +1,13 @@
 package com.ligg.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ligg.common.entity.adminweb.OrderBillEntity;
+import com.ligg.common.query.CustomerBillQuery;
 import com.ligg.common.vo.CustomerBillVo;
 import com.ligg.common.vo.OrderBillVo;
 import com.ligg.common.vo.BillVo;
+import com.ligg.common.vo.PageVo;
 import com.ligg.mapper.adminweb.CustomerBillMapper;
 import com.ligg.mapper.adminweb.OrderBillMapper;
 import com.ligg.service.BillService;
@@ -29,17 +32,17 @@ public class BillServiceImpl implements BillService {
     private OrderBillMapper orderBillMapper;
 
     @Override
-    public List<CustomerBillVo> getCustomerBill() {
-        List<CustomerBillVo> customerBill = customerBillMapper.selectCustomersBill();
-//
-//        //TODO 暂时将数据转换成vo，后续添加新数据
-        List<CustomerBillVo> customerBillVoList = new ArrayList<>();
-        for (CustomerBillVo entity : customerBill) {
-            CustomerBillVo vo = new CustomerBillVo();
-            BeanUtils.copyProperties(entity, vo);
-            customerBillVoList.add(vo);
-        }
-        return customerBillVoList;
+    public PageVo<CustomerBillVo> getUserBill(CustomerBillQuery customerBill) {
+
+        Page<CustomerBillQuery> Page = new Page<>(customerBill.getPageNum(), customerBill.getPageSize());
+        Page<CustomerBillVo> customerBillPage = customerBillMapper.selectCustomersBillPage(Page);
+
+        // 封装返回数据
+        PageVo<CustomerBillVo> pageVo = new PageVo<>();
+        pageVo.setPages(customerBillPage.getPages());
+        pageVo.setTotal(customerBillPage.getTotal());
+        pageVo.setList(customerBillPage.getRecords());
+        return pageVo;
     }
 
     @Override

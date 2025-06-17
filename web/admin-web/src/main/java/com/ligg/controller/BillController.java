@@ -1,9 +1,11 @@
 package com.ligg.controller;
 
+import com.ligg.common.query.CustomerBillQuery;
 import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
+import com.ligg.common.vo.PageVo;
 import com.ligg.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,18 +31,20 @@ public class BillController {
     private BillService billService;
 
     /**
-     * 获取账单
+     * 用户账单
      */
-    @GetMapping("/customerBill")
-    public Result<Map<String, Object>> getCustomerBill() {
-        //客户账单
-        List<CustomerBillVo> customerBill = billService.getCustomerBill();
-        //订单账单
-        BillVo orderBill = billService.getOrderBill();
+    @GetMapping("/user_bill")
+    public Result<PageVo<CustomerBillVo>> getCustomerBill(CustomerBillQuery customerBill) {
+        PageVo<CustomerBillVo> userBillPage = billService.getUserBill(customerBill);
+        return Result.success(BusinessStates.SUCCESS, userBillPage);
+    }
 
-        HashMap<String, Object> billMap = new HashMap<>();
-        billMap.put("customerBill", customerBill);
-        billMap.put("orderBill", orderBill);
-        return Result.success(BusinessStates.SUCCESS, billMap);
+    /**
+     * 订单账单
+     */
+    @GetMapping("/order_bill")
+    public Result<BillVo> getOrderBill() {
+        BillVo orderBill = billService.getOrderBill();
+        return Result.success(BusinessStates.SUCCESS, orderBill);
     }
 }

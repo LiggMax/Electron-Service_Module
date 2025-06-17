@@ -1,4 +1,4 @@
-package com.ligg.common.config;
+package com.ligg.entrance.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

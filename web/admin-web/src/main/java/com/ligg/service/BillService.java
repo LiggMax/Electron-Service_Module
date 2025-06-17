@@ -1,7 +1,9 @@
 package com.ligg.service;
 
+import com.ligg.common.query.CustomerBillQuery;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
+import com.ligg.common.vo.PageVo;
 
 import java.util.List;
 
@@ -12,9 +14,9 @@ import java.util.List;
 public interface BillService {
 
     /**
-     * 获取客户账单
+     * 获取用户账单
      */
-    List<CustomerBillVo> getCustomerBill();
+    PageVo<CustomerBillVo> getUserBill(CustomerBillQuery customerBill);
 
     /**
      * 订单账单 - 返回包含汇总数据的分层结构
