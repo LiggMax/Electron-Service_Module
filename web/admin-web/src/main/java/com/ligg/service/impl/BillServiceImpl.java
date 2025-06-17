@@ -31,15 +31,14 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<CustomerBillVo> getCustomerBill() {
         List<CustomerBillVo> customerBill = customerBillMapper.selectCustomersBill();
-
-        //TODO 暂时将数据转换成vo，后续添加新数据
+//
+//        //TODO 暂时将数据转换成vo，后续添加新数据
         List<CustomerBillVo> customerBillVoList = new ArrayList<>();
         for (CustomerBillVo entity : customerBill) {
             CustomerBillVo vo = new CustomerBillVo();
             BeanUtils.copyProperties(entity, vo);
             customerBillVoList.add(vo);
         }
-
         return customerBillVoList;
     }
 

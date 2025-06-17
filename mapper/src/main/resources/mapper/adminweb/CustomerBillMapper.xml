@@ -10,6 +10,7 @@
                cb.amount,
                cb.purchase_time,
                cb.remark,
+               cb.is_user_type,
                u.nick_name,
                u.user_avatar,
                u.account

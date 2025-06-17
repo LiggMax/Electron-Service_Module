@@ -29,7 +29,8 @@ public class OrderController {
      */
     @GetMapping
     public Result<List<OrderVo>> getAllOrder() {
-        return Result.success(BusinessStates.SUCCESS, orderService.getAllOrder());
+        List<OrderVo> allOrder = orderService.getAllOrder();
+        return Result.success(BusinessStates.SUCCESS, allOrder);
     }
 
     /**

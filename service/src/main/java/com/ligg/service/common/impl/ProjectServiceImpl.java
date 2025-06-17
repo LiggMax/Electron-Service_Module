@@ -1,6 +1,5 @@
 package com.ligg.service.common.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.ProjectListDto;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +81,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      */
     @Override
     public void updateProject(ProjectEntity project) {
-        projectMapper.update(new LambdaUpdateWrapper<ProjectEntity>()
+        projectMapper.update(null, new LambdaUpdateWrapper<ProjectEntity>()
                 .eq(ProjectEntity::getProjectId, project.getProjectId())
                 .set(ProjectEntity::getProjectPrice, project.getProjectPrice())
                 .set(ProjectEntity::getProjectName, project.getProjectName())
@@ -96,7 +94,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      */
     @Override
     public void uploadIcon(Integer projectId, String iconUrl) {
-        projectMapper.update(new LambdaUpdateWrapper<ProjectEntity>()
+        projectMapper.update(null, new LambdaUpdateWrapper<ProjectEntity>()
                 .eq(ProjectEntity::getProjectId, projectId)
                 .set(ProjectEntity::getIcon, iconUrl));
     }

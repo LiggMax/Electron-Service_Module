@@ -2,6 +2,7 @@ package com.ligg.common.entity.adminweb;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ligg.common.query.PageQuery;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("customer_bill")
-public class CustomerBillEntity {
+public class CustomerBillEntity extends PageQuery {
     private String id;
 
     /**

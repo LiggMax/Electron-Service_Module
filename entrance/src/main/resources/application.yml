@@ -20,10 +20,8 @@ spring:
 
 mybatis-plus:
   configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true # 开启驼峰命名
-logging:
-  level:
-    com.ligg.mapper: debug
 jwt:
   key: ${JWT_KEY}
 

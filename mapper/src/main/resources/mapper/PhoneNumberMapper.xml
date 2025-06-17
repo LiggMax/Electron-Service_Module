@@ -11,7 +11,7 @@
             (
             #{phone.phoneNumber},
             #{phone.registrationTime},
-            #{phone.adminUserId},
+            #{phone.adminUserId}
             )
         </foreach>
     </insert>

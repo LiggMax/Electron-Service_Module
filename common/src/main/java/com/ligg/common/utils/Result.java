@@ -14,7 +14,7 @@ public class Result<T> {
     private String message;//提示信息
     private T data;//响应数据
 
-    public static <E> Result<E> success(BusinessStates status, E data) {
+    public static <T> Result<T> success(BusinessStates status, T data) {
         return new Result<>(status.getCode(), "操作成功", data);
     }
 
