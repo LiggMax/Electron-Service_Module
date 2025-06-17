@@ -2,7 +2,6 @@ package com.ligg.common.entity.adminweb;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ligg.common.query.PageQuery;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
