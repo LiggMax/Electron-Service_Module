@@ -34,8 +34,8 @@ public class BillServiceImpl implements BillService {
     @Override
     public PageVo<CustomerBillVo> getUserBill(CustomerBillQuery customerBill) {
 
-        Page<CustomerBillQuery> Page = new Page<>(customerBill.getPageNum(), customerBill.getPageSize());
-        Page<CustomerBillVo> customerBillPage = customerBillMapper.selectCustomersBillPage(Page);
+        Page<CustomerBillVo> Page = new Page<>(customerBill.getPageNum(), customerBill.getPageSize());
+        Page<CustomerBillVo> customerBillPage = customerBillMapper.selectCustomersBillPage(Page, customerBill);
 
         // 封装返回数据
         PageVo<CustomerBillVo> pageVo = new PageVo<>();

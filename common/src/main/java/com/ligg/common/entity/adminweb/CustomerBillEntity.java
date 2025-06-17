@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("customer_bill")
-public class CustomerBillEntity extends PageQuery {
-    private String id;
+public class CustomerBillEntity {
+    private String billId;
 
     /**
      * 1:充值，2：消费

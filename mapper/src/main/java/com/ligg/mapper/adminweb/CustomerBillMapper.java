@@ -22,5 +22,6 @@ public interface CustomerBillMapper extends BaseMapper<CustomerBillEntity> {
     /**
      * 查询客户账单
      */
-    Page<CustomerBillVo> selectCustomersBillPage(@Param("page") IPage<CustomerBillQuery> page);
+    Page<CustomerBillVo> selectCustomersBillPage(@Param("page") IPage<CustomerBillVo> page,
+                                                 @Param("query") CustomerBillQuery query);
 }
