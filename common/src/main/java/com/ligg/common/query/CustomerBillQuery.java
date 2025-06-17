@@ -1,11 +1,11 @@
 package com.ligg.common.query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * @Author Ligg
@@ -18,17 +18,19 @@ public class CustomerBillQuery extends PageQuery {
     /**
      * 1:充值，2：消费
      */
-    @Pattern(regexp = "^([12])$", message = "用户类型必须为1（充值）或2（消费）")
+    @Min(value = 1, message = "账单类型必须为1（充值）或2（消费）")
+    @Max(value = 2, message = "账单类型必须为1（充值）或2（消费）")
     private Integer billType;
 
     /**
-     * 1:客户，2：卡商
+     * 0:客户，1：卡商
      */
-    @Pattern(regexp = "^([12])$", message = "用户类型必须为1（客户）或2（卡商）")
+    @Min(value = 0, message = "用户类型必须为0（客户）或1（卡商）")
+    @Max(value = 1, message = "用户类型必须为0（客户）或1（卡商）")
     private Integer isUserType;
 
     /**
-     * 购买时间
+     * 购买时间（年月）
      */
-    private LocalDateTime purchaseTime;
+    private LocalDate purchaseTime;
 }

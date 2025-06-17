@@ -61,8 +61,8 @@
             <if test="query.isUserType != null and query.isUserType != ''">
                 and cb.is_user_type = #{query.isUserType}
             </if>
-            <if test="query.purchaseTime != null and query.purchaseTime != ''">
-                and cb.purchase_time = #{query.purchaseTime}
+            <if test="query.purchaseTime != null">
+                and DATE_FORMAT(cb.purchase_time, '%Y-%m') = DATE_FORMAT(#{query.purchaseTime}, '%Y-%m')
             </if>
         </where>
         order by cb.purchase_time desc

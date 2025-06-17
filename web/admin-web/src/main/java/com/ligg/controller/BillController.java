@@ -8,6 +8,7 @@ import com.ligg.common.vo.CustomerBillVo;
 import com.ligg.common.vo.PageVo;
 import com.ligg.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +35,7 @@ public class BillController {
      * 用户账单
      */
     @GetMapping("/user_bill")
-    public Result<PageVo<CustomerBillVo>> getCustomerBill(CustomerBillQuery customerBill) {
+    public Result<PageVo<CustomerBillVo>> getCustomerBill(@Validated CustomerBillQuery customerBill) {
         PageVo<CustomerBillVo> userBillPage = billService.getUserBill(customerBill);
         return Result.success(BusinessStates.SUCCESS, userBillPage);
     }
