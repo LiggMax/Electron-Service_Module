@@ -1,8 +1,11 @@
 package com.ligg.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ligg.common.entity.PhoneEntity;
 import com.ligg.common.entity.ProjectEntity;
+import com.ligg.common.vo.PageVo;
 import com.ligg.common.vo.PhoneVo;
 
 import java.util.List;
@@ -77,7 +80,8 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     /**
      * 获取所有手机号列表
      */
-    List<PhoneVo> getPhoneList();
+    Page<PhoneVo> getPhoneList(@Param("page") IPage<PhoneVo> page,
+                               @Param("phoneNumber") Long phoneNumber);
 
     /**
      * 根据号码统计 is_available = 0 的数量

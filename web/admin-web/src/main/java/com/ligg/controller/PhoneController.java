@@ -2,13 +2,11 @@ package com.ligg.controller;
 
 import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
+import com.ligg.common.vo.PageVo;
 import com.ligg.common.vo.PhoneVo;
 import com.ligg.service.common.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,8 +24,11 @@ public class PhoneController {
      * 号码列表
      */
     @GetMapping
-    public Result<List<PhoneVo>> getPhoneList(){
-       List<PhoneVo> phoneVoList = phoneNumberService.getPhoneList();
+    public Result<PageVo<PhoneVo>> getPhoneList(@RequestParam(required = false) Long phoneNumber,
+                                                Long pageNum,
+                                                Long pageSize
+    ) {
+        PageVo<PhoneVo> phoneVoList = phoneNumberService.getPhoneList(phoneNumber, pageNum, pageSize);
         return Result.success(BusinessStates.SUCCESS, phoneVoList);
     }
 
@@ -35,7 +36,7 @@ public class PhoneController {
      * 删除号码
      */
     @DeleteMapping()
-    public Result<String> deletePhone(Long phoneId){
+    public Result<String> deletePhone(Long phoneId) {
         phoneNumberService.getBaseMapper().deleteById(phoneId);
         return Result.success(BusinessStates.SUCCESS, "删除成功");
     }

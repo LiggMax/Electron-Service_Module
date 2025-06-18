@@ -116,7 +116,6 @@
         <result property="regionName" column="region_name"/>
         <result property="adminNickName" column="admin_nick_name"/>
         <result property="adminAvatar" column="admin_avatar"/>
-        <result property="money" column="money"/>
         <collection property="projects" ofType="com.ligg.common.vo.ProjectInfoVo">
             <id property="projectId" column="project_id"/>
             <result property="projectName" column="project_name"/>
@@ -127,19 +126,24 @@
     <!-- 获取号码列表 -->
     <select id="getPhoneList" resultMap="PhoneVoResultMap">
         select p.phone_id,
-               p.phone_number,
-               p.registration_time,
-               r.region_name,
-               au.nick_name as admin_nick_name,
-               au.user_avatar as admin_avatar,
-               pj.project_id,
-               pj.project_name,
-               pj.project_price
+        p.phone_number,
+        p.registration_time,
+        r.region_name,
+        au.nick_name as admin_nick_name,
+        au.user_avatar as admin_avatar,
+        pj.project_id,
+        pj.project_name,
+        pj.project_price
         from phone p
-                  join phone_project_relation ppr on p.phone_id = ppr.phone_id
-                  join region r on ppr.region_id = r.region_id
-                  join merchant au on p.admin_user_id = au.user_id
-                  join project pj on ppr.project_id = pj.project_id
+        join phone_project_relation ppr on p.phone_id = ppr.phone_id
+        join region r on ppr.region_id = r.region_id
+        join merchant au on p.admin_user_id = au.user_id
+        join project pj on ppr.project_id = pj.project_id
+        <where>
+            <if test="phoneNumber != null">
+                p.phone_number like concat('%', #{phoneNumber}, '%')
+            </if>
+        </where>
         order by p.phone_id desc
     </select>
 

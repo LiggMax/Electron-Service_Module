@@ -3,6 +3,7 @@ package com.ligg.service.common;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ligg.common.dto.PhoneAndProjectDto;
 import com.ligg.common.entity.PhoneEntity;
+import com.ligg.common.vo.PageVo;
 import com.ligg.common.vo.PhoneVo;
 
 import java.util.List;
@@ -25,33 +26,24 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
      */
     PhoneAndProjectDto phoneDetailByNumber(Long phoneNumber, Long adminUserId);
 
-    /**
-     * 批量添加手机号
-     * @param phoneNumbers 手机号列表
-     * @param regionId 地区ID
-     * @param projectIds 项目ID列表
-     * @param adminUserId 管理员用户ID
-     * @return 成功添加的数量
-     */
-    int batchAddPhoneNumbers(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
 
     /**
      * 批量处理手机号和项目关联（新逻辑）
      * 如果号码已存在，只添加项目关联；如果号码不存在，先添加号码再添加关联
-     * 
+     *
      * @param phoneNumbers 手机号列表
-     * @param regionId 地区ID
-     * @param projectIds 项目ID列表
-     * @param adminUserId 管理员用户ID
+     * @param regionId     地区ID
+     * @param projectIds   项目ID列表
+     * @param adminUserId  管理员用户ID
      * @return 处理结果统计
      */
     Map<String, Integer> batchProcessPhoneAndProjects(List<String> phoneNumbers, Integer regionId, List<Long> projectIds, Long adminUserId);
 
     /**
      * 检查手机号和项目的关联是否已存在
-     * 
+     *
      * @param phoneNumber 手机号
-     * @param projectId 项目ID
+     * @param projectId   项目ID
      * @return 是否已存在关联
      */
     boolean checkPhoneProjectRelationExists(Long phoneNumber, Long projectId);
@@ -104,5 +96,5 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
     Integer mapCountryToRegionId(String country);
 
     // 获取手机号列表
-    List<PhoneVo> getPhoneList();
+    PageVo<PhoneVo> getPhoneList(Long phoneNumber, Long pageNum, Long pageSize);
 }
