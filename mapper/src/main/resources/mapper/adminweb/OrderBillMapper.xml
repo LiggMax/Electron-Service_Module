@@ -20,4 +20,16 @@
         </where>
         order by ob.start_time desc
     </select>
+
+    <!-- 订单详情查询 -->
+    <select id="selectDetailList" resultType="com.ligg.common.entity.adminweb.OrderBillEntity">
+        select *
+        from order_bill
+        <where>
+            <if test="purchaseTime != null">
+                date_format(start_time,'%Y-%m') = #{purchaseTime}
+            </if>
+        </where>
+        order by start_time desc
+    </select>
 </mapper>

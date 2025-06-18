@@ -7,6 +7,9 @@ import com.ligg.common.query.OrderBillQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.YearMonth;
+import java.util.List;
+
 /**
  * @Author Ligg
  * @Time 2025/6/5
@@ -21,4 +24,9 @@ public interface OrderBillMapper extends BaseMapper<OrderBillEntity> {
      */
     Page<OrderBillEntity> selectOrderBillPage(@Param("page") Page<OrderBillEntity> page,
                                               @Param("query") OrderBillQuery query);
+
+    /**
+     * 订单账单详情
+     */
+    List<OrderBillEntity> selectDetailList(YearMonth purchaseTime);
 }

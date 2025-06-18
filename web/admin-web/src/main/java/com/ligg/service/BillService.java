@@ -5,7 +5,10 @@ import com.ligg.common.query.OrderBillQuery;
 import com.ligg.common.query.UserBillQuery;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
+import com.ligg.common.vo.OrderVo;
 import com.ligg.common.vo.PageVo;
+
+import java.time.YearMonth;
 
 /**
  * @Author Ligg
@@ -23,4 +26,9 @@ public interface BillService {
      * 包含资金总流水、卡商利润、平台利润以及详细订单列表
      */
     PageVo<OrderBillEntity> getOrderBill(OrderBillQuery orderBill);
+
+    /**
+     * 订单详情
+     */
+    BillVo getOrderDetail(YearMonth purchaseTime);
 }

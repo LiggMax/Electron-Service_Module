@@ -7,13 +7,17 @@ import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.BillVo;
 import com.ligg.common.vo.CustomerBillVo;
+import com.ligg.common.vo.OrderVo;
 import com.ligg.common.vo.PageVo;
 import com.ligg.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.YearMonth;
 
 
 /**
@@ -46,5 +50,15 @@ public class BillController {
     public Result<PageVo<OrderBillEntity>> getOrderBill(@Validated OrderBillQuery orderBill) {
         PageVo<OrderBillEntity> orderBillPage = billService.getOrderBill(orderBill);
         return Result.success(BusinessStates.SUCCESS, orderBillPage);
+    }
+
+    /**
+     * 订单详情信息
+     * return BillVo
+     */
+    @GetMapping("/order_detail")
+    public Result<BillVo> getOrderDetail(@DateTimeFormat(pattern = "yyyy-MM") YearMonth purchaseTime) {
+        BillVo orderDetail = billService.getOrderDetail(purchaseTime);
+        return Result.success(BusinessStates.SUCCESS, orderDetail);
     }
 }

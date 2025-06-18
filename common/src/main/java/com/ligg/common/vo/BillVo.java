@@ -25,7 +25,4 @@ public class BillVo {
      * 平台利润
      */
     private Float platformProfit;
-
-    private List<OrderBillVo> orderBills;
-
 }
