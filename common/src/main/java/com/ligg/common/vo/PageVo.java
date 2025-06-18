@@ -17,7 +17,7 @@ public class PageVo<T> {
     private Long total;
 
     /**
-     * 总页数
+     * 总前页数
      */
     private Long pages;
 
