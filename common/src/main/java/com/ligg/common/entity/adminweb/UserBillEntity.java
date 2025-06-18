@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
  * 客户账单
  */
 @Data
-@TableName("customer_bill")
-public class CustomerBillEntity {
+@TableName("user_bill")
+public class UserBillEntity {
     private String billId;
 
     /**

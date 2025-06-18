@@ -1,7 +1,7 @@
 package com.ligg.service.aspect;
 
 import com.ligg.common.entity.OrderEntity;
-import com.ligg.common.entity.adminweb.CustomerBillEntity;
+import com.ligg.common.entity.adminweb.UserBillEntity;
 import com.ligg.mapper.adminweb.CustomerBillMapper;
 import com.ligg.service.annotation.Bill;
 import lombok.extern.slf4j.Slf4j;
@@ -158,7 +158,7 @@ public class BillAspect {
     private void saveBillRecord(Long userId, Float amount, int isUserType, int billType,
                                 String remark, LocalDateTime processTime) {
         try {
-            CustomerBillEntity billEntity = new CustomerBillEntity();
+            UserBillEntity billEntity = new UserBillEntity();
             billEntity.setUserId(userId);
             billEntity.setAmount(amount);
             billEntity.setIsUserType(isUserType);

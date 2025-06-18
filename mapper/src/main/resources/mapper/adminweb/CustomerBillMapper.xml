@@ -5,13 +5,13 @@
     <!--  查询用户账单 -->
     <select id="selectCustomersBillPage" resultType="com.ligg.common.vo.CustomerBillVo">
         select
-        cb.id as billId,
-        cb.amount,
-        cb.bill_type,
-        cb.purchase_time,
-        cb.remark,
-        cb.user_id,
-        cb.is_user_type,
+        ub.id as billId,
+        ub.amount,
+        ub.bill_type,
+        ub.purchase_time,
+        ub.remark,
+        ub.user_id,
+        ub.is_user_type,
         <choose>
             <when test="query.isUserType == 0">
                 u.nick_name,
@@ -25,46 +25,46 @@
             </when>
             <otherwise>
                 CASE
-                WHEN cb.is_user_type = 0 THEN u.nick_name
-                WHEN cb.is_user_type = 1 THEN m.nick_name
+                WHEN ub.is_user_type = 0 THEN u.nick_name
+                WHEN ub.is_user_type = 1 THEN m.nick_name
                 ELSE NULL
                 END as nick_name,
                 CASE
-                WHEN cb.is_user_type = 0 THEN u.user_avatar
-                WHEN cb.is_user_type = 1 THEN m.user_avatar
+                WHEN ub.is_user_type = 0 THEN u.user_avatar
+                WHEN ub.is_user_type = 1 THEN m.user_avatar
                 ELSE NULL
                 END as user_avatar,
                 CASE
-                WHEN cb.is_user_type = 0 THEN u.account
-                WHEN cb.is_user_type = 1 THEN m.account
+                WHEN ub.is_user_type = 0 THEN u.account
+                WHEN ub.is_user_type = 1 THEN m.account
                 ELSE NULL
                 END as account
             </otherwise>
         </choose>
-        from customer_bill cb
+        from user_bill ub
         <choose>
             <when test="query.isUserType == 0">
-                left join users u on u.user_id = cb.user_id
+                left join users u on u.user_id = ub.user_id
             </when>
             <when test="query.isUserType == 1">
-                left join merchant m on m.user_id = cb.user_id
+                left join merchant m on m.user_id = ub.user_id
             </when>
             <otherwise>
-                left join users u on u.user_id = cb.user_id and cb.is_user_type = 0
-                left join merchant m on m.user_id = cb.user_id and cb.is_user_type = 1
+                left join users u on u.user_id = ub.user_id and ub.is_user_type = 0
+                left join merchant m on m.user_id = ub.user_id and ub.is_user_type = 1
             </otherwise>
         </choose>
         <where>
             <if test="query.billType != null and query.billType != ''">
-                cb.bill_type = #{query.billType}
+                ub.bill_type = #{query.billType}
             </if>
             <if test="query.isUserType != null and query.isUserType != ''">
-                and cb.is_user_type = #{query.isUserType}
+                and ub.is_user_type = #{query.isUserType}
             </if>
             <if test="query.purchaseTime != null">
-                and DATE_FORMAT(cb.purchase_time, '%Y-%m') = #{query.purchaseTime}
+                and DATE_FORMAT(ub.purchase_time, '%Y-%m') = #{query.purchaseTime}
             </if>
         </where>
-        order by cb.purchase_time desc
+        order by ub.purchase_time desc
     </select>
 </mapper>

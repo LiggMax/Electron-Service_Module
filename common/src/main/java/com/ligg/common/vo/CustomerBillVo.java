@@ -1,6 +1,6 @@
 package com.ligg.common.vo;
 
-import com.ligg.common.entity.adminweb.CustomerBillEntity;
+import com.ligg.common.entity.adminweb.UserBillEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  **/
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CustomerBillVo extends CustomerBillEntity {
+public class CustomerBillVo extends UserBillEntity {
 
     /**
      * 客户昵称

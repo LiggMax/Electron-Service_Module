@@ -51,24 +51,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**");
     }
 
-    /**
-     * 添加转换器
-     *
-     * @param registry
-     */
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        // 添加YearMonth类型转换器
-        registry.addConverter(new Converter<String, YearMonth>() {
-            @Override
-            public YearMonth convert(@NotNull String source) {
-                if (source.trim().isEmpty()) {
-                    return null;
-                }
-                return YearMonth.parse(source, DateTimeFormatter.ofPattern("yyyy-MM"));
-            }
-        });
-    }
 
     /**
      * 跨域配置
