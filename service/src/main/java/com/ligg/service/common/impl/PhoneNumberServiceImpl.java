@@ -9,6 +9,7 @@ import com.ligg.mapper.PhoneNumberMapper;
 import com.ligg.service.common.PhoneNumberService;
 import com.ligg.service.common.ProjectService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -617,6 +618,16 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper, Phone
      */
     @Override
     public List<PhoneVo> getPhoneList() {
-        return phoneNumberMapper.getPhoneList();
+        ArrayList<PhoneVo> phoneVos = new ArrayList<>();
+        List<PhoneVo> phoneList = phoneNumberMapper.getPhoneList();
+        for (PhoneVo phone : phoneList) {
+            int count = phoneNumberMapper.countUnavailablePhones(phone.getPhoneId());
+            if (count <= 0) {
+                phone.setIsAvailable(false);
+            }
+            phoneVos.add(phone);
+        }
+
+        return phoneVos;
     }
 }

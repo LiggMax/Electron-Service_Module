@@ -94,8 +94,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, ProjectEntity
      */
     @Override
     public void uploadIcon(Integer projectId, String iconUrl) {
-        projectMapper.update(null, new LambdaUpdateWrapper<ProjectEntity>()
-                .eq(ProjectEntity::getProjectId, projectId)
-                .set(ProjectEntity::getIcon, iconUrl));
+        ProjectEntity project = new ProjectEntity();
+        project.setProjectId(projectId);
+        project.setIcon(iconUrl);
+        project.setProjectUpdateAt(LocalDateTime.now());
+        projectMapper.updateById(project);
     }
 }

@@ -21,5 +21,5 @@ public class PhoneVo {
     private List<ProjectInfoVo> projects;//项目列表
     private String adminNickName;//卡商昵称
     private String adminAvatar;
-    private Float money;//号码价格
+    private Boolean isAvailable = true;
 }

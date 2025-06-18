@@ -155,4 +155,12 @@
         LIMIT 100
     </select>
 
+    <!-- 统计表中 is_available = 0 的数量 - -->
+    <select id="countUnavailablePhones" resultType="java.lang.Integer">
+        select count(*)
+        from phone_project_relation
+        where is_available = 0
+          and phone_id = #{phoneId}
+    </select>
+
 </mapper>

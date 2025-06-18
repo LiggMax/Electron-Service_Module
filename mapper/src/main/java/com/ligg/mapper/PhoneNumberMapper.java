@@ -80,6 +80,11 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     List<PhoneVo> getPhoneList();
 
     /**
+     * 根据号码统计 is_available = 0 的数量
+     */
+    int countUnavailablePhones(Long phoneId);
+
+    /**
      * 获取指定地区和项目的可用号码列表
      */
     List<PhoneEntity> getAvailablePhonesByProject(@Param("regionId") Integer regionId, @Param("projectId") Integer projectId);
