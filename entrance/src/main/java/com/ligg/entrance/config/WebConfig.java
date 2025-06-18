@@ -2,14 +2,20 @@ package com.ligg.entrance.config;
 
 import com.ligg.entrance.interceptors.LoginInterceptors;
 import com.ligg.entrance.interceptors.RateLimitInterceptor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Web配置
@@ -43,6 +49,25 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico") // 放行静态资源
                 .excludePathPatterns("/ws/**", "/socket/**") // 放行WebSocket路径
                 .addPathPatterns("/**");
+    }
+
+    /**
+     * 添加转换器
+     *
+     * @param registry
+     */
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        // 添加YearMonth类型转换器
+        registry.addConverter(new Converter<String, YearMonth>() {
+            @Override
+            public YearMonth convert(@NotNull String source) {
+                if (source.trim().isEmpty()) {
+                    return null;
+                }
+                return YearMonth.parse(source, DateTimeFormatter.ofPattern("yyyy-MM"));
+            }
+        });
     }
 
     /**

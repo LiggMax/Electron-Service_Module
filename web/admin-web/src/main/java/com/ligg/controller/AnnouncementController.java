@@ -21,6 +21,7 @@ public class AnnouncementController {
 
     @Autowired
     private AnnouncementService announcementService;
+
     /**
      * 发布、编辑公告
      */

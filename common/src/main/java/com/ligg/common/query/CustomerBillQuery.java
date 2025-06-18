@@ -4,8 +4,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 
 /**
  * @Author Ligg
@@ -32,5 +33,6 @@ public class CustomerBillQuery extends PageQuery {
     /**
      * 购买时间（年月）
      */
-    private LocalDate purchaseTime;
+    @DateTimeFormat(pattern = "yyyy-MM")
+    private YearMonth purchaseTime;
 }
