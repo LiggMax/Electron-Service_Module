@@ -2,20 +2,15 @@ package com.ligg.entrance.config;
 
 import com.ligg.entrance.interceptors.LoginInterceptors;
 import com.ligg.entrance.interceptors.RateLimitInterceptor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Web配置

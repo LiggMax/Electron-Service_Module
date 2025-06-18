@@ -1,6 +1,8 @@
 package com.ligg.controller;
 
-import com.ligg.common.query.CustomerBillQuery;
+import com.ligg.common.entity.adminweb.OrderBillEntity;
+import com.ligg.common.query.OrderBillQuery;
+import com.ligg.common.query.UserBillQuery;
 import com.ligg.common.statuEnum.BusinessStates;
 import com.ligg.common.utils.Result;
 import com.ligg.common.vo.BillVo;
@@ -32,8 +34,8 @@ public class BillController {
      * 用户账单
      */
     @GetMapping("/user_bill")
-    public Result<PageVo<CustomerBillVo>> getCustomerBill(@Validated CustomerBillQuery customerBill) {
-        PageVo<CustomerBillVo> userBillPage = billService.getUserBill(customerBill);
+    public Result<PageVo<CustomerBillVo>> getCustomerBill(@Validated UserBillQuery userBill) {
+        PageVo<CustomerBillVo> userBillPage = billService.getUserBill(userBill);
         return Result.success(BusinessStates.SUCCESS, userBillPage);
     }
 
@@ -41,8 +43,8 @@ public class BillController {
      * 订单账单
      */
     @GetMapping("/order_bill")
-    public Result<BillVo> getOrderBill() {
-        BillVo orderBill = billService.getOrderBill();
-        return Result.success(BusinessStates.SUCCESS, orderBill);
+    public Result<PageVo<OrderBillEntity>> getOrderBill(@Validated OrderBillQuery orderBill) {
+        PageVo<OrderBillEntity> orderBillPage = billService.getOrderBill(orderBill);
+        return Result.success(BusinessStates.SUCCESS, orderBillPage);
     }
 }

@@ -14,7 +14,7 @@ import java.time.YearMonth;
  **/
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CustomerBillQuery extends PageQuery {
+public class UserBillQuery extends PageQuery {
 
     /**
      * 1:充值，2：消费
@@ -31,7 +31,7 @@ public class CustomerBillQuery extends PageQuery {
     private Integer isUserType;
 
     /**
-     * 购买时间（年月）
+     * 时间（年月）
      */
     @DateTimeFormat(pattern = "yyyy-MM")
     private YearMonth purchaseTime;
