@@ -40,4 +40,14 @@ public class PhoneController {
         phoneNumberService.getBaseMapper().deleteById(phoneId);
         return Result.success(BusinessStates.SUCCESS, "删除成功");
     }
+
+    /**
+     * 批量删除号码
+     */
+    @DeleteMapping("/batch")
+    public Result<String> deletePhoneBatch(@RequestBody List<Long> phoneIds) {
+        phoneNumberService.deleteBatchByIds(phoneIds);
+        return Result.success(BusinessStates.SUCCESS, "批量删除成功");
+    }
+
 }

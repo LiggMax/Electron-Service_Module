@@ -1,5 +1,6 @@
 package com.ligg.service.common.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ligg.common.dto.PhoneAndProjectDto;
@@ -537,5 +538,18 @@ public class PhoneNumberServiceImpl extends ServiceImpl<PhoneNumberMapper, Phone
         result.setList(phoneList.getRecords());
 
         return result;
+    }
+
+    /**
+     * 批量删除号码
+     */
+    @Override
+    public void deleteBatchByIds(List<Long> phoneIds) {
+        if (CollectionUtils.isEmpty(phoneIds)) {
+            log.warn("批量删除号码时，提供的ID列表为空");
+            return;
+        }
+        phoneNumberMapper.delete(new LambdaQueryWrapper<PhoneEntity>()
+                .in(PhoneEntity::getPhoneId, phoneIds));
     }
 }

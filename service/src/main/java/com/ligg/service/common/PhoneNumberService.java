@@ -97,4 +97,7 @@ public interface PhoneNumberService extends IService<PhoneEntity> {
 
     // 获取手机号列表
     PageVo<PhoneVo> getPhoneList(Long phoneNumber, Long pageNum, Long pageSize);
+
+    //删除手机号
+    void deleteBatchByIds(List<Long> phoneIds);
 }
