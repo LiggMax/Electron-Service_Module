@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @TableName("user_bill")
 public class UserBillEntity {
-    private String billId;
+    private String id;
 
     /**
      * 1:充值，2：消费

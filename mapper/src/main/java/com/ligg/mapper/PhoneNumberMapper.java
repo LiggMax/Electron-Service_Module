@@ -91,6 +91,7 @@ public interface PhoneNumberMapper extends BaseMapper<PhoneEntity> {
     /**
      * 获取指定地区和项目的可用号码列表
      */
-    List<PhoneEntity> getAvailablePhonesByProject(@Param("regionId") Integer regionId, @Param("projectId") Integer projectId);
+    List<PhoneEntity> getAvailablePhonesByProject(@Param("regionId") Integer regionId,
+                                                  @Param("projectId") Integer projectId);
 }
 
