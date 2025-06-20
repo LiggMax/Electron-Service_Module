@@ -86,7 +86,12 @@ public class SmsServiceImpl implements SmsService {
         ScheduledFuture<?> existingTask = userTasks.get(userId);
         if (existingTask != null && !existingTask.isCancelled()) {
             existingTask.cancel(true);
+            // 清理之前的推送记录，重新开始
+            pushedIds.clear();
         }
+
+        // 立即推送所有历史验证码
+        pushHistoricalCodes(userId, emitter, pushedIds);
 
         // 创建新的定时任务
         ScheduledFuture<?> task = scheduler.scheduleAtFixedRate(() -> {
@@ -105,66 +110,8 @@ public class SmsServiceImpl implements SmsService {
                     return;
                 }
 
-                // 从Redis获取用户的验证码Hash集合
-                String pattern = "codes:userId:" + userId + ":orderId:*";
-                ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-                Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
-
-                boolean hasNewCode = false;
-
-                while (cursor.hasNext()) {
-                    byte[] keyBytes = cursor.next();
-                    String key = new String(keyBytes);
-
-                    // 获取Hash集合中的所有条目
-                    Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
-
-                    for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-                        String field = entry.getKey().toString();
-                        String value = entry.getValue().toString();
-
-                        // 使用field作为唯一标识检查是否为新验证码
-                        int fieldHash = field.hashCode();
-
-                        if (!pushedIds.contains(fieldHash)) {
-                            // 发现新验证码，解析并推送
-                            try {
-                                // 再次检查连接状态
-                                if (isEmitterClosed(emitter)) {
-                                    log.info("推送前检测到连接已关闭 userId: {}", userId);
-                                    cancelUserTask(userId);
-                                    return;
-                                }
-
-                                CodeVo newCode = objectMapper.readValue(value, CodeVo.class);
-
-                                // 推送新验证码
-                                Map<String, Object> pushData = new HashMap<>();
-                                pushData.put("codeInfo", newCode);
-                                pushData.put("timestamp", System.currentTimeMillis());
-                                pushData.put("message", "收到新的短信验证码");
-
-                                emitter.send(SseEmitter.event()
-                                        .name("sms-code")
-                                        .data(pushData));
-
-                                // 记录已推送的验证码
-                                pushedIds.add(fieldHash);
-                                hasNewCode = true;
-
-                                log.info("成功推送新验证码给用户: {}, field: {}", userId, field);
-
-                            } catch (Exception parseException) {
-                                if (parseException.getMessage().contains("has already completed")) {
-                                    log.info("连接已完成，停止推送 userId: {}", userId);
-                                    cancelUserTask(userId);
-                                    return;
-                                }
-                                log.warn("解析验证码失败: " + parseException.getMessage());
-                            }
-                        }
-                    }
-                }
+                // 推送新的验证码
+                pushNewCodes(userId, emitter, pushedIds);
 
                 // 定期发送心跳（每30秒一次）
                 if (System.currentTimeMillis() % 30000 < 10000) {
@@ -183,11 +130,6 @@ public class SmsServiceImpl implements SmsService {
                     }
                 }
 
-                // 如果有新验证码，输出日志
-                if (hasNewCode) {
-                    log.info("用户 {} 收到新验证码推送", userId);
-                }
-
             } catch (Exception e) {
                 if (e.getMessage().contains("has already completed")) {
                     log.info("连接已完成，停止推送任务 userId: {}", userId);
@@ -201,6 +143,159 @@ public class SmsServiceImpl implements SmsService {
         // 保存任务引用
         userTasks.put(userId, task);
         log.info("为用户 {} 启动推送任务", userId);
+    }
+
+    /**
+     * 推送历史验证码
+     */
+    private void pushHistoricalCodes(Long userId, SseEmitter emitter, Set<Integer> pushedIds) {
+        try {
+            // 从Redis获取用户的验证码Hash集合
+            String pattern = "codes:userId:" + userId + ":orderId:*";
+            ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
+            Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
+
+            List<CodeVo> historicalCodes = new ArrayList<>();
+
+            while (cursor.hasNext()) {
+                byte[] keyBytes = cursor.next();
+                String key = new String(keyBytes);
+
+                // 获取Hash集合中的所有条目
+                Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+
+                for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+                    String field = entry.getKey().toString();
+                    String value = entry.getValue().toString();
+
+                    try {
+                        CodeVo code = objectMapper.readValue(value, CodeVo.class);
+                        historicalCodes.add(code);
+
+                        // 使用field的hashCode作为唯一标识
+                        int fieldHash = field.hashCode();
+                        pushedIds.add(fieldHash);
+
+                    } catch (Exception e) {
+                        // 解析失败跳过
+                    }
+                }
+            }
+
+            // 按时间倒序排列
+            historicalCodes.sort((a, b) -> {
+                // 简单的时间比较，如果没有时间字段就保持原顺序
+                return 0;
+            });
+
+            if (!historicalCodes.isEmpty()) {
+                System.out.println("为用户 " + userId + " 推送 " + historicalCodes.size() + " 条历史验证码");
+
+                for (CodeVo code : historicalCodes) {
+                    try {
+                        // 推送历史验证码
+                        Map<String, Object> pushData = new HashMap<>();
+                        pushData.put("codeInfo", code);
+                        pushData.put("timestamp", System.currentTimeMillis());
+                        pushData.put("message", "历史短信验证码");
+                        pushData.put("isHistorical", true); // 标记为历史数据
+
+                        emitter.send(SseEmitter.event()
+                                .name("sms-code")
+                                .data(pushData));
+
+                    } catch (Exception e) {
+                        if (e.getMessage().contains("has already completed")) {
+                            System.out.println("推送历史数据时连接已关闭 userId: " + userId);
+                            return;
+                        }
+                    }
+                }
+
+                System.out.println("用户 " + userId + " 历史验证码推送完成");
+            } else {
+                System.out.println("用户 " + userId + " 暂无历史验证码");
+            }
+
+        } catch (Exception e) {
+            System.err.println("获取历史验证码失败 userId: " + userId + ", error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 推送新验证码
+     */
+    private void pushNewCodes(Long userId, SseEmitter emitter, Set<Integer> pushedIds) {
+        try {
+            // 从Redis获取用户的验证码Hash集合
+            String pattern = "codes:userId:" + userId + ":orderId:*";
+            ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
+            Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
+
+            boolean hasNewCode = false;
+
+            while (cursor.hasNext()) {
+                byte[] keyBytes = cursor.next();
+                String key = new String(keyBytes);
+
+                // 获取Hash集合中的所有条目
+                Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+
+                for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+                    String field = entry.getKey().toString();
+                    String value = entry.getValue().toString();
+
+                    // 使用field作为唯一标识检查是否为新验证码
+                    int fieldHash = field.hashCode();
+
+                    if (!pushedIds.contains(fieldHash)) {
+                        // 发现新验证码，解析并推送
+                        try {
+                            // 再次检查连接状态
+                            if (isEmitterClosed(emitter)) {
+                                System.out.println("推送前检测到连接已关闭 userId: " + userId);
+                                cancelUserTask(userId);
+                                return;
+                            }
+
+                            CodeVo newCode = objectMapper.readValue(value, CodeVo.class);
+
+                            // 推送新验证码
+                            Map<String, Object> pushData = new HashMap<>();
+                            pushData.put("codeInfo", newCode);
+                            pushData.put("timestamp", System.currentTimeMillis());
+                            pushData.put("message", "收到新的短信验证码");
+                            pushData.put("isHistorical", false); // 标记为新数据
+
+                            emitter.send(SseEmitter.event()
+                                    .name("sms-code")
+                                    .data(pushData));
+
+                            // 记录已推送的验证码
+                            pushedIds.add(fieldHash);
+                            hasNewCode = true;
+
+                            System.out.println("成功推送新验证码给用户: " + userId + ", field: " + field);
+
+                        } catch (Exception parseException) {
+                            if (parseException.getMessage().contains("has already completed")) {
+                                System.out.println("连接已完成，停止推送 userId: " + userId);
+                                cancelUserTask(userId);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 如果有新验证码，输出日志
+            if (hasNewCode) {
+                System.out.println("用户 " + userId + " 收到新验证码推送");
+            }
+
+        } catch (Exception e) {
+            System.err.println("推送新验证码失败 userId: " + userId + ", error: " + e.getMessage());
+        }
     }
 
     /**
