@@ -32,7 +32,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
         String expiredKey = message.toString();
 
         //只处理以 "user:orders:" 开头的key 订单过期
-        if (!expiredKey.startsWith("codes:userId:")) {
+        if (!expiredKey.startsWith("user:orders:")) {
             return;
         }
         String[] parts = expiredKey.split(":");

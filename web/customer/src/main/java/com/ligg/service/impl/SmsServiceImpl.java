@@ -189,7 +189,7 @@ public class SmsServiceImpl implements SmsService {
             });
 
             if (!historicalCodes.isEmpty()) {
-                System.out.println("为用户 " + userId + " 推送 " + historicalCodes.size() + " 条历史验证码");
+                log.info("为用户 {} 推送 {} 条历史验证码", userId, historicalCodes.size());
 
                 for (CodeVo code : historicalCodes) {
                     try {
@@ -206,19 +206,19 @@ public class SmsServiceImpl implements SmsService {
 
                     } catch (Exception e) {
                         if (e.getMessage().contains("has already completed")) {
-                            System.out.println("推送历史数据时连接已关闭 userId: " + userId);
+                            log.warn("推送历史数据时连接已关闭 userId: {}", userId);
                             return;
                         }
                     }
                 }
 
-                System.out.println("用户 " + userId + " 历史验证码推送完成");
+                log.info("用户 {} 历史验证码推送完成", userId);
             } else {
-                System.out.println("用户 " + userId + " 暂无历史验证码");
+                log.info("用户 {} 暂无历史验证码", userId);
             }
 
         } catch (Exception e) {
-            System.err.println("获取历史验证码失败 userId: " + userId + ", error: " + e.getMessage());
+            log.warn("获取历史验证码失败 userId: {}, error: {}", userId, e.getMessage());
         }
     }
 
