@@ -47,36 +47,6 @@ public class SmsServiceImpl implements SmsService {
         return smsMapper.getSmsList(userId);
     }
 
-    /**
-     * 获取验证码列表
-     */
-    @Override
-    public List<CodeVo> getCodeList(Long userId) {
-        String pattern = "codes:" + "userId:" + userId + ":orderId:" + "*";
-        ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
-        Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options);
-
-        List<CodeVo> orders = new ArrayList<>();
-
-        while (cursor.hasNext()) {
-            byte[] keyBytes = cursor.next();
-            String key = new String(keyBytes);
-
-            Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
-            for (Map.Entry<Object, Object> entry : entries.entrySet()) {
-                String value = entry.getValue().toString();
-                try {
-                    orders.add(objectMapper.readValue(value, CodeVo.class));
-                } catch (Exception e) {
-                    log.error("反序短信失败: {}", e.getMessage());
-                }
-            }
-        }
-
-        orders.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
-        return orders;
-    }
-
     @Override
     public void startSmsCodePushTask(Long userId, SseEmitter emitter) {
         // 初始化或获取用户的已推送ID集合
