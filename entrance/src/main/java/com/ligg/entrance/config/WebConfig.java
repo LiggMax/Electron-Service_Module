@@ -33,8 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/user/account/**",
                         "/api/sms/**",
                         "/api/version/**",
-                        "/api/adminWeb/account/**",
-                        "/api/user/sms/sse")
+                        "/api/adminWeb/account/**")
                 .excludePathPatterns("/**/*.html", "/**/*.js", "/**/*.css", "/**/*.ico") // 放行静态资源
                 .excludePathPatterns("/error") // 放行错误页面
                 .excludePathPatterns("/ws/**", "/socket/**") // 放行WebSocket路径

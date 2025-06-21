@@ -9,6 +9,8 @@ import java.util.Random;
 @SpringBootTest(classes = EntranceApplication.class)
 public class TestRandom {
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
     //生成随机数
     @Test
     public void random(){
@@ -28,6 +30,4 @@ public class TestRandom {
 
         System.out.println(urls);
     }
-
-
 }
