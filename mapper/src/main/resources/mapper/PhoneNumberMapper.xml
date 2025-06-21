@@ -20,7 +20,7 @@
     <select id="getPhoneByNumber" resultType="com.ligg.common.entity.PhoneEntity">
         SELECT * FROM phone WHERE phone_number = #{phoneNumber}
     </select>
-
+    
     <!-- 检查手机号是否存在 -->
     <select id="checkPhoneExists" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM phone WHERE phone_number = #{phoneNumber}
@@ -28,7 +28,7 @@
 
     <!-- 检查手机号和项目的关联是否已存在 -->
     <select id="checkPhoneProjectRelationExists" resultType="java.lang.Integer">
-        SELECT COUNT(1)
+        SELECT COUNT(1) 
         FROM phone_project_relation ppr
         JOIN phone p ON ppr.phone_id = p.phone_id
         WHERE p.phone_number = #{phoneNumber} AND ppr.project_id = #{projectId}
@@ -38,7 +38,7 @@
     <insert id="insertPhoneProject">
         INSERT INTO phone_project_relation(phone_id, project_id, region_id, is_available, created_at)
         SELECT p.phone_id, #{projectId}, #{regionId}, 0, NOW()
-        FROM phone p
+        FROM phone p 
         WHERE p.phone_number = #{phoneNumber}
     </insert>
 
@@ -90,15 +90,15 @@
         <result property="registrationTime" column="registration_time"/>
         <result property="countryCode" column="country_code"/>
         <result property="regionName" column="region_name"/>
-
+        
         <!-- 项目信息集合，使用collection标签 -->
-        <collection property="projects" ofType="com.ligg.common.entity.ProjectEntity"
+        <collection property="projects" ofType="com.ligg.common.entity.ProjectEntity" 
                     column="phone_id" select="getPhoneProject"/>
     </resultMap>
-
+    
     <!-- 根据手机号查询关联的项目 -->
     <select id="getProjectByPhoneNumber" resultType="com.ligg.common.entity.ProjectEntity">
-        SELECT
+        SELECT 
             p.project_id,
             p.project_name,
             p.project_price
@@ -107,7 +107,7 @@
         LEFT JOIN project p ON ppr.project_id = p.project_id
         WHERE ph.phone_number = #{phoneNumber}
     </select>
-
+    
     <!-- 获取号码列表的结果映射 -->
     <resultMap id="PhoneVoResultMap" type="com.ligg.common.vo.PhoneVo">
         <id property="phoneId" column="phone_id"/>
@@ -154,8 +154,8 @@
     <!-- 获取指定地区和项目的可用号码列表 -->
     <select id="getAvailablePhonesByProject" resultType="com.ligg.common.entity.PhoneEntity">
         SELECT DISTINCT p.phone_id, p.phone_number, p.admin_user_id, p.registration_time
-        FROM phone_project_relation ppr
-                 JOIN phone p ON p.phone_id = ppr.phone_id
+        FROM phone p
+                 JOIN phone_project_relation ppr ON p.phone_id = ppr.phone_id
         WHERE ppr.region_id = #{regionId}
           AND ppr.project_id = #{projectId}
           AND ppr.is_available = 0
