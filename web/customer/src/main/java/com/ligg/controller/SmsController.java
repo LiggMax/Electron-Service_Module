@@ -46,6 +46,9 @@ public class SmsController {
     // 存储用户的SSE连接
     private final ConcurrentHashMap<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
+    // 存储每个用户已推送的验证码ID，避免重复推送
+    private final ConcurrentHashMap<Long, Set<Integer>> pushedCodeIds = new ConcurrentHashMap<>();
+
     /**
      * 获取用户号码列表
      */
@@ -70,7 +73,7 @@ public class SmsController {
     /**
      * SSE连接端点 - 实时推送短信验证码
      */
-    @GetMapping("/sse/code")
+    @GetMapping("/sse")
     public SseEmitter smsSSE(@RequestParam String token) {
         Map<String, Object> map = jwtUtil.parseToken(token);
         Long userId = (Long) map.get("userId");
@@ -80,6 +83,9 @@ public class SmsController {
 
         // 存储用户连接
         sseEmitters.put(userId, emitter);
+
+        // 初始化该用户的已推送验证码ID集合
+        pushedCodeIds.put(userId, new HashSet<>());
 
         log.info("用户 {} 建立SSE连接", userId);
 
@@ -95,26 +101,26 @@ public class SmsController {
         // 设置连接完成回调
         emitter.onCompletion(() -> {
             sseEmitters.remove(userId);
-            smsService.stopSmsCodePushTask(userId);
+            pushedCodeIds.remove(userId);
             log.info("用户 {} SSE连接已关闭", userId);
         });
 
         // 设置连接超时回调
         emitter.onTimeout(() -> {
             sseEmitters.remove(userId);
-            smsService.stopSmsCodePushTask(userId);
+            pushedCodeIds.remove(userId);
             log.info("用户 {} SSE连接超时", userId);
         });
 
         // 设置连接错误回调
         emitter.onError((throwable) -> {
             sseEmitters.remove(userId);
-            smsService.stopSmsCodePushTask(userId);
+            pushedCodeIds.remove(userId);
             log.error("用户 {} SSE连接发生错误", userId, throwable);
         });
 
         // 启动定时任务，实时推送验证码
-        smsService.startSmsCodePushTask(userId, emitter);
+        smsService.startSmsCodePushTask(userId, emitter, pushedCodeIds.get(userId));
         return emitter;
     }
 }

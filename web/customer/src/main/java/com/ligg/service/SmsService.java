@@ -18,10 +18,5 @@ public interface SmsService {
     /**
      * 短信验证码推送任务
      */
-    void startSmsCodePushTask(Long userId, SseEmitter emitter);
-
-    /**
-     * 停止短信验证码推送任务
-     */
-    void stopSmsCodePushTask(Long userId);
+    void startSmsCodePushTask(Long userId, SseEmitter emitter, Set<Integer> pushedIds);
 }
