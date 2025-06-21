@@ -12,6 +12,9 @@ public interface SmsService {
     //获取号码列表
     List<SmsDto> getPhoneNumberList(Long userId);
 
+    //获取验证码列表
+    List<CodeVo> getCodeList(Long userId);
+
     /**
      * 短信验证码推送任务
      */

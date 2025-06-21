@@ -57,6 +57,17 @@ public class SmsController {
     }
 
     /**
+     * 获取用户定订单验证码
+     */
+    @GetMapping("/code")
+    public Result<List<CodeVo>> getCodeList() {
+        Map<String, Object> map = jwtUtil.parseToken(request.getHeader("Token"));
+        //获取用户订单列表
+        List<CodeVo> codeList = smsService.getCodeList((Long) map.get("userId"));
+        return Result.success(BusinessStates.SUCCESS, codeList);
+    }
+
+    /**
      * SSE连接端点 - 实时推送短信验证码
      */
     @GetMapping("/sse/code")
